@@ -4,6 +4,10 @@ class Program
 {
     static void Main(string[] args)
     {
+
+        Checker.CheckTextInScreenshot();
+     
+
         // Pfad zur ADB von Nox Player festlegen
         string adbPath = @"C:\Program Files (x86)\Nox\bin\adb.exe";
 
