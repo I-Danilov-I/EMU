@@ -16,6 +16,7 @@ class Program
         var (with, hight) = Display.GetScreenResolution(adbPath);
 
         // Klick auf Position durchführen
-        ClicksOperate.ClickToPosition(adbPath ,with, hight);
+        // ClicksOperate.ClickToPosition(adbPath ,with, hight);
+        ClicksOperate.ClickInQuadraticArea(adbPath, with, hight, 150, 10);
     }
 }
