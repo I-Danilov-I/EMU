@@ -6,18 +6,19 @@ namespace EMU
 {
     internal static class Checker
     {
-        // Methode zur Texterkennung mit Bildvorverarbeitung (Vergrößerung und Schwarz-Weiß)
+        // Methode zur Texterkennung mit Bildvorverarbeitung (Vergrößerung, Weichzeichner und adaptive Schwellenwertsetzung)
         public static void CheckTextInScreenshot(string screenshotPath)
         {
             try
             {
                 // Vergrößere das Bild vor der Texterkennung
                 string resizedImagePath = "C:\\Users\\Anatolius\\source\\repos\\EMU\\Screens\\img.png";
-                ResizeAndConvertToBinary(screenshotPath, resizedImagePath);
+                ResizeAndProcessImage(screenshotPath, resizedImagePath);
 
                 // OCR-Engine initialisieren
                 using (var engine = new TesseractEngine("C:\\Users\\Anatolius\\source\\repos\\EMU\\Data", "deu", EngineMode.Default))
                 {
+                    engine.DefaultPageSegMode = PageSegMode.SingleBlock; // Setze den Seitensegmentierungsmodus
                     using (var img = Pix.LoadFromFile(resizedImagePath)) // Verwende das verarbeitete Bild
                     {
                         using (var page = engine.Process(img))
@@ -28,7 +29,7 @@ namespace EMU
                             Console.WriteLine(text);
 
                             // Prüfe, ob ein bestimmter Text vorhanden ist
-                            string textToFind = "Ansehen"; // Den gesuchten Text hier eingeben
+                            string textToFind = "Geheimdienst-Mission"; // Den gesuchten Text hier eingeben
                             if (text.Contains(textToFind))
                             {
                                 Console.WriteLine($"Der Text '{textToFind}' wurde gefunden!");
@@ -48,7 +49,7 @@ namespace EMU
         }
 
         // Methode zur Vergrößerung des Bildes und Umwandlung in Schwarz-Weiß
-        public static void ResizeAndConvertToBinary(string imagePath, string outputPath)
+        public static void ResizeAndProcessImage(string imagePath, string outputPath)
         {
             try
             {
@@ -63,9 +64,12 @@ namespace EMU
                 Mat gray = new Mat();
                 Cv2.CvtColor(resized, gray, ColorConversionCodes.BGR2GRAY);
 
-                // Wende die binäre Schwellenwertsetzung (Schwarz-Weiß) an
+                // Weichzeichner anwenden, um das Bild zu glätten
+                Cv2.GaussianBlur(gray, gray, new Size(3, 3), 0);
+
+                // Wende die adaptive Schwellenwertsetzung an
                 Mat binary = new Mat();
-                Cv2.Threshold(gray, binary, 128, 255, ThresholdTypes.Binary);
+                Cv2.AdaptiveThreshold(gray, binary, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, 11, 2);
 
                 // Speichere das verarbeitete Bild
                 Cv2.ImWrite(outputPath, binary);
