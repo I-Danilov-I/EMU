@@ -2,40 +2,28 @@
 {
     internal class ClicksOperate
     {
-        internal static void ClickToPosition(string adbPath, int with, int hight)
+        internal static void ClickAtPositionWithDecimal(string adbPath, int x, int y)
         {
-            // Liste von relativen Koordinaten für die Klicks (z.B. 50% der Breite und 50% der Höhe)
-            double[,] relativeCoordinates = new double[,]
-            {
-            {0.5, 0.5},  // Mitte des Bildschirms
-            {0.3, 0.4},  // Links oben
-            {0.7, 0.8},  // Rechts unten
-            {0.4, 0.6},  // Mittig leicht versetzt
-            {0.6, 0.3}   // Oben rechts
-            };
+            // Ausgabe der berechneten Koordinaten im event-ähnlichen Format
+            Console.WriteLine($"0003 0035 {x:X}"); // ABS_MT_POSITION_X (X-Koordinate im Hex-Format)
+            Console.WriteLine($"0003 0036 {y:X}"); // ABS_MT_POSITION_Y (Y-Koordinate im Hex-Format)
+            Console.WriteLine("0000 0002 00000000"); // Abschluss des Events
 
-            // ADB-Befehl für jeden Satz von Koordinaten ausführen
-            for (int i = 0; i < relativeCoordinates.GetLength(0); i++)
-            {
-                // Berechne absolute Koordinaten basierend auf relativen Werten und Bildschirmauflösung
-                int x = (int)(relativeCoordinates[i, 0] * with);
-                int y = (int)(relativeCoordinates[i, 1] * hight);
+            // Erstelle den ADB-Befehl, um auf die berechneten Koordinaten zu klicken
+            string adbCommand = $"shell input tap {x} {y}";
 
-                // ADB-Befehl erstellen, um auf die berechneten Koordinaten zu klicken
-                string adbCommand = $"shell input tap {x} {y}";
+            // Führe den ADB-Befehl aus
+            Console.WriteLine($"ADB Command to be executed: {adbPath} {adbCommand}");
+            AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
 
-                Console.WriteLine($"ADB Command to be executed: {adbPath} {adbCommand}");
-
-                // ADB-Befehl ausführen
-                AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
-
-                // Verzögerung von 500 Millisekunden zwischen den Klicks
-                Thread.Sleep(500);
-            }
+            Console.WriteLine($"Klick auf Position ({x}, {y}) ausgeführt.");
         }
 
-            // Methode zum Durchklicken eines quadratischen Bereichs um die Mitte des Bildschirms
-            internal static void ClickInQuadraticArea(string adbPath, int width, int height, int offset, int step)
+
+
+
+        // Methode zum Durchklicken eines quadratischen Bereichs um die Mitte des Bildschirms
+        internal static void ClickInQuadraticArea(string adbPath, int width, int height, int offset, int step)
             {
                 // Berechne die Mitte des Bildschirms
                 int centerX = width / 2;
