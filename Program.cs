@@ -40,6 +40,15 @@ class Program
     {
         try
         {
+            // Verzeichnis für Screenshots überprüfen/erstellen
+            string screenshotDirectory = @"C:\Users\Anatolius\source\repos\EMU\Screens";
+            if (!Directory.Exists(screenshotDirectory))
+            {
+                Directory.CreateDirectory(screenshotDirectory);
+            }
+
+            // Screenshot auf dem Emulator erstellen und auf den PC übertragen
+            string localScreenshotPath = Path.Combine(screenshotDirectory, "img.png");
             // Screenshot auf dem Emulator erstellen und speichern
             string screenshotCommand = "shell screencap -p /sdcard/screenshot.png";
             AdbCommand.ExecuteAdbCommand(adbPath, screenshotCommand);
