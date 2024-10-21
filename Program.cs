@@ -2,8 +2,8 @@
 {
     internal static class Program
     {
-        internal static string adbPath = @"C:\Program Files (x86)\Nox\bin\adb.exe";
-        internal static string screenshotDirectory = @"C:\Users\Anatolius\source\repos\EMU\Screens\img.png";
+        internal static string adbPath = "C:\\Program Files\\Nox\\bin\\adb.exe";
+        internal static string screenshotDirectory = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Screens";
 
         private static void Main()
         {
@@ -16,7 +16,7 @@
             // Bildschirmauflösung abfragen
             var (width, height) = Display.GetScreenResolution(adbPath);
 
-            ClicksOperate.ClickToPosition(adbPath, width, height);
+            // ClicksOperate.ClickToPosition(adbPath, width, height);
             Screenshot.TakeScreenshot(adbPath, screenshotDirectory);
             Checker.CheckTextInScreenshot(screenshotDirectory);
         }

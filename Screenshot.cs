@@ -12,7 +12,8 @@
                 }
 
                 // Screenshot auf dem Emulator erstellen und auf den PC übertragen
-                string localScreenshotPath = Path.Combine(screenshotDirectory, "img.png");
+                string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png");
+
                 // Screenshot auf dem Emulator erstellen und speichern
                 string screenshotCommand = "shell screencap -p /sdcard/screenshot.png";
                 AdbCommand.ExecuteAdbCommand(adbPath, screenshotCommand);
