@@ -2,6 +2,24 @@
 {
     internal class ClicksOperate
     {
+        public static void ClickAtTouchPositionWithHexa(string adbPath, string hexX, string hexY)
+        {
+            // Konvertiere die Hexadezimalwerte in Dezimal
+            int x = int.Parse(hexX, System.Globalization.NumberStyles.HexNumber);
+            int y = int.Parse(hexY, System.Globalization.NumberStyles.HexNumber);
+
+            // ADB-Befehl erstellen, um auf die berechneten Koordinaten zu klicken
+            string adbCommand = $"shell input tap {x} {y}";
+
+            // Führe den ADB-Befehl aus
+            Console.WriteLine($"ADB Command to be executed: {adbPath} {adbCommand}");
+            AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
+
+            Console.WriteLine($"Klick auf Position ({x}, {y}) ausgeführt.");
+        }
+
+
+
         internal static void ClickAtPositionWithDecimal(string adbPath, int x, int y)
         {
             // Ausgabe der berechneten Koordinaten im event-ähnlichen Format

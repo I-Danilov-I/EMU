@@ -18,22 +18,13 @@ namespace EMU
             AdbCommand.ExecuteAdbCommand(adbPath, "connect 127.0.0.1:62001");
             var (width, height) = Display.GetScreenResolution(adbPath); // Bildschirmauflösung abfragen
 
+            ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "00000334", "000001fb");
 
-
-            ClicksOperate.ClickAtPositionWithDecimal(adbPath, 420, 420);
-
-
-            // Zeige die Liste aller Geräte an
             Console.WriteLine("Liste aller Eingabegeräte:");
             ListAllDevices(adbPath, logFilePath);
-
-            // Erfassung der Touch-Positionen starten
             Console.WriteLine("Starte die Erfassung von Touch-Ereignissen...");
             TrackTouchEvents(adbPath, inputDevice, logFilePath);
 
-
-            Screenshot.TakeScreenshot(adbPath, screenshotDirectory);
-            Checker.CheckTextInScreenshot(screenshotDirectory);
         }
 
 
