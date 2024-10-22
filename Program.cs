@@ -9,18 +9,23 @@
 
         private static void Main()
         {
-            Console.WriteLine("___________________________________________________________________________");
+            Console.WriteLine("Programm Start");
+            Console.WriteLine("------------------------------------------------------------------------");
             // ADB-Server neu starten und mit dem Nox Player verbinden
             // AdbCommand.ExecuteAdbCommand(adbPath, "kill-server");
             // AdbCommand.ExecuteAdbCommand(adbPath, "start-server");
             AdbCommand.ExecuteAdbCommand(adbPath, "connect 127.0.0.1:62001");
             // Info.ListAllDevices(adbPath, logFilePath);
             var (width, height) = GetInfoFromDevice.GetScreenResolution(adbPath); // Bildschirmauflösung abfragen
-            Console.WriteLine("___________________________________________________________________________\n");
+            Console.WriteLine("------------------------------------------------------------------------");
+            GetInfoFromDevice.TrackTouchEvents(adbPath, inputDevice, "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\TouchLogs.txt");
 
-            // Makro.TrackTouchEvents(adbPath, inputDevice, "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\TouchLogs.txt");
 
-            LagerOnlineBelohnung.Abholen(adbPath, screenshotDirectory);
+            while (true)
+            {
+                LagerOnlineBelohnung.Abholen(adbPath, screenshotDirectory);
+            } 
+
 
          
         }

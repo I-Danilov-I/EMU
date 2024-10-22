@@ -8,7 +8,7 @@ namespace EMU
         {
             try
             {
-                Console.WriteLine("\nScreenshot wird erstellt...");
+                Console.WriteLine("Screenshot wird erstellt...");
                 if (!Directory.Exists(screenshotDirectory))
                 {
                     Directory.CreateDirectory(screenshotDirectory);

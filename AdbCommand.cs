@@ -17,7 +17,7 @@ namespace EMU
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.CreateNoWindow = true;
 
-                Console.WriteLine($"\nStarting ADB Command: {command}");
+                Console.WriteLine($"Starting ADB Command: {command}");
 
                 process.Start();
 
@@ -33,13 +33,13 @@ namespace EMU
 
                 process.WaitForExit();
 
-                Console.WriteLine($"Command exit code: [{process.ExitCode}]");
+                Console.WriteLine($"Command exit code: [{process.ExitCode}]\n");
 
                 return output;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while executing the ADB command: {ex.Message}");
+                Console.WriteLine($"An error occurred while executing the ADB command: {ex.Message}\n");
                 return "";
             }
         }
