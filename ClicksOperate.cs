@@ -2,6 +2,20 @@
 {
     internal class ClicksOperate
     {
+
+        public static void ScrollOnScreen(string adbPath, int startX, int startY, int endX, int endY, int duration)
+        {
+            // ADB-Befehl zum Scrollen auf dem Bildschirm
+            string adbCommand = $"shell input swipe {startX} {startY} {endX} {endY} {duration}";
+
+            // Führe den ADB-Befehl aus
+            Console.WriteLine($"ADB Command to be executed: {adbPath} {adbCommand}");
+            AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
+
+            Console.WriteLine($"Scroll von Position ({startX}, {startY}) nach ({endX}, {endY}) in {duration} ms ausgeführt.");
+        }
+
+
         public static void ClickAtTouchPositionWithHexa(string adbPath, string hexX, string hexY)
         {
             // Konvertiere die Hexadezimalwerte in Dezimal
@@ -22,12 +36,6 @@
 
         internal static void ClickAtPositionWithDecimal(string adbPath, int x, int y)
         {
-            // Ausgabe der berechneten Koordinaten im event-ähnlichen Format
-            Console.WriteLine($"0003 0035 {x:X}"); // ABS_MT_POSITION_X (X-Koordinate im Hex-Format)
-            Console.WriteLine($"0003 0036 {y:X}"); // ABS_MT_POSITION_Y (Y-Koordinate im Hex-Format)
-            Console.WriteLine("0000 0002 00000000"); // Abschluss des Events
-
-            // Erstelle den ADB-Befehl, um auf die berechneten Koordinaten zu klicken
             string adbCommand = $"shell input tap {x} {y}";
 
             // Führe den ADB-Befehl aus
