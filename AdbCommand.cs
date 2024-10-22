@@ -17,7 +17,7 @@ namespace EMU
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.CreateNoWindow = true;
 
-                Console.WriteLine($"Starting ADB Command Execution: {adbPath} {command}");
+                Console.WriteLine($"\nStarting ADB Command: {command}");
 
                 process.Start();
 
@@ -33,7 +33,7 @@ namespace EMU
 
                 process.WaitForExit();
 
-                Console.WriteLine($"Command executed with exit code: {process.ExitCode}");
+                Console.WriteLine($"Command exit code: [{process.ExitCode}]");
 
                 return output;
             }

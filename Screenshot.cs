@@ -8,6 +8,7 @@ namespace EMU
         {
             try
             {
+                Console.WriteLine("\nScreenshot wird erstellt...");
                 if (!Directory.Exists(screenshotDirectory))
                 {
                     Directory.CreateDirectory(screenshotDirectory);
@@ -39,7 +40,7 @@ namespace EMU
         {
             try
             {
-                
+                Console.WriteLine("\nPrüfe verfügbarkeit, suche nach Text in Screenshot...");
                 // Screenshot auf dem Emulator erstellen und auf den PC übertragen
                 string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png");
 
@@ -53,8 +54,7 @@ namespace EMU
                         {
                             // Extrahiere den erkannten Text
                             string text = page.GetText();
-                            Console.WriteLine("Erkannter Text:");
-                            Console.WriteLine(text);
+                            // Console.WriteLine(text);
 
                             if (text.Contains(textToFind))
                             {
