@@ -3,16 +3,25 @@
     internal class ClicksOperate
     {
 
-        public static void ScrollOnScreen(string adbPath, int startX, int startY, int endX, int endY, int duration)
+        public static void ClickAndHoldAndScroll(string adbPath, string startXHex, string startYHex, string endXHex, string endYHex, int holdDuration, int scrollDuration)
         {
-            // ADB-Befehl zum Scrollen auf dem Bildschirm
-            string adbCommand = $"shell input swipe {startX} {startY} {endX} {endY} {duration}";
+            // Hex-Werte in Dezimalwerte umwandeln
+            int startX = int.Parse(startXHex, System.Globalization.NumberStyles.HexNumber);
+            int startY = int.Parse(startYHex, System.Globalization.NumberStyles.HexNumber);
+            int endX = int.Parse(endXHex, System.Globalization.NumberStyles.HexNumber);
+            int endY = int.Parse(endYHex, System.Globalization.NumberStyles.HexNumber);
 
-            // Führe den ADB-Befehl aus
-            Console.WriteLine($"ADB Command to be executed: {adbPath} {adbCommand}");
-            AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
+            // Schritt 1: Klicken und Halten (Finger auf dem Bildschirm gedrückt halten)
+            string adbCommandHold = $"shell input swipe {startX} {startY} {startX} {startY} {holdDuration}";
+            Console.WriteLine($"ADB Command to be executed: {adbPath} {adbCommandHold}");
+            AdbCommand.ExecuteAdbCommand(adbPath, adbCommandHold);
 
-            Console.WriteLine($"Scroll von Position ({startX}, {startY}) nach ({endX}, {endY}) in {duration} ms ausgeführt.");
+            // Schritt 2: Ziehen (Finger auf dem Bildschirm bewegen)
+            string adbCommandScroll = $"shell input swipe {startX} {startY} {endX} {endY} {scrollDuration}";
+            Console.WriteLine($"ADB Command to be executed: {adbPath} {adbCommandScroll}");
+            AdbCommand.ExecuteAdbCommand(adbPath, adbCommandScroll);
+
+            Console.WriteLine($"Scroll von ({startX}, {startY}) nach ({endX}, {endY}) in {scrollDuration} ms nach Halten für {holdDuration} ms.");
         }
 
 
