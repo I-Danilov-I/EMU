@@ -1,2 +1,0 @@
-[    4539.703685] EV_ABS       ABS_MT_POSITION_Y    000002b2            
-[    4539.711160] EV_ABS       ABS_MT_POSITION_X    00000010    

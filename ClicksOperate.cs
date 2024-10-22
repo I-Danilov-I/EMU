@@ -22,6 +22,8 @@
             AdbCommand.ExecuteAdbCommand(adbPath, adbCommandScroll);
 
             Console.WriteLine($"Scroll von ({startX}, {startY}) nach ({endX}, {endY}) in {scrollDuration} ms nach Halten für {holdDuration} ms.");
+            Thread.Sleep(5000);
+           
         }
 
 
@@ -39,6 +41,7 @@
             AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
 
             Console.WriteLine($"Klick auf Position ({x}, {y}) ausgeführt.");
+       
         }
 
 

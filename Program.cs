@@ -17,15 +17,30 @@
             AdbCommand.ExecuteAdbCommand(adbPath, "connect 127.0.0.1:62001");
             var (width, height) = Info.GetScreenResolution(adbPath); // Bildschirmauflösung abfragen
 
-
-            //Makro.TrackTouchEvents(adbPath, inputDevice, "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\TouchLogs.txt");
-            Makro.PlayMacro(adbPath, macroPathLagerhausBelohnung);
-            ClicksOperate.ClickAndHoldAndScroll(adbPath, "000001a6", "000003b5", "000001c2", "00000094", 300, 500);             
-
-            // ClicksOperate.ScrollOnScreen(adbPath, 500, 1200, 500, 300, 500);  // Scroll von unten nach oben         
             //Console.WriteLine("Liste aller Eingabegeräte:");
             //Info.ListAllDevices(adbPath, logFilePath);
             //Console.WriteLine("Starte die Erfassung von Touch-Ereignissen...");
+            
+            //Makro.TrackTouchEvents(adbPath, inputDevice, "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\TouchLogs.txt");
+
+
+            ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "00000017", "000002b0"); // Öffne Seitenmenü
+            Thread.Sleep(5000);
+
+            ClicksOperate.ClickAndHoldAndScroll(adbPath, "0000005b", "000003ab", "00000025", "000000b5", 300, 500); // Switsche runter
+
+            Screenshot.TakeScreenshot(adbPath, screenshotDirectory);
+            bool findOrNot = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Belohnung");
+            if (findOrNot) 
+            {
+                ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "0000003b", "000003f8"); // Wähle BEgleiter Abenteuer
+                Thread.Sleep(5000);
+
+                ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "000001c3", "000002ce");
+                ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "000001c3", "000002ce");
+                ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "000001c3", "000002ce");
+                ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "000001b5", "0000049c");
+            }
         }
     }
 }
