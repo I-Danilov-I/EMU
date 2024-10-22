@@ -10,7 +10,7 @@ namespace EMU
         {
             try
             {
-                string logFilePath = Program.logFilePath;
+                string logFileFolder = Program.logFilePath;
                 Console.WriteLine("Starte die Erfassung von Touch-Ereignissen...");
                 // Verwende getevent mit -lt, um mehr Touch-Ereignisse zu erfassen und detaillierter auszugeben
                 string command = $"shell getevent -lt {inputDevice}";
@@ -21,8 +21,15 @@ namespace EMU
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.CreateNoWindow = true;
 
-                Console.WriteLine($"Überwache Touch-Ereignisse auf Gerät {inputDevice}...");
 
+                if (!Directory.Exists(logFileFolder))
+                {
+                    Directory.CreateDirectory(logFileFolder);
+                    Console.WriteLine($"Verzeichnis '{logFileFolder}' wurde erstellt.");
+                }
+
+                // Pfad zur Log-Datei selbst
+                string logFilePath = Path.Combine(logFileFolder, "touchLogs.txt");
                 using (StreamWriter writer = new StreamWriter(logFilePath))
                 {
                     process.OutputDataReceived += (sender, args) =>

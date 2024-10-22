@@ -25,7 +25,7 @@ namespace EMU
                 string pullCommand = $"pull /sdcard/screenshot.png {screenshotDirectory}";
                 AdbCommand.ExecuteAdbCommand(adbPath, pullCommand);
 
-                // Console.WriteLine($"Screenshot erfolgreich erstellt und gespeichert unter: {screenshotDirectory}");
+                Console.WriteLine($"Screenshot erfolgreich erstellt und gespeichert unter: {screenshotDirectory}");
             }
             catch (Exception ex)
             {
@@ -54,16 +54,20 @@ namespace EMU
                         {
                             // Extrahiere den erkannten Text
                             string text = page.GetText();
-                            // Console.WriteLine(text);
+                            
+                            Console.WriteLine($"\n[Extrahierter Text]");
+                            Console.WriteLine($"______________________________________________________________");
+                            Console.WriteLine(text);
+                            Console.WriteLine($"______________________________________________________________\n");
 
                             if (text.Contains(textToFind))
                             {
-                                // Console.WriteLine($"Der Text '{textToFind}' wurde gefunden!\n");
+                                Console.WriteLine($"Der Text '{textToFind}' wurde gefunden!\n");
                                 return true;
                             }
                             else
                             {
-                                // Console.WriteLine($"Der Text '{textToFind}' wurde nicht gefunden.\n");
+                                Console.WriteLine($"Der Text '{textToFind}' wurde nicht gefunden.\n");
                                 return false;
                             }
                         }
