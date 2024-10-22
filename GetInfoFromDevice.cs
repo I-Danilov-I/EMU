@@ -6,11 +6,11 @@ namespace EMU
     internal static class GetInfoFromDevice
     {
 
-
-        public static void TrackTouchEvents(string adbPath, string inputDevice, string logFilePath)
+        public static void TrackTouchEvents(string adbPath, string inputDevice)
         {
             try
             {
+                string logFilePath = Program.logFilePath;
                 Console.WriteLine("Starte die Erfassung von Touch-Ereignissen...");
                 // Verwende getevent mit -lt, um mehr Touch-Ereignisse zu erfassen und detaillierter auszugeben
                 string command = $"shell getevent -lt {inputDevice}";
@@ -51,34 +51,55 @@ namespace EMU
         }
 
 
-        public static void ListRunningApps(string adbPath)
+        public static void ListRunningApps(string adbPath, string logFileFolder)
         {
             try
             {
+                // Überprüfen, ob das Verzeichnis für die Log-Datei existiert, und ggf. erstellen
+                if (!Directory.Exists(logFileFolder))
+                {
+                    Directory.CreateDirectory(logFileFolder);
+                    Console.WriteLine($"Verzeichnis '{logFileFolder}' wurde erstellt.");
+                }
+
+                // Pfad zur Log-Datei selbst
+                string logFilePath = Path.Combine(logFileFolder, "runningAppsLogs.txt");
+
                 // ADB-Befehl, um alle laufenden Prozesse zu erfassen
                 string adbCommand = "shell ps | grep u0_a";
                 string output = AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
 
-                if (!string.IsNullOrEmpty(output))
+                using (StreamWriter writer = new StreamWriter(logFilePath, true)) // Append mode
                 {
-                    Console.WriteLine("Liste der laufenden Apps:");
-                    // Ausgabe formatieren, um nur die relevanten Prozessnamen und Paketnamen anzuzeigen
-                    var lines = output.Split(new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (var line in lines)
+                    if (!string.IsNullOrEmpty(output))
                     {
-                        if (line.Contains("u0_a"))
+                        Console.WriteLine("Liste der laufenden Apps:");
+                        writer.WriteLine("Liste der laufenden Apps:");
+
+                        // Ausgabe formatieren, um nur die relevanten Prozessnamen und Paketnamen anzuzeigen
+                        var lines = output.Split(new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var line in lines)
                         {
-                            // Extrahiere den Paketnamen
-                            string[] parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                            string packageName = parts[parts.Length - 1]; // Der letzte Teil ist normalerweise der Paketname
-                            Console.WriteLine($"App: {packageName}");
+                            if (line.Contains("u0_a"))
+                            {
+                                // Extrahiere den Paketnamen
+                                string[] parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                string packageName = parts[parts.Length - 1]; // Der letzte Teil ist normalerweise der Paketname
+
+                                // Ausgabe auf der Konsole und Schreiben in die Log-Datei
+                                Console.WriteLine($"App: {packageName}");
+                                writer.WriteLine($"App: {packageName}");
+                            }
                         }
                     }
+                    else
+                    {
+                        Console.WriteLine("Es laufen derzeit keine Apps.");
+                        writer.WriteLine("Es laufen derzeit keine Apps.");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("Es laufen derzeit keine Apps.");
-                }
+
+                Console.WriteLine($"Liste der laufenden Apps wurde in {logFilePath} gespeichert.");
             }
             catch (Exception ex)
             {
