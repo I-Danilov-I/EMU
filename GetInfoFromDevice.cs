@@ -6,6 +6,44 @@ namespace EMU
     internal static class GetInfoFromDevice
     {
 
+        public static void ListRunningApps(string adbPath)
+        {
+            try
+            {
+                // ADB-Befehl, um alle laufenden Prozesse zu erfassen
+                string adbCommand = "shell ps | grep u0_a";
+                string output = AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
+
+                if (!string.IsNullOrEmpty(output))
+                {
+                    Console.WriteLine("Liste der laufenden Apps:");
+                    // Ausgabe formatieren, um nur die relevanten Prozessnamen und Paketnamen anzuzeigen
+                    var lines = output.Split(new[] { "\n", "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (var line in lines)
+                    {
+                        if (line.Contains("u0_a"))
+                        {
+                            // Extrahiere den Paketnamen
+                            string[] parts = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                            string packageName = parts[parts.Length - 1]; // Der letzte Teil ist normalerweise der Paketname
+                            Console.WriteLine($"App: {packageName}");
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Es laufen derzeit keine Apps.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Abrufen der laufenden Apps: {ex.Message}");
+            }
+        }
+
+
+
+
         public static void TrackTouchEvents(string adbPath, string inputDevice, string logFilePath)
         {
             try
@@ -101,7 +139,8 @@ namespace EMU
             if (match.Success)
             {
                 int width = int.Parse(match.Groups[1].Value);
-                int height = int.Parse(match.Groups[2].Value);
+                int height = int.Parse(match.Groups[2].Value); 
+                Console.WriteLine($"Auflösung: {width} x {height}");
                 return (width, height);
             }
             else

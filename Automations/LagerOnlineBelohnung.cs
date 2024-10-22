@@ -2,12 +2,12 @@
 {
     internal class LagerOnlineBelohnung
     {
-
+        internal static int counter = 0; 
 
         internal static void Abholen(string adbPath, string screenshotDirectory)
         {
             Console.WriteLine("\n\nLager Online Belohnung wird abgeholt...");
-            Console.WriteLine("------------------------------------------------------------------------");
+            Console.WriteLine("---------------------------------------------------------------------------");
             ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "00000017", "000002b0"); // Öffne Seitenmenü
             Thread.Sleep(5000);
             ClicksOperate.ClickAndHoldAndScroll(adbPath, "0000005b", "000003ab", "00000025", "000000b5", 300, 500); // Switsche runter
@@ -29,15 +29,18 @@
                 ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "0000023f", "000002a6"); // Schliese das Seitenmenü
                 Thread.Sleep(5000);
 
-                Console.WriteLine("Lager Online Belohnung erforgreich abgeholt!");
+                counter++;
+                Console.WriteLine($"Lager Online Belohnung erforgreich abgeholt! [{counter}]");
+
 
             }
             else
             {
+                ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "0000023f", "000002a6"); // Schliese das Seitenmenü
+                Thread.Sleep(5000);
                 Console.WriteLine("Keine Online Belohnung verfügbar, veersuche später erneut.");
                 Thread.Sleep(5000);
             }
-            Console.WriteLine("------------------------------------------------------------------------");
         }
 
 

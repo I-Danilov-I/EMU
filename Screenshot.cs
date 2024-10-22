@@ -8,7 +8,7 @@ namespace EMU
         {
             try
             {
-                Console.WriteLine("Screenshot wird erstellt...");
+                // Console.WriteLine("Screenshot wird erstellt...");
                 if (!Directory.Exists(screenshotDirectory))
                 {
                     Directory.CreateDirectory(screenshotDirectory);
@@ -25,7 +25,7 @@ namespace EMU
                 string pullCommand = $"pull /sdcard/screenshot.png {screenshotDirectory}";
                 AdbCommand.ExecuteAdbCommand(adbPath, pullCommand);
 
-                Console.WriteLine($"Screenshot erfolgreich erstellt und gespeichert unter: {screenshotDirectory}");
+                // Console.WriteLine($"Screenshot erfolgreich erstellt und gespeichert unter: {screenshotDirectory}");
             }
             catch (Exception ex)
             {
@@ -40,7 +40,7 @@ namespace EMU
         {
             try
             {
-                Console.WriteLine("\nPrüfe verfügbarkeit, suche nach Text in Screenshot...");
+                // Console.WriteLine("\nPrüfe verfügbarkeit, suche nach Text in Screenshot...");
                 // Screenshot auf dem Emulator erstellen und auf den PC übertragen
                 string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png");
 
@@ -58,17 +58,18 @@ namespace EMU
 
                             if (text.Contains(textToFind))
                             {
-                                Console.WriteLine($"Der Text '{textToFind}' wurde gefunden!");
+                                // Console.WriteLine($"Der Text '{textToFind}' wurde gefunden!\n");
                                 return true;
                             }
                             else
                             {
-                                Console.WriteLine($"Der Text '{textToFind}' wurde nicht gefunden.");
+                                // Console.WriteLine($"Der Text '{textToFind}' wurde nicht gefunden.\n");
                                 return false;
                             }
                         }
                     }
                 }
+                
             }
             catch (Exception ex)
             {
