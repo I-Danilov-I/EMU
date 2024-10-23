@@ -41,18 +41,18 @@ namespace EMU
                     }
 
 
-                    AppSteuerung.Wiederverbinden(adbPath, screenshotDirectory, 7);
-                    TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory);
+                    AppSteuerung.Wiederverbinden(adbPath, screenshotDirectory, 7); 
+                    TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 7); 
 
-                    AppSteuerung.Wiederverbinden(adbPath, screenshotDirectory, 7);
-                    LagerOnlineBelohnung.Abholen(adbPath, screenshotDirectory);
+                    //AppSteuerung.Wiederverbinden(adbPath, screenshotDirectory, 7);
+                    //LagerOnlineBelohnung.Abholen(adbPath, screenshotDirectory);
                 }
                 else 
                 {
                     WriteLogs.LogAndConsoleWirite("App wird gestartet...");
                     AppSteuerung.StartApp(adbPath, "com.gof.global");
                     WriteLogs.LogAndConsoleWirite("App erfogreich gestartet!");
-                    Thread.Sleep(60*1000);
+                    Thread.Sleep(70*1000);
                 }
             } 
 
