@@ -1,19 +1,17 @@
 ﻿
+using System.Diagnostics;
+
 namespace EMU
 {
     internal class DeviceInfo
     {
-        // Beispiel, wie du jetzt TrackTouchEvents verwenden kannst
         public static void TrackTouchEvents(string adbPath, string inputDevice)
         {
-            string command = $"shell getevent -lt {inputDevice}";
+            string command = $"shell getevent {inputDevice}"; // Verwende getevent ohne -lp für Live-Daten
             string logFileFolder = Program.logFilePath;
             Console.WriteLine("Starte die Erfassung von Touch-Ereignissen...");
 
-            // Führe den ADB-Befehl aus und protokolliere ihn
-            string output = AdbCommand.ExecuteAdbCommand(adbPath, command);
-
-            // Überprüfen, ob das Verzeichnis für die Log-Datei existiert, und ggf. erstellen
+            // Erstelle das Verzeichnis, falls es nicht existiert
             if (!Directory.Exists(logFileFolder))
             {
                 Directory.CreateDirectory(logFileFolder);
@@ -21,14 +19,43 @@ namespace EMU
             }
 
             // Pfad zur Log-Datei selbst
-            string logFilePath = Path.Combine(logFileFolder, "touchLogs.txt");
+            string logFilePath = Path.Combine(logFileFolder, "touchEventsLog.txt");
 
-            // Schreibe die Ausgabe in die Log-Datei
-            using (StreamWriter writer = new StreamWriter(logFilePath))
+            // Führe den ADB-Befehl aus und speichere die Ausgabe in einer Datei
+            try
             {
-                writer.WriteLine(output);
+                using (StreamWriter writer = new StreamWriter(logFilePath, true)) // Append mode
+                {
+                    Process process = new Process();
+                    process.StartInfo.FileName = adbPath;
+                    process.StartInfo.Arguments = command;
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.CreateNoWindow = true;
+
+                    process.OutputDataReceived += (sender, args) =>
+                    {
+                        if (!string.IsNullOrEmpty(args.Data))
+                        {
+                            // Schreibe die Touch-Ereignisse in die Logdatei und auf die Konsole
+                            writer.WriteLine(args.Data);
+                            Console.WriteLine(args.Data);
+                        }
+                    };
+
+                    process.Start();
+                    process.BeginOutputReadLine();
+                    process.WaitForExit();
+                }
+
+                Console.WriteLine($"Touch-Ereignisse wurden in {logFilePath} gespeichert.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler bei der Erfassung der Touch-Ereignisse: {ex.Message}");
             }
         }
+
 
         public static void ListRunningApps(string adbPath)
         {
