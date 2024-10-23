@@ -13,7 +13,6 @@
             //AdbCommand.ExecuteAdbCommand(adbPath, "kill-server");
             //AdbCommand.ExecuteAdbCommand(adbPath, "start-server");
             AdbCommand.ExecuteAdbCommand(adbPath, "connect 127.0.0.1:62001");
-
             //DeviceInfo.ListAllDevices(adbPath);
             //DeviceInfo.ListRunningApps(adbPath);
 
@@ -28,12 +27,12 @@
                 if (isAppRunning == true)
                 {
 
-                    // Wiederverbinden wenn vo nanderem GErät beigetreten.
+                    // Wiederverbinden wenn vo nanderem Gerät beigetreten.
                     Screenshot.TakeScreenshot(adbPath, screenshotDirectory);                 
                     bool OnOff = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Tipps");
                     if (OnOff == true) 
                     {
-                        ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "0000027d", "000003c7"); // Wiederverbinden Klicken.
+                        ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, hexX: "0000027d", hexY: "000003c7"); // Wiederverbinden Klicken.
                         Thread.Sleep(10000);
                     }
 
@@ -42,11 +41,11 @@
                     bool offlineErtrege = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Willkommen");
                     if (offlineErtrege == true)
                     {
-                        ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "", ""); // Bestätigen Button klicken
+                        ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, hexX: "000001bf", hexY: "000004d3"); // Bestätigen Button klicken
                         Thread.Sleep(10000);
                     }
 
-                    // ABlauf
+                    // ABlauf__________________________________________________
                     LagerOnlineBelohnung.Abholen(adbPath, screenshotDirectory);
                 }
                 else 
