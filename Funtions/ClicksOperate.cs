@@ -1,4 +1,4 @@
-﻿namespace EMU.Funtions
+﻿namespace EMU
 {
     internal class ClicksOperate
     {

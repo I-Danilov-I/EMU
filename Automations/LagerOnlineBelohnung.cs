@@ -1,4 +1,4 @@
-﻿using EMU.Funtions;
+﻿
 
 namespace EMU
 {
@@ -10,10 +10,8 @@ namespace EMU
         {
             WriteLogs.LogAndConsoleWirite("\n\nLager Online Belohnung wird abgeholt...");
             WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "00000017", "000002b0"); // Öffne Seitenmenü
-            Thread.Sleep(5000);
-            ClicksOperate.ClickAndHoldAndScroll(adbPath, "0000005b", "000003ab", "00000025", "000000b5", 300, 500); // Switsche runter
-            Thread.Sleep(5000);
+            GameSteuerung.SeitenMenuOpen(adbPath);
+            GameSteuerung.SeitenMenuScrolDown(adbPath);
 
             Screenshot.TakeScreenshot(adbPath, screenshotDirectory); // Mache ein Screenshot
             bool findOrNot = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Belohnung"); // Suche nach Text im Screenshot
@@ -38,9 +36,8 @@ namespace EMU
             }
             else
             {
-                ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "0000023f", "000002a6"); // Schliese das Seitenmenü
-                Thread.Sleep(5000);
-                WriteLogs.LogAndConsoleWirite("Keine Online Belohnung verfügbar, veersuche später erneut.");
+                GameSteuerung.SeitenMenuClose(adbPath);
+                WriteLogs.LogAndConsoleWirite("Keine Online Belohnung verfügbar, versuche später erneut.");
                 Thread.Sleep(5000);
             }
         }

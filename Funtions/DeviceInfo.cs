@@ -1,7 +1,7 @@
 ﻿
 using System.Diagnostics;
 
-namespace EMU.Funtions
+namespace EMU
 {
     internal class DeviceInfo
     {

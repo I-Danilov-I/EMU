@@ -1,5 +1,4 @@
-﻿using EMU.Funtions;
-
+﻿
 namespace EMU
 {
     internal static class Program
@@ -8,6 +7,8 @@ namespace EMU
         internal static string screenshotDirectory = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Screens";
         internal static string inputDevice = "/dev/input/event4";
         internal static string logFilePath = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Logs\\";
+        
+        internal static int timeSleepMin = 7;
 
         private static void Main()
         {
@@ -24,20 +25,13 @@ namespace EMU
 
             while (true)
             {
-                bool isAppRunning = Steuerung.IsAppRunning(adbPath, "com.gof.global");
+                WriteLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]__________________________________");
+                WriteLogs.LogAndConsoleWirite($"Lagerbonus abgeholt: {LagerOnlineBelohnung.counter}  Infaterie Einheiten traniert: {TruppenTraining.gesamtTruppenTraniert}");
+                WriteLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------\n");
+                bool isAppRunning = AppSteuerung.IsAppRunning(adbPath, "com.gof.global");
                 if (isAppRunning == true)
                 {
-
-                    // Wiederverbinden wenn vo nanderem Gerät beigetreten.
-                    Screenshot.TakeScreenshot(adbPath, screenshotDirectory);                 
-                    bool OnOff = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Tipps");
-                    if (OnOff == true) 
-                    {
-                        ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, hexX: "0000027d", hexY: "000003c7"); // Wiederverbinden Klicken.
-                        Thread.Sleep(10000);
-                    }
-
-                    // Offline Erträge, Besättigen drücken.
+                    // Offline Erträge sammeln, bestätigen drücken.
                     Screenshot.TakeScreenshot(adbPath, screenshotDirectory);
                     bool offlineErtrege = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Willkommen");
                     if (offlineErtrege == true)
@@ -46,13 +40,17 @@ namespace EMU
                         Thread.Sleep(10000);
                     }
 
-                    // Ablauf__________________________________________________
+
+                    AppSteuerung.Wiederverbinden(adbPath, screenshotDirectory, 7);
+                    TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory);
+
+                    AppSteuerung.Wiederverbinden(adbPath, screenshotDirectory, 7);
                     LagerOnlineBelohnung.Abholen(adbPath, screenshotDirectory);
                 }
                 else 
                 {
                     WriteLogs.LogAndConsoleWirite("App wird gestartet...");
-                    Steuerung.StartApp(adbPath, "com.gof.global");
+                    AppSteuerung.StartApp(adbPath, "com.gof.global");
                     WriteLogs.LogAndConsoleWirite("App erfogreich gestartet!");
                     Thread.Sleep(60*1000);
                 }

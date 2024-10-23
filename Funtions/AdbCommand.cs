@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace EMU.Funtions
+namespace EMU
 {
     internal static class AdbCommand
     {

@@ -1,6 +1,6 @@
 ﻿using Tesseract;
 
-namespace EMU.Funtions
+namespace EMU
 {
     internal static class Screenshot
     {
