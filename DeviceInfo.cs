@@ -7,7 +7,7 @@ namespace EMU
     {
         public static void TrackTouchEvents(string adbPath, string inputDevice)
         {
-            string command = $"shell getevent {inputDevice}"; // Verwende getevent ohne -lp für Live-Daten
+            string command = $"shell getevent -lt {inputDevice}"; // Verwende getevent ohne -lp für Live-Daten
             string logFileFolder = Program.logFilePath;
             Console.WriteLine("Starte die Erfassung von Touch-Ereignissen...");
 
