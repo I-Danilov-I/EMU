@@ -1,6 +1,6 @@
 ﻿using Tesseract;
 
-namespace EMU
+namespace EMU.Funtions
 {
     internal static class Screenshot
     {
@@ -54,7 +54,7 @@ namespace EMU
                         {
                             // Extrahiere den erkannten Text
                             string text = page.GetText();
-                            
+
                             Console.WriteLine($"\n[Extrahierter Text]");
                             Console.WriteLine($"______________________________________________________________");
                             Console.WriteLine(text);
@@ -73,7 +73,7 @@ namespace EMU
                         }
                     }
                 }
-                
+
             }
             catch (Exception ex)
             {

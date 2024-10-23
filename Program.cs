@@ -1,4 +1,6 @@
-﻿namespace EMU
+﻿using EMU.Funtions;
+
+namespace EMU
 {
     internal static class Program
     {
@@ -19,7 +21,6 @@
             DeviceInfo.TrackTouchEvents(adbPath, inputDevice);
             Console.WriteLine("------------------------------------------------------------------------");
             
-
 
             while (true)
             {
@@ -45,7 +46,7 @@
                         Thread.Sleep(10000);
                     }
 
-                    // ABlauf__________________________________________________
+                    // Ablauf__________________________________________________
                     LagerOnlineBelohnung.Abholen(adbPath, screenshotDirectory);
                 }
                 else 

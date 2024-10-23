@@ -1,4 +1,4 @@
-﻿namespace EMU
+﻿namespace EMU.Funtions
 {
     internal class ClicksOperate
     {
@@ -71,6 +71,6 @@
             string adbCommand = $"shell input tap {x} {y}";
             AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
         }
-        
+
     }
 }

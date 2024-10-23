@@ -1,4 +1,6 @@
-﻿namespace EMU
+﻿using EMU.Funtions;
+
+namespace EMU
 {
     internal class LagerOnlineBelohnung
     {
