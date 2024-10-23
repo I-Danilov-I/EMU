@@ -26,7 +26,7 @@
 
             while (true)
             {
-                bool isAppRunning = IsAppRunning(adbPath, "com.gof.global");
+                bool isAppRunning = Steuerung.IsAppRunning(adbPath, "com.gof.global");
                 if (isAppRunning == true)
                 {
                     Screenshot.TakeScreenshot(adbPath, screenshotDirectory);                 
@@ -43,7 +43,7 @@
                 else 
                 {
                     Console.WriteLine("App wird gestartet...");
-                    StartApp(adbPath, "com.gof.global");
+                    Steuerung.StartApp(adbPath, "com.gof.global");
                     Console.WriteLine("App erfogreich gestartet!");
                     Thread.Sleep(40*1000);
                 }
@@ -51,23 +51,5 @@
 
          
         }
-
-        public static bool IsAppRunning(string adbPath, string packageName)
-        {
-            // Befehl, um zu überprüfen, ob die App läuft
-            string adbCommand = $"shell pidof {packageName}";
-            string result = AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
-            return !string.IsNullOrEmpty(result); // Wenn ein Ergebnis vorliegt, läuft die App
-        }
-
-        public static void StartApp(string adbPath, string packageName)
-        {
-            // Befehl zum Starten der App
-            string adbCommand = $"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1";
-            AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
-            Console.WriteLine($"App {packageName} wird gestartet.");
-        }
-
-
     }
 }
