@@ -11,15 +11,15 @@ namespace EMU
 
         private static void Main()
         {
-            Console.WriteLine("[PROGRAMM START]---------------------------------------------------------");
+            WriteLogs.LogAndConsoleWirite("[PROGRAMM START]");
             //AdbCommand.ExecuteAdbCommand(adbPath, "kill-server");
             //AdbCommand.ExecuteAdbCommand(adbPath, "start-server");
             AdbCommand.ExecuteAdbCommand(adbPath, "connect 127.0.0.1:62001");
             //DeviceInfo.ListAllDevices(adbPath);
             //DeviceInfo.ListRunningApps(adbPath);
 
-            DeviceInfo.TrackTouchEvents(adbPath, inputDevice);
-            Console.WriteLine("------------------------------------------------------------------------");
+            //DeviceInfo.TrackTouchEvents(adbPath, inputDevice);
+            WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             
 
             while (true)
@@ -51,9 +51,9 @@ namespace EMU
                 }
                 else 
                 {
-                    Console.WriteLine("App wird gestartet...");
+                    WriteLogs.LogAndConsoleWirite("App wird gestartet...");
                     Steuerung.StartApp(adbPath, "com.gof.global");
-                    Console.WriteLine("App erfogreich gestartet!");
+                    WriteLogs.LogAndConsoleWirite("App erfogreich gestartet!");
                     Thread.Sleep(60*1000);
                 }
             } 

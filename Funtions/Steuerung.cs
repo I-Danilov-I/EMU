@@ -15,7 +15,7 @@
             // Befehl zum Starten der App
             string adbCommand = $"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1";
             AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
-            Console.WriteLine($"App {packageName} wird gestartet.");
+            WriteLogs.LogAndConsoleWirite($"App {packageName} wird gestartet.");
         }
     }
 }

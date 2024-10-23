@@ -9,13 +9,12 @@ namespace EMU.Funtions
         {
             string command = $"shell getevent -lt {inputDevice}"; // Verwende getevent ohne -lp für Live-Daten
             string logFileFolder = Program.logFilePath;
-            Console.WriteLine("Starte die Erfassung von Touch-Ereignissen...");
+            WriteLogs.LogAndConsoleWirite("Starte die Erfassung von Touch-Ereignissen...");
 
             // Erstelle das Verzeichnis, falls es nicht existiert
             if (!Directory.Exists(logFileFolder))
             {
                 Directory.CreateDirectory(logFileFolder);
-                Console.WriteLine($"Verzeichnis '{logFileFolder}' wurde erstellt.");
             }
 
             // Pfad zur Log-Datei selbst
@@ -39,7 +38,7 @@ namespace EMU.Funtions
                         {
                             // Schreibe die Touch-Ereignisse in die Logdatei und auf die Konsole
                             writer.WriteLine(args.Data);
-                            Console.WriteLine(args.Data);
+                            WriteLogs.LogAndConsoleWirite(args.Data);
                         }
                     };
 
@@ -48,11 +47,11 @@ namespace EMU.Funtions
                     process.WaitForExit();
                 }
 
-                Console.WriteLine($"Touch-Ereignisse wurden in {logFilePath} gespeichert.");
+                WriteLogs.LogAndConsoleWirite($"Touch-Ereignisse wurden in {logFilePath} gespeichert.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Fehler bei der Erfassung der Touch-Ereignisse: {ex.Message}");
+                WriteLogs.LogAndConsoleWirite($"Fehler bei der Erfassung der Touch-Ereignisse: {ex.Message}");
             }
         }
 
@@ -61,19 +60,14 @@ namespace EMU.Funtions
         {
             string command = "shell ps | grep u0_a";
             string logFileFolder = Program.logFilePath;
-            Console.WriteLine("Liste der laufenden Apps...");
-
-            // Führe den ADB-Befehl aus und protokolliere ihn
+            WriteLogs.LogAndConsoleWirite("Liste der laufenden Apps...");
             string output = AdbCommand.ExecuteAdbCommand(adbPath, command);
 
-            // Überprüfen, ob das Verzeichnis für die Log-Datei existiert, und ggf. erstellen
             if (!Directory.Exists(logFileFolder))
             {
                 Directory.CreateDirectory(logFileFolder);
-                Console.WriteLine($"Verzeichnis '{logFileFolder}' wurde erstellt.");
             }
 
-            // Pfad zur Log-Datei selbst
             string logFilePath = Path.Combine(logFileFolder, "runningAppsLogs.txt");
 
             // Schreibe die Ausgabe in die Log-Datei

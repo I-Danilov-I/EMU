@@ -25,11 +25,11 @@ namespace EMU.Funtions
                 string pullCommand = $"pull /sdcard/screenshot.png {screenshotDirectory}";
                 AdbCommand.ExecuteAdbCommand(adbPath, pullCommand);
 
-                Console.WriteLine($"Screenshot erfolgreich erstellt und gespeichert unter: {screenshotDirectory}");
+                //WriteLogs.LogAndConsoleWirite($"Screenshot erfolgreich erstellt und gespeichert unter: {screenshotDirectory}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Fehler beim Erstellen des Screenshots: " + ex.Message);
+                WriteLogs.LogAndConsoleWirite("Fehler beim Erstellen des Screenshots: " + ex.Message);
             }
         }
 
@@ -54,20 +54,20 @@ namespace EMU.Funtions
                         {
                             // Extrahiere den erkannten Text
                             string text = page.GetText();
-
-                            Console.WriteLine($"\n[Extrahierter Text]");
-                            Console.WriteLine($"______________________________________________________________");
-                            Console.WriteLine(text);
-                            Console.WriteLine($"______________________________________________________________\n");
-
+                            /*
+                            WriteLogs.LogAndConsoleWirite($"\n[Extrahierter Text]");
+                            WriteLogs.LogAndConsoleWirite($"______________________________________________________________");
+                            WriteLogs.LogAndConsoleWirite(text);
+                            WriteLogs.LogAndConsoleWirite($"______________________________________________________________\n");
+                            */
                             if (text.Contains(textToFind))
                             {
-                                Console.WriteLine($"Der Text '{textToFind}' wurde gefunden!\n");
+                                //WriteLogs.LogAndConsoleWirite($"Der Text '{textToFind}' wurde gefunden!\n");
                                 return true;
                             }
                             else
                             {
-                                Console.WriteLine($"Der Text '{textToFind}' wurde nicht gefunden.\n");
+                                //WriteLogs.LogAndConsoleWirite($"Der Text '{textToFind}' wurde nicht gefunden.\n");
                                 return false;
                             }
                         }
@@ -77,7 +77,7 @@ namespace EMU.Funtions
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Ein Fehler ist aufgetreten: {ex.Message}");
+                WriteLogs.LogAndConsoleWirite($"Ein Fehler ist aufgetreten: {ex.Message}");
                 return false;
             }
         }

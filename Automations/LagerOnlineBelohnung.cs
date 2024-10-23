@@ -8,8 +8,8 @@ namespace EMU
 
         internal static void Abholen(string adbPath, string screenshotDirectory)
         {
-            Console.WriteLine("\n\nLager Online Belohnung wird abgeholt...");
-            Console.WriteLine("---------------------------------------------------------------------------");
+            WriteLogs.LogAndConsoleWirite("\n\nLager Online Belohnung wird abgeholt...");
+            WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "00000017", "000002b0"); // Öffne Seitenmenü
             Thread.Sleep(5000);
             ClicksOperate.ClickAndHoldAndScroll(adbPath, "0000005b", "000003ab", "00000025", "000000b5", 300, 500); // Switsche runter
@@ -32,15 +32,15 @@ namespace EMU
                 Thread.Sleep(5000);
 
                 counter++;
-                Console.WriteLine($"Lager Online Belohnung erforgreich abgeholt! [{counter}]");
-
+                WriteLogs.LogAndConsoleWirite($"Lager Online Belohnung erforgreich abgeholt!");
+                WriteLogs.LogAndConsoleWirite($"Erfogreiche Abholungen: {counter}");
 
             }
             else
             {
                 ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, "0000023f", "000002a6"); // Schliese das Seitenmenü
                 Thread.Sleep(5000);
-                Console.WriteLine("Keine Online Belohnung verfügbar, veersuche später erneut.");
+                WriteLogs.LogAndConsoleWirite("Keine Online Belohnung verfügbar, veersuche später erneut.");
                 Thread.Sleep(5000);
             }
         }

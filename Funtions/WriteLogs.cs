@@ -2,8 +2,8 @@
 {
     internal class WriteLogs
     {
-        // Separate Methode für das Schreiben in die Log-Datei
-        internal static void Log(string command, string output, string errorOutput)
+
+        internal static void LogAndConsoleWirite(string inputString)
         {
             try
             {
@@ -11,32 +11,25 @@
                 if (!Directory.Exists(Program.logFilePath))
                 {
                     Directory.CreateDirectory(Program.logFilePath);
-                    Console.WriteLine($"Verzeichnis '{Program.logFilePath}' wurde erstellt.");
                 }
 
                 // Pfad zur Log-Datei selbst
-                string logFilePath = Path.Combine(Program.logFilePath, "adbCommandLogs.txt");
+                string logFilePath = Path.Combine(Program.logFilePath, "Logs.txt");
 
                 // Überprüfen, ob die Log-Datei existiert, und ggf. erstellen
                 if (!File.Exists(logFilePath))
                 {
-                    File.Create(logFilePath).Close(); // Erstellen der Datei und sofortiges Schließen, um sie zum Schreiben zu öffnen
-                    Console.WriteLine($"Log-Datei '{logFilePath}' wurde erstellt.");
+                    File.Create(logFilePath).Close(); 
                 }
 
                 // In die Log-Datei schreiben
                 using (StreamWriter writer = new StreamWriter(logFilePath, true)) // 'true' hängt an die Datei an
                 {
-                    writer.WriteLine($"ADB Command: {command}");
-                    writer.WriteLine("Output:");
-                    writer.WriteLine(output);
-
-                    if (!string.IsNullOrEmpty(errorOutput))
+                    if (!string.IsNullOrEmpty(inputString))
                     {
-                        writer.WriteLine("Error Output:");
-                        writer.WriteLine(errorOutput);
+                        Console.WriteLine($"{inputString}");
+                        writer.WriteLine($"{inputString}");
                     }
-                    writer.WriteLine("------------------------------------------------------------");
                 }
             }
             catch (Exception ex)
@@ -44,5 +37,7 @@
                 Console.WriteLine($"An error occurred while writing to the log file: {ex.Message}");
             }
         }
+
+
     }
 }
