@@ -1,4 +1,6 @@
-﻿namespace EMU
+﻿using EMU.Automations;
+
+namespace EMU
 {
     internal static class Program
     {
@@ -22,7 +24,7 @@
         {
             WriteLogs.LogAndConsoleWirite("\n\n[PROGRAMM START]");
             WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            //DeviceControl.TrackTouchEvents(adbPath, inputDevice);
+            DeviceControl.TrackTouchEvents(adbPath, inputDevice);
             
             while (true)
             {
@@ -40,13 +42,18 @@
                         WriteLogs.LogAndConsoleWirite($"Sniper Einheiten traniert: {sniperTruppenTraniert}");
                         WriteLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
 
+                        Erkundung erkundung = new Erkundung(adbPath, screenshotDirectory);
+                        erkundung.ErkundungAbholen();
+                        erkundung.Erkundungskampf();
+                        /*
                         //GameControl.OfflineErtregeAbholen(adbPath, screenshotDirectory);
-                        LagerOnlineBelohnung.AusdauerAbholen(adbPath, screenshotDirectory);
-                        TruppenTraining.TrainiereSniper(adbPath, screenshotDirectory, 10);
-                        TruppenTraining.TrainiereLatenzTreger(adbPath, screenshotDirectory, 10);
                         TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 10);
+                        TruppenTraining.TrainiereLatenzTreger(adbPath, screenshotDirectory, 10);
+                        TruppenTraining.TrainiereSniper(adbPath, screenshotDirectory, 10);
 
                         LagerOnlineBelohnung.GeschnekAbholen(adbPath, screenshotDirectory);
+                        LagerOnlineBelohnung.AusdauerAbholen(adbPath, screenshotDirectory);
+                        */
                     }
                     else
                     {
