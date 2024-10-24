@@ -1,5 +1,4 @@
-﻿
-namespace EMU
+﻿namespace EMU
 {
     internal static class Program
     {
@@ -13,16 +12,14 @@ namespace EMU
         private static void Main()
         {
             WriteLogs.LogAndConsoleWirite("[PROGRAMM START]");
-            //AdbCommand.ExecuteAdbCommand(adbPath, "kill-server");
-            //AdbCommand.ExecuteAdbCommand(adbPath, "start-server");
-            AdbCommand.ExecuteAdbCommand(adbPath, "connect 127.0.0.1:62001");
+            NoxControl.StartNoxPlayer();
+            NoxControl.StartADBConnection(adbPath);
             //DeviceInfo.ListAllDevices(adbPath);
             //DeviceInfo.ListRunningApps(adbPath);
 
             //DeviceInfo.TrackTouchEvents(adbPath, inputDevice);
             WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             
-
             while (true)
             {
                 WriteLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]__________________________________");
@@ -31,16 +28,7 @@ namespace EMU
                 bool isAppRunning = AppSteuerung.IsAppRunning(adbPath, "com.gof.global");
                 if (isAppRunning == true)
                 {
-                    // Offline Erträge sammeln, bestätigen drücken.
-                    Screenshot.TakeScreenshot(adbPath, screenshotDirectory);
-                    bool offlineErtrege = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Willkommen");
-                    if (offlineErtrege == true)
-                    {
-                        ClicksOperate.ClickAtTouchPositionWithHexa(adbPath, hexX: "000001bf", hexY: "000004d3"); // Bestätigen Button klicken
-                        Thread.Sleep(10000);
-                    }
-
-
+                    GameSteuerung.FirstStart(adbPath, screenshotDirectory);
                     AppSteuerung.Wiederverbinden(adbPath, screenshotDirectory, 7); 
                     TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 7); 
 
