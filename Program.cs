@@ -10,13 +10,16 @@
         internal static int timeSleepMin = 1; // Warte für erneuten Start fall anderes Gerät aktiv ist.
 
         internal static int offlineErtrege = 0; 
-        internal static int lagerBonusCounter = 0;
         internal static int gesamtTruppenTraniert = 0;
+        internal static int lagerBonusGeschenkCounter = 0;
+        internal static int lagerBonusAausdauerCounter = 0;
 
         private static void Main()
         {
             WriteLogs.LogAndConsoleWirite("\n\n[PROGRAMM START]");
-            WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");               
+            WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
+            //DeviceControl.TrackTouchEvents(adbPath, inputDevice);
+            
             while (true)
             {
                 try
@@ -26,12 +29,15 @@
                     if (DeviceControl.IsAppRunning(adbPath, packeName) == true)
                     {                     
                         WriteLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]_________________________________");
-                        WriteLogs.LogAndConsoleWirite($"Lagerbonus abgeholt: {lagerBonusCounter}  Infaterie Einheiten traniert: {gesamtTruppenTraniert}");
+                        WriteLogs.LogAndConsoleWirite($"Lagerbonus Geschenk: {lagerBonusGeschenkCounter}");
+                        WriteLogs.LogAndConsoleWirite($"Lagerbounus Ausdauer: {Program.lagerBonusAausdauerCounter}");
+                        WriteLogs.LogAndConsoleWirite($"Infaterie Einheiten traniert: {gesamtTruppenTraniert}");
                         WriteLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
                                              
-                        GameControl.OfflineErtregeAbholen(adbPath, screenshotDirectory);
-                        TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 5);
-                        LagerOnlineBelohnung.Abholen(adbPath, screenshotDirectory);
+                        //GameControl.OfflineErtregeAbholen(adbPath, screenshotDirectory);
+                        //TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 5);
+                        // LagerOnlineBelohnung.GeschnekAbholen(adbPath, screenshotDirectory);
+                        LagerOnlineBelohnung.AusdauerAbholen(adbPath, screenshotDirectory);
                     }
                     else
                     {

@@ -35,7 +35,7 @@
                 WriteLogs.LogAndConsoleWirite("Resoursen reichen nicht aus :(");
                 DeviceControl.DrueckeZurueckTaste(adbPath);  // Zurück Taste Drücken
                 DeviceControl.DrueckeZurueckTaste(adbPath);  // Zurück Taste Drücken
-                return; // Beende
+                return;
             }
         }
 

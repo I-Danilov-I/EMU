@@ -13,7 +13,7 @@ namespace EMU
 
                 if (processes.Length > 0)
                 {
-                    WriteLogs.LogAndConsoleWirite("NoxPlayer läuft bereits.");
+                    //WriteLogs.LogAndConsoleWirite("NoxPlayer läuft bereits.");
                 }
                 else
                 {
@@ -66,7 +66,7 @@ namespace EMU
 
                 if (adbDevicesOutput.Contains("127.0.0.1:62001"))
                 {
-                    WriteLogs.LogAndConsoleWirite("ADB ist bereits mit Nox verbunden.");
+                    //WriteLogs.LogAndConsoleWirite("ADB ist bereits mit Nox verbunden.");
                 }
                 else
                 {
