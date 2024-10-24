@@ -19,14 +19,13 @@
             {
                 try
                 {
-                    WriteLogs.LogAndConsoleWirite("\n\n[PROGRAMM START]___________________________________________________________");
-                    //NoxControl.StartNoxPlayer();
-                    //NoxControl.StartADBConnection(adbPath);
+                    WriteLogs.LogAndConsoleWirite("\n\n[PROGRAMM START]");
+                    NoxControl.StartNoxPlayer();
+                    NoxControl.StartADBConnection(adbPath);
                     //DeviceInfo.ListAllDevices(adbPath);
                     //DeviceInfo.ListRunningApps(adbPath);
                     //DeviceInfo.TrackTouchEvents(adbPath, inputDevice);                   
                     WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-                    GameSteuerung.FirstStart(adbPath, screenshotDirectory);
 
                     while (true)
                     {
@@ -42,7 +41,17 @@
                         else
                         {
                             DeviceRemote.StartApp(adbPath, packeName);
-                            Thread.Sleep(60 * 1000);
+                            while (true) 
+                            {
+                                Thread.Sleep(5 * 1000);
+                                Screenshot.TakeScreenshot(adbPath, screenshotDirectory);
+                               
+                                if (Screenshot.CheckTextInScreenshot(screenshotDirectory, "Welt", "Allianz") == true)
+                                {
+                                    GameSteuerung.FirstStart(adbPath, screenshotDirectory);
+                                    break;
+                                }                              
+                            }
                         }
                     }
 

@@ -38,6 +38,10 @@ namespace EMU
 
         public static void StartApp(string adbPath, string packageName)
         {
+            if(IsAppRunning(adbPath, packageName) == true)
+            {
+                return;
+            }
             string adbCommand = $"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1";
             AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
             WriteLogs.LogAndConsoleWirite($"App {packageName} wird gestartet.");
