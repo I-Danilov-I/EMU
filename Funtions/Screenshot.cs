@@ -8,7 +8,7 @@ namespace EMU
         {
             try
             {
-                Thread.Sleep(5000);
+                Thread.Sleep(3000);
                 // Console.WriteLine("Screenshot wird erstellt...");
                 if (!Directory.Exists(screenshotDirectory))
                 {
@@ -25,7 +25,7 @@ namespace EMU
                 // Screenshot vom Emulator auf den PC übertragen
                 string pullCommand = $"pull /sdcard/screenshot.png {screenshotDirectory}";
                 AdbCommand.ExecuteAdbCommand(adbPath, pullCommand);
-                Thread.Sleep(5000);
+                Thread.Sleep(3000);
                 //WriteLogs.LogAndConsoleWirite($"Screenshot erfolgreich erstellt und gespeichert unter: {screenshotDirectory}");
             }
             catch (Exception ex)
@@ -37,7 +37,7 @@ namespace EMU
 
 
 
-        public static bool CheckTextInScreenshot(string screenshotDirectory, string textToFind)
+        public static bool CheckTextInScreenshot(string screenshotDirectory, string textToFind, string textToFind2)
         {
             try
             {
@@ -55,13 +55,13 @@ namespace EMU
                         {
                             // Extrahiere den erkannten Text
                             string text = page.GetText();
-                            /*
+                            
                             WriteLogs.LogAndConsoleWirite($"\n[Extrahierter Text]");
                             WriteLogs.LogAndConsoleWirite($"______________________________________________________________");
                             WriteLogs.LogAndConsoleWirite(text);
                             WriteLogs.LogAndConsoleWirite($"______________________________________________________________\n");
-                            */
-                            if (text.Contains(textToFind))
+                            
+                            if (text.Contains(textToFind) || text.Contains(textToFind2))
                             {
                                 //WriteLogs.LogAndConsoleWirite($"Der Text '{textToFind}' wurde gefunden!\n");
                                 return true;
