@@ -1,31 +1,31 @@
-﻿
-namespace EMU
+﻿namespace EMU
 {
-    internal class GameControl
+    internal class GameControl : DeviceControl
     {
+        NoxControl NoxControl = new NoxControl();
 
-        internal static void SeitenMenuOpen(string adbPath)
+        internal void SeitenMenuOpen()
         {
-            DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "00000017", "000002b0"); // Öffne Seitenmenü
+            ClickAtTouchPositionWithHexa("00000017", "000002b0"); // Öffne Seitenmenü
         }
 
-        internal static void SeitenMenuClose(string adbPath)
+        internal void SeitenMenuClose()
         {
-            DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "0000023f", "000002a6"); // Schliese das Seitenmenü
+            ClickAtTouchPositionWithHexa("0000023f", "000002a6"); // Schliese das Seitenmenü
         }
 
-        internal static void SeitenMenuScrolDown(string adbPath)
+        internal void SeitenMenuScrolDown()
         {
-            DeviceControl.ClickAndHoldAndScroll(adbPath, "0000005b", "000003ab", "00000025", "000000b5", 300, 500); // Switsche runter im Seitenmenü
+            ClickAndHoldAndScroll("0000005b", "000003ab", "00000025", "000000b5", 300, 500); // Switsche runter im Seitenmenü
         }
 
-        internal static void OfflineErtregeAbholen(string adbPath, string screenshotDirectory)
+        internal void OfflineErtregeAbholen()
         {
-            Screenshot.TakeScreenshot(adbPath, screenshotDirectory);
-            bool offlineErtrege = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Willkommen", "Offline");
+            TakeScreenshot(GetScreenDir());
+            bool offlineErtrege = CheckTextInScreenshot("Willkommen", "Offline");
             if (offlineErtrege == true)
             {
-                DeviceControl.ClickAtTouchPositionWithHexa(adbPath, hexX: "000001bf", hexY: "000004d3"); // Bestätigen Button klicken
+                ClickAtTouchPositionWithHexa("000001bf", "000004d3"); // Bestätigen Button klicken
                 Program.offlineErtrege++;
                 WriteLogs.LogAndConsoleWirite($"Offline Erträge wurden abgeholt. {Program.offlineErtrege}");
             }

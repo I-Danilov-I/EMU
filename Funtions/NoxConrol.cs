@@ -2,9 +2,9 @@
 
 namespace EMU
 {
-    internal static class NoxControl
+    internal class NoxControl : DeviceControl
     {
-        internal static void StartNoxPlayer()
+        internal void StartNoxPlayer()
         {
             try
             {
@@ -38,7 +38,7 @@ namespace EMU
         }
 
 
-        internal static void KillNoxPlayerProcess()
+        internal void KillNoxPlayerProcess()
         {
             try
             {
@@ -57,12 +57,12 @@ namespace EMU
 
 
 
-        internal static void StartADBConnection(string adbPath)
+        internal void StartADBConnection()
         {
             try
             {
                 // Überprüfen, ob bereits eine ADB-Verbindung besteht
-                string adbDevicesOutput = AdbCommand.ExecuteAdbCommand(adbPath, "devices");
+                string adbDevicesOutput = ExecuteAdbCommand("devices");
 
                 if (adbDevicesOutput.Contains("127.0.0.1:62001"))
                 {
@@ -71,9 +71,9 @@ namespace EMU
                 else
                 {
                     // ADB Server neu starten und mit Nox verbinden, wenn keine Verbindung besteht
-                    AdbCommand.ExecuteAdbCommand(adbPath, "kill-server");
-                    AdbCommand.ExecuteAdbCommand(adbPath, "start-server");
-                    AdbCommand.ExecuteAdbCommand(adbPath, "connect 127.0.0.1:62001"); // Standard-ADB-Port von Nox
+                    ExecuteAdbCommand("kill-server");
+                    ExecuteAdbCommand("start-server");
+                    ExecuteAdbCommand("connect 127.0.0.1:62001"); // Standard-ADB-Port von Nox
                     WriteLogs.LogAndConsoleWirite("ADB-Verbindung neu hergestellt.");
                 }
             }
