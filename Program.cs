@@ -8,7 +8,8 @@
         internal static string logFilePath = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Logs\\";
         internal static string packeName = "com.gof.global"; // Warte für erneuten Start fall anderes Gerät aktiv ist.
         internal static int timeSleepMin = 1; // Warte für erneuten Start fall anderes Gerät aktiv ist.
-        
+
+        internal static int offlineErtrege = 0; 
         internal static int lagerBonusCounter = 0;
         internal static int gesamtTruppenTraniert = 0;
 
@@ -40,9 +41,27 @@
                 }
                 catch (Exception)
                 {
+                    WriteLogs.LogAndConsoleWirite($"Neustart");
+                    DeviceControl.StopApp(adbPath, packeName);
+                    NoxControl.KillNoxPlayerProcess();
+                    Thread.Sleep(10000);
                 }
             }
 
+        }
+
+        internal static void Wiederverbinden(int timeSleep)
+        {
+            // Prüfe um Training erfoglreich gestartet wurde.
+            Screenshot.TakeScreenshot(adbPath, screenshotDirectory); // Mache ein Screenshot
+            bool erfolg = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Kontankt", "Konto"); // Suche nach Text im Screenshot
+            if (erfolg == true)
+            {
+                WriteLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {timeSleep} Min erneut.");
+                DeviceControl.StopApp(adbPath, packeName);
+                NoxControl.KillNoxPlayerProcess();
+                Thread.Sleep(60 * 1000 * timeSleep);
+            }
         }
     }
 }

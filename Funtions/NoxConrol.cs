@@ -38,6 +38,25 @@ namespace EMU
         }
 
 
+        internal static void KillNoxPlayerProcess()
+        {
+            try
+            {
+                // Finde und beende den NoxPlayer-Prozess
+                foreach (var process in Process.GetProcessesByName("Nox"))
+                {
+                    process.Kill();
+                    Console.WriteLine("NoxPlayer wurde geschlossen.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Schließen des NoxPlayers: {ex.Message}");
+            }
+        }
+
+
+
         internal static void StartADBConnection(string adbPath)
         {
             try

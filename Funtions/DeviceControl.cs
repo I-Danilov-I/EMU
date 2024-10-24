@@ -50,6 +50,22 @@ namespace EMU
         }
 
 
+        internal static void StopApp(string adbPath, string packageName)
+        {
+            try
+            {
+                // Befehl zum Stoppen der App
+                string adbCommand = $"shell am force-stop {packageName}";
+                AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
+                Console.WriteLine($"App {packageName} wurde gestoppt.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Stoppen der App: {ex.Message}");
+            }
+        }
+
+
         public static void DrueckeZurueckTaste(string adbPath)
         {
             string adbCommand = "shell input keyevent 4";
@@ -78,7 +94,7 @@ namespace EMU
 
         public static void ClickAtTouchPositionWithHexa(string adbPath, string hexX, string hexY)
         {
-
+            Program.Wiederverbinden(1);
             int x = int.Parse(hexX, System.Globalization.NumberStyles.HexNumber);
             int y = int.Parse(hexY, System.Globalization.NumberStyles.HexNumber);
 

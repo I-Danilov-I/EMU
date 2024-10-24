@@ -25,7 +25,6 @@ namespace EMU
                 // Screenshot vom Emulator auf den PC übertragen
                 string pullCommand = $"pull /sdcard/screenshot.png {screenshotDirectory}";
                 AdbCommand.ExecuteAdbCommand(adbPath, pullCommand);
-                Thread.Sleep(1000);
                 //WriteLogs.LogAndConsoleWirite($"Screenshot erfolgreich erstellt und gespeichert unter: {screenshotDirectory}");
             }
             catch (Exception ex)

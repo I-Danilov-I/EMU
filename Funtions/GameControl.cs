@@ -26,6 +26,8 @@ namespace EMU
             if (offlineErtrege == true)
             {
                 DeviceControl.ClickAtTouchPositionWithHexa(adbPath, hexX: "000001bf", hexY: "000004d3"); // Bestätigen Button klicken
+                Program.offlineErtrege++;
+                WriteLogs.LogAndConsoleWirite($"Offline Erträge wurden abgeholt. {Program.offlineErtrege}");
             }
 
         }
