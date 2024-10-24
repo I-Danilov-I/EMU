@@ -3,7 +3,7 @@
     internal class TruppenTraining
     {
         
-        internal static void TruppenAnzahldieTraniertWerden(string adbPath, int truppenAnzahl)
+        private static void TruppenAnzahl(string adbPath, int truppenAnzahl)
         {
             DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "0000029d", "0000052e"); // Button Truppenanzahl klicken
 
@@ -25,7 +25,7 @@
         }
 
 
-        internal static void CheckResoursenByTruppenAusbildung(string adbPath, string screenshotDirectory)
+        private static void CheckResoursen(string adbPath, string screenshotDirectory)
         {
             // PÜrfe o bresursen reichen
             Screenshot.TakeScreenshot(adbPath, screenshotDirectory); // Mache ein Screenshot
@@ -40,6 +40,44 @@
         }
 
 
+        private static void CheckeErfolg(string adbPath, string screenshotDirectory, int truppenAnzahl)
+        {
+            // Prüfe um Training erfoglreich gestartet wurde.
+            Screenshot.TakeScreenshot(adbPath, screenshotDirectory); // Mache ein Screenshot
+            bool erfolg = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Ausbildung", "Ausbildung"); // Suche nach Text im Screenshot
+            if (erfolg == true)
+            {
+                Program.gesamtTruppenTraniert += truppenAnzahl; // Truppen adieren
+                WriteLogs.LogAndConsoleWirite("Truppen Training erfogreich gestartet! ;)");
+                DeviceControl.DrueckeZurueckTaste(adbPath);
+            }
+            else
+            {
+                throw new Exception("Truppen Training wurde nicht gestartet.");
+            }
+        }
+
+
+        private static void CheckeObTruppeAusgebildetWerden(string adbPath, string screenshotDirectory, int truppenAnzahl)
+        {
+            Screenshot.TakeScreenshot(adbPath, screenshotDirectory);
+            bool findOrNot = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Ausbildung", "Ausbildung");
+            if (!findOrNot)
+            {
+                TruppenAnzahl(adbPath, truppenAnzahl);
+                DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "0000028c", "000005d8"); // Letzter Buttton: Ausbilden
+                Thread.Sleep(5000);
+                CheckResoursen(adbPath, screenshotDirectory); // Prüfe ob genu REsursen da sind
+                CheckeErfolg(adbPath, screenshotDirectory, truppenAnzahl); // Prüfe um Training erfoglreich gestartet wurde.
+            }
+            else
+            {
+                WriteLogs.LogAndConsoleWirite("Truppen werden bereits ausgebildet. ;)");
+                DeviceControl.DrueckeZurueckTaste(adbPath);  // Zurück Taste Drücken
+            }
+        }
+
+
         internal static void TrainiereInfaterie(string adbPath, string screenshotDirectory, int truppenAnzahl)
         {
             WriteLogs.LogAndConsoleWirite("\n\nInfaterie-Truppen Training wird gestartet...");
@@ -47,40 +85,29 @@
             GameControl.SeitenMenuOpen(adbPath);
             
             DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "00000040", "000002ad"); // Auswahl im Menü, Infaterie Truppe ausbilden klicken.
+
+
             DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "000001ba", "000002d0"); // Abholung der fertig tranierten Truppen
             DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "000001ba", "000002d0"); // Anklicken des Gebäudes der Infaterie Truppen
             DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "0000028c", "000003f1"); // Button Ausbilden klicken.
 
-            Screenshot.TakeScreenshot(adbPath, screenshotDirectory); // Mache ein Screenshot
-            bool findOrNot = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Ausbildung", "Ausbildung"); // Suche nach Text im Screenshot
-            if (!findOrNot)
-            {
-                TruppenAnzahldieTraniertWerden(adbPath, truppenAnzahl);
-                DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "0000028c", "000005d8"); // Letzter Buttton: Ausbilden
-                Thread.Sleep(5000);
-                CheckResoursenByTruppenAusbildung(adbPath, screenshotDirectory); // Prüfe ob genu REsursen da sind
+            CheckeObTruppeAusgebildetWerden(adbPath, screenshotDirectory, truppenAnzahl);
+        }
 
-                // Prüfe um Training erfoglreich gestartet wurde.
-                Screenshot.TakeScreenshot(adbPath, screenshotDirectory); // Mache ein Screenshot
-                bool erfolg = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Ausbildung", "Ausbildung"); // Suche nach Text im Screenshot
-                if (erfolg == true)
-                {
-                    Program.gesamtTruppenTraniert += truppenAnzahl; // Truppen adieren
-                    WriteLogs.LogAndConsoleWirite("Infaterie Truppen Training erfogreich gestartet! ;)");
-                    DeviceControl.DrueckeZurueckTaste(adbPath);
-                }
-                else 
-                {
-                    throw new Exception("Infaterie Truppen Training wurde nicht gestartet.");
-                }
+        internal static void TrainiereLatenzTreger(string adbPath, string screenshotDirectory, int truppenAnzahl)
+        {
+            WriteLogs.LogAndConsoleWirite("\n\nLatenzträger-Truppen Training wird gestartet...");
+            WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
+            GameControl.SeitenMenuOpen(adbPath);
+
+            DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "00000110", "00000304"); // Auswahl im Menü, Infaterie Truppe ausbilden klicken.
 
 
-            }
-            else 
-            {
-                WriteLogs.LogAndConsoleWirite("Infaterie Truppen werden bereits ausgebildet. ;)");
-                DeviceControl.DrueckeZurueckTaste(adbPath);  // Zurück Taste Drücken
-            }
+            DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "000001ba", "000002d0"); // Abholung der fertig tranierten Truppen
+            DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "000001ba", "000002d0"); // Anklicken des Gebäudes der Infaterie Truppen
+            DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "0000028c", "000003f1"); // Button Ausbilden klicken.
+
+            CheckeObTruppeAusgebildetWerden(adbPath, screenshotDirectory, truppenAnzahl);
         }
     }
 }

@@ -33,10 +33,11 @@
                         WriteLogs.LogAndConsoleWirite($"Lagerbounus Ausdauer: {Program.lagerBonusAausdauerCounter}");
                         WriteLogs.LogAndConsoleWirite($"Infaterie Einheiten traniert: {gesamtTruppenTraniert}");
                         WriteLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
-                                             
+
                         //GameControl.OfflineErtregeAbholen(adbPath, screenshotDirectory);
-                        //TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 5);
-                        // LagerOnlineBelohnung.GeschnekAbholen(adbPath, screenshotDirectory);
+                        TruppenTraining.TrainiereLatenzTreger(adbPath, screenshotDirectory, 7);
+                        TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 5);
+                        LagerOnlineBelohnung.GeschnekAbholen(adbPath, screenshotDirectory);
                         LagerOnlineBelohnung.AusdauerAbholen(adbPath, screenshotDirectory);
                     }
                     else
