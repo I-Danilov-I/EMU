@@ -12,47 +12,36 @@
         internal static int lagerBonusCounter = 0;
         internal static int gesamtTruppenTraniert = 0;
 
-
         private static void Main()
         {
+            WriteLogs.LogAndConsoleWirite("\n\n[PROGRAMM START]");
+            WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");               
             while (true)
             {
                 try
                 {
-                    WriteLogs.LogAndConsoleWirite("\n\n[PROGRAMM START]");
-                    WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
                     NoxControl.StartNoxPlayer();
                     NoxControl.StartADBConnection(adbPath);
-                    //DeviceInfo.ListAllDevices(adbPath);
-                    //DeviceInfo.ListRunningApps(adbPath);
-                    //DeviceInfo.TrackTouchEvents(adbPath, inputDevice);                   
-                    WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-
-                    while (true)
-                    {
-                        if (DeviceRemote.IsAppRunning(adbPath, packeName) == true)
-                        {
-                            // DeviceRemote.RestartApp(adbPath, packeName);
-                            DeviceRemote.MonitorISGameOnStartpointAndMakeReady(adbPath, screenshotDirectory);
-                            WriteLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]_________________________________");
-                            WriteLogs.LogAndConsoleWirite($"Lagerbonus abgeholt: {lagerBonusCounter}  Infaterie Einheiten traniert: {gesamtTruppenTraniert}");
-                            WriteLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
-
-                            TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 5);
-                            LagerOnlineBelohnung.Abholen(adbPath, screenshotDirectory);
-                        }
-                        else
-                        {
-                            DeviceRemote.StartApp(adbPath, packeName);
-                            DeviceRemote.MonitorISGameOnStartpointAndMakeReady(adbPath, screenshotDirectory);
-                            GameSteuerung.FirstStart(adbPath, screenshotDirectory);
-                        }
+                    if (DeviceControl.IsAppRunning(adbPath, packeName) == true)
+                    {                     
+                        WriteLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]_________________________________");
+                        WriteLogs.LogAndConsoleWirite($"Lagerbonus abgeholt: {lagerBonusCounter}  Infaterie Einheiten traniert: {gesamtTruppenTraniert}");
+                        WriteLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
+                                             
+                        GameControl.OfflineErtregeAbholen(adbPath, screenshotDirectory);
+                        TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 5);
+                        LagerOnlineBelohnung.Abholen(adbPath, screenshotDirectory);
                     }
-
+                    else
+                    {
+                        DeviceControl.StartApp(adbPath, packeName);
+                        GameControl.OfflineErtregeAbholen(adbPath, screenshotDirectory);
+                    }
                 }
-                catch (Exception){  }
+                catch (Exception)
+                {
+                }
             }
-         
 
         }
     }

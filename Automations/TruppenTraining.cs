@@ -5,7 +5,7 @@
         
         internal static void TruppenAnzahldieTraniertWerden(string adbPath, int truppenAnzahl)
         {
-            DeviceRemote.ClickAtTouchPositionWithHexa(adbPath, "0000029d", "0000052e"); // Button Truppenanzahl klicken
+            DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "0000029d", "0000052e"); // Button Truppenanzahl klicken
 
             // Bestehenden Text/Zahlen löschen          
             int numberOfCharactersToDelete = 5; // Anzahl der Zeichen, die gelöscht werden sollen
@@ -33,8 +33,8 @@
             if (reichenResursen)
             {
                 WriteLogs.LogAndConsoleWirite("Resoursen reichen nicht aus :(");
-                DeviceRemote.DrueckeZurueckTaste(adbPath);  // Zurück Taste Drücken
-                DeviceRemote.DrueckeZurueckTaste(adbPath);  // Zurück Taste Drücken
+                DeviceControl.DrueckeZurueckTaste(adbPath);  // Zurück Taste Drücken
+                DeviceControl.DrueckeZurueckTaste(adbPath);  // Zurück Taste Drücken
                 return; // Beende
             }
         }
@@ -44,31 +44,42 @@
         {
             WriteLogs.LogAndConsoleWirite("\n\nInfaterie-Truppen Training wird gestartet...");
             WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");          
-            GameSteuerung.SeitenMenuOpen(adbPath);
+            GameControl.SeitenMenuOpen(adbPath);
             
-            DeviceRemote.ClickAtTouchPositionWithHexa(adbPath, "00000040", "000002ad"); // Auswahl im Menü, Infaterie Truppe ausbilden klicken.
-            DeviceRemote.ClickAtTouchPositionWithHexa(adbPath, "000001ba", "000002d0"); // Abholung der fertig tranierten Truppen
-            DeviceRemote.ClickAtTouchPositionWithHexa(adbPath, "000001ba", "000002d0"); // Anklicken des Gebäudes der Infaterie Truppen
-            DeviceRemote.ClickAtTouchPositionWithHexa(adbPath, "0000028c", "000003f1"); // Button Ausbilden klicken.
+            DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "00000040", "000002ad"); // Auswahl im Menü, Infaterie Truppe ausbilden klicken.
+            DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "000001ba", "000002d0"); // Abholung der fertig tranierten Truppen
+            DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "000001ba", "000002d0"); // Anklicken des Gebäudes der Infaterie Truppen
+            DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "0000028c", "000003f1"); // Button Ausbilden klicken.
 
             Screenshot.TakeScreenshot(adbPath, screenshotDirectory); // Mache ein Screenshot
             bool findOrNot = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Ausbildung", "Ausbildung"); // Suche nach Text im Screenshot
             if (!findOrNot)
             {
                 TruppenAnzahldieTraniertWerden(adbPath, truppenAnzahl);
-                DeviceRemote.ClickAtTouchPositionWithHexa(adbPath, "0000028c", "000005d8"); // Letzter Buttton: Ausbilden
+                DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "0000028c", "000005d8"); // Letzter Buttton: Ausbilden
                 Thread.Sleep(5000);
+                CheckResoursenByTruppenAusbildung(adbPath, screenshotDirectory); // Prüfe ob genu REsursen da sind
 
-                CheckResoursenByTruppenAusbildung(adbPath, screenshotDirectory);
+                // Prüfe um Training erfoglreich gestartet wurde.
+                Screenshot.TakeScreenshot(adbPath, screenshotDirectory); // Mache ein Screenshot
+                bool erfolg = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Ausbildung", "Ausbildung"); // Suche nach Text im Screenshot
+                if (erfolg == true)
+                {
+                    Program.gesamtTruppenTraniert += truppenAnzahl; // Truppen adieren
+                    WriteLogs.LogAndConsoleWirite("Infaterie Truppen Training erfogreich gestartet! ;)");
+                    DeviceControl.DrueckeZurueckTaste(adbPath);
+                }
+                else 
+                {
+                    throw new Exception("Infaterie Truppen Training wurde nicht gestartet.");
+                }
 
-                Program.gesamtTruppenTraniert += truppenAnzahl; // Truppen adieren
-                WriteLogs.LogAndConsoleWirite("Infaterie Truppen Training erfogreich gestartet! ;)");
-                DeviceRemote.DrueckeZurueckTaste(adbPath);
+
             }
             else 
             {
                 WriteLogs.LogAndConsoleWirite("Infaterie Truppen werden bereits ausgebildet. ;)");
-                DeviceRemote.DrueckeZurueckTaste(adbPath);  // Zurück Taste Drücken
+                DeviceControl.DrueckeZurueckTaste(adbPath);  // Zurück Taste Drücken
             }
         }
     }
