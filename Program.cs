@@ -36,7 +36,7 @@
                             DeviceRemote.MonitorISGameOnStartpointAndMakeReady(adbPath, screenshotDirectory);
                             WriteLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]_________________________________");
                             WriteLogs.LogAndConsoleWirite($"Lagerbonus abgeholt: {lagerBonusCounter}  Infaterie Einheiten traniert: {gesamtTruppenTraniert}");
-                            WriteLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------\n");
+                            WriteLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
 
                             TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 5);
                             LagerOnlineBelohnung.Abholen(adbPath, screenshotDirectory);
