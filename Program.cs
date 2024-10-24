@@ -10,7 +10,11 @@
         internal static int timeSleepMin = 1; // Warte für erneuten Start fall anderes Gerät aktiv ist.
 
         internal static int offlineErtrege = 0; 
-        internal static int gesamtTruppenTraniert = 0;
+
+        internal static int infaterieTruppenTraniert = 0;
+        internal static int latenztregerTruppenTraniert = 0;
+        internal static int sniperTruppenTraniert = 0;
+
         internal static int lagerBonusGeschenkCounter = 0;
         internal static int lagerBonusAausdauerCounter = 0;
 
@@ -31,12 +35,15 @@
                         WriteLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]_________________________________");
                         WriteLogs.LogAndConsoleWirite($"Lagerbonus Geschenk: {lagerBonusGeschenkCounter}");
                         WriteLogs.LogAndConsoleWirite($"Lagerbounus Ausdauer: {Program.lagerBonusAausdauerCounter}");
-                        WriteLogs.LogAndConsoleWirite($"Infaterie Einheiten traniert: {gesamtTruppenTraniert}");
+                        WriteLogs.LogAndConsoleWirite($"Infaterie Einheiten traniert: {infaterieTruppenTraniert}");
+                        WriteLogs.LogAndConsoleWirite($"Latenzträger Einheiten traniert: {latenztregerTruppenTraniert}");
+                        WriteLogs.LogAndConsoleWirite($"Sniper Einheiten traniert: {sniperTruppenTraniert}");
                         WriteLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
 
                         //GameControl.OfflineErtregeAbholen(adbPath, screenshotDirectory);
+                        TruppenTraining.TrainiereSniper(adbPath, screenshotDirectory, 9);
                         TruppenTraining.TrainiereLatenzTreger(adbPath, screenshotDirectory, 7);
-                        TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 5);
+                        TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 3);
                         LagerOnlineBelohnung.GeschnekAbholen(adbPath, screenshotDirectory);
                         LagerOnlineBelohnung.AusdauerAbholen(adbPath, screenshotDirectory);
                     }
