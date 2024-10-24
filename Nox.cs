@@ -18,6 +18,7 @@ namespace EMU
                 };
                 Process.Start(startInfo);
                 Console.WriteLine("NoxPlayer wurde gestartet.");
+                Thread.Sleep(30000);
             }
             catch (Exception ex)
             {

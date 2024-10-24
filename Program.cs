@@ -30,10 +30,10 @@
                 {
                     GameSteuerung.FirstStart(adbPath, screenshotDirectory);
                     AppSteuerung.Wiederverbinden(adbPath, screenshotDirectory, 7); 
-                    TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 7); 
+                    TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 1); 
 
-                    //AppSteuerung.Wiederverbinden(adbPath, screenshotDirectory, 7);
-                    //LagerOnlineBelohnung.Abholen(adbPath, screenshotDirectory);
+                    AppSteuerung.Wiederverbinden(adbPath, screenshotDirectory, 7);
+                    LagerOnlineBelohnung.Abholen(adbPath, screenshotDirectory);
                 }
                 else 
                 {
