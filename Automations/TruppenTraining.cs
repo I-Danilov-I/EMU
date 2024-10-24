@@ -7,12 +7,12 @@
         internal static void TruppenAnzahldieTraniertWerden(string adbPath, int truppenAnzahl)
         {
             // Truppen Anzahl_____________________________________________________________________
-            GameSteuerung.Wiederverbinden(adbPath, Program.screenshotDirectory, Program.timeSleepMin);
+            
             DeviceRemote.ClickAtTouchPositionWithHexa(adbPath, "0000029d", "0000052e"); // Button Truppenanzahl klicken
             Thread.Sleep(1000);
 
             // Bestehenden Text/Zahlen löschen
-            GameSteuerung.Wiederverbinden(adbPath, Program.screenshotDirectory, Program.timeSleepMin);
+            
             int numberOfCharactersToDelete = 5; // Anzahl der Zeichen, die gelöscht werden sollen
             for (int i = 0; i < numberOfCharactersToDelete; i++)
             {
@@ -21,13 +21,13 @@
                 Thread.Sleep(100); // Kurze Pause zwischen den Löschvorgängen
             }
 
-            GameSteuerung.Wiederverbinden(adbPath, Program.screenshotDirectory, Program.timeSleepMin);
+            
             string adbCommand = $"shell input text {truppenAnzahl}";
             AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
             Thread.Sleep(1000);
 
             // Enter-Taste drücken
-            GameSteuerung.Wiederverbinden(adbPath, Program.screenshotDirectory, Program.timeSleepMin);
+            
             string enterCommand = "shell input keyevent KEYCODE_ENTER"; // Bestätigen oder Enter drücken
             AdbCommand.ExecuteAdbCommand(adbPath, enterCommand);
             Thread.Sleep(1000);
@@ -53,19 +53,19 @@
             WriteLogs.LogAndConsoleWirite("\n\nInfaterie-Truppen Training wird gestartet...");
             WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");          
             GameSteuerung.SeitenMenuOpen(adbPath);
-            GameSteuerung.Wiederverbinden(adbPath, Program.screenshotDirectory, Program.timeSleepMin);
+            
             DeviceRemote.ClickAtTouchPositionWithHexa(adbPath, "00000040", "000002ad"); // Auswahl im Menü, Infaterie Truppe ausbilden klicken.
             Thread.Sleep(5000);
 
-            GameSteuerung.Wiederverbinden(adbPath, Program.screenshotDirectory, Program.timeSleepMin);
+           
             DeviceRemote.ClickAtTouchPositionWithHexa(adbPath, "000001ba", "000002d0"); // Abholung der fertig tranierten Truppen
             Thread.Sleep(2000);
 
-            GameSteuerung.Wiederverbinden(adbPath, Program.screenshotDirectory, Program.timeSleepMin);
+           
             DeviceRemote.ClickAtTouchPositionWithHexa(adbPath, "000001ba", "000002d0"); // Anklicken des Gebäudes der Infaterie Truppen
             Thread.Sleep(2000);
 
-            GameSteuerung.Wiederverbinden(adbPath, Program.screenshotDirectory, Program.timeSleepMin);
+            
             DeviceRemote.ClickAtTouchPositionWithHexa(adbPath, "0000028c", "000003f1"); // Button Ausbilden klicken.
             Thread.Sleep(5000);
 
@@ -81,6 +81,7 @@
 
                 gesamtTruppenTraniert += truppenAnzahl; // Truppen adieren
                 WriteLogs.LogAndConsoleWirite("Infaterie Truppen Training erfogreich gestartet! ;)");
+                DeviceRemote.DrueckeZurueckTaste(adbPath);
             }
             else 
             {

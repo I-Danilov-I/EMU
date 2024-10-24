@@ -5,6 +5,28 @@ namespace EMU
     internal class DeviceRemote
     {
 
+        internal static void Wiederverbinden(string adbPath, string screenshotDirectory, string packageName,  int timeSleepMin)
+        {
+            // Wiederverbinden wenn von anderem Gerät beigetreten.
+            Screenshot.TakeScreenshot(adbPath, screenshotDirectory);
+            bool OnOff = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Tipps", "Dieses Konto");
+            if (OnOff == true)
+            {
+                WriteLogs.LogAndConsoleWirite($"Ein anderes Gerät ist gereade Aktiv. Ich warte {timeSleepMin} Min...");
+                // App beenden
+                string forceStopCommand = $"shell am force-stop {packageName}";
+                AdbCommand.ExecuteAdbCommand(adbPath, forceStopCommand);
+                WriteLogs.LogAndConsoleWirite($"{packageName} wurde beendet.");
+
+                // Warten
+                //Thread.Sleep(60 * 1000 * timeSleepMin);
+
+                // Ausnahme werfen
+                throw new Exception("Ein anderes Gerät hat sich verbunden. Programm wird beendet.");             
+            }
+        }
+
+
         public static bool IsAppRunning(string adbPath, string packageName)
         {
             // Befehl, um zu überprüfen, ob die App läuft
@@ -31,6 +53,7 @@ namespace EMU
 
         public static void ClickAndHoldAndScroll(string adbPath, string startXHex, string startYHex, string endXHex, string endYHex, int holdDuration, int scrollDuration)
         {
+            Wiederverbinden(Program.adbPath, Program.screenshotDirectory, Program.packeName, Program.timeSleepMin);
             // Hex-Werte in Dezimalwerte umwandeln
             int startX = int.Parse(startXHex, System.Globalization.NumberStyles.HexNumber);
             int startY = int.Parse(startYHex, System.Globalization.NumberStyles.HexNumber);
@@ -49,11 +72,13 @@ namespace EMU
 
         public static void ClickAtTouchPositionWithHexa(string adbPath, string hexX, string hexY)
         {
+            Wiederverbinden(Program.adbPath, Program.screenshotDirectory, Program.packeName, Program.timeSleepMin);
             int x = int.Parse(hexX, System.Globalization.NumberStyles.HexNumber);
             int y = int.Parse(hexY, System.Globalization.NumberStyles.HexNumber);
 
             string adbCommand = $"shell input tap {x} {y}";
             AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
+
         }
 
 
@@ -142,7 +167,7 @@ namespace EMU
         {
             string adbCommand = $"shell input tap {x} {y}";
             AdbCommand.ExecuteAdbCommand(adbPath, adbCommand);
-            GameSteuerung.Wiederverbinden(adbPath, Program.screenshotDirectory, Program.timeSleepMin);
+            DeviceRemote.Wiederverbinden(adbPath, Program.screenshotDirectory, Program.packeName, Program.timeSleepMin);
         }
 
         // Methode zum Durchklicken eines quadratischen Bereichs um die Mitte des Bildschirms

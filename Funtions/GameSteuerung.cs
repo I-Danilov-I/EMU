@@ -22,25 +22,12 @@ namespace EMU
             Thread.Sleep(5000);
         }
 
-        internal static void Wiederverbinden(string adbPath, string screenshotDirectory, int timeSleepMin)
-        {
-            // Wiederverbinden wenn von anderem Gerät beigetreten.
-            Screenshot.TakeScreenshot(adbPath, screenshotDirectory);
-            bool OnOff = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Tipps", "Dieses Konto");
-            if (OnOff == true)
-            {
-                WriteLogs.LogAndConsoleWirite($"Ein anderes Gerät ist gereade Aktiv. Ich warte {timeSleepMin} Min...");
-                //Thread.Sleep(60 * 1000 * timeSleepMin);
-                DeviceRemote.ClickAtTouchPositionWithHexa(adbPath, "00000276", "000003d3"); // Wiederverbinden Klicken.
-                Thread.Sleep(7000);
-            }
-        }
 
         internal static void FirstStart(string adbPath, string screenshotDirectory)
         {
             // Offline Erträge sammeln, bestätigen drücken.
             Screenshot.TakeScreenshot(adbPath, screenshotDirectory);
-            bool offlineErtrege = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Willkommen", "Willkommen");
+            bool offlineErtrege = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Willkommen", "Offline");
             if (offlineErtrege == true)
             {
                 DeviceRemote.ClickAtTouchPositionWithHexa(adbPath, hexX: "000001bf", hexY: "000004d3"); // Bestätigen Button klicken
