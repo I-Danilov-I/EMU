@@ -41,11 +41,12 @@
                         WriteLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
 
                         //GameControl.OfflineErtregeAbholen(adbPath, screenshotDirectory);
-                        TruppenTraining.TrainiereSniper(adbPath, screenshotDirectory, 9);
-                        TruppenTraining.TrainiereLatenzTreger(adbPath, screenshotDirectory, 7);
-                        TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 3);
-                        LagerOnlineBelohnung.GeschnekAbholen(adbPath, screenshotDirectory);
                         LagerOnlineBelohnung.AusdauerAbholen(adbPath, screenshotDirectory);
+                        TruppenTraining.TrainiereSniper(adbPath, screenshotDirectory, 10);
+                        TruppenTraining.TrainiereLatenzTreger(adbPath, screenshotDirectory, 10);
+                        TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 10);
+
+                        LagerOnlineBelohnung.GeschnekAbholen(adbPath, screenshotDirectory);
                     }
                     else
                     {

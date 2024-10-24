@@ -44,7 +44,7 @@
         {
             // Prüfe um Training erfoglreich gestartet wurde.
             Screenshot.TakeScreenshot(adbPath, screenshotDirectory); // Mache ein Screenshot
-            bool erfolg = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Ausbildung", "Ausbildung"); // Suche nach Text im Screenshot
+            bool erfolg = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Ausbildung", "gungen"); // Suche nach Text im Screenshot
             if (erfolg == true)
             {
                 WriteLogs.LogAndConsoleWirite("Truppen Training erfogreich gestartet! ;)");
@@ -60,7 +60,7 @@
         private static void CheckeObTruppeAusgebildetWerden(string adbPath, string screenshotDirectory, int truppenAnzahl)
         {
             Screenshot.TakeScreenshot(adbPath, screenshotDirectory);
-            bool findOrNot = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Ausbildung", "Ausbildung");
+            bool findOrNot = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Ausbildung", "gungen");
             if (!findOrNot)
             {
                 TruppenAnzahl(adbPath, truppenAnzahl);

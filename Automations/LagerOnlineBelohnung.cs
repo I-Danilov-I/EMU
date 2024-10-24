@@ -40,7 +40,7 @@ namespace EMU
             WriteLogs.LogAndConsoleWirite("\n\nLager Online Ausdauer wird abgeholt...");
             WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
 
-            DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "000000f1", "0000004d"); // Bonusübersicht klick
+            DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "00000081", "0000004f"); // Bonusübersicht klick
             DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "000001cf", "000003a6"); // Kraft klick
             DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "000002fe", "0000024b"); // Gebäudekraft klick
             DeviceControl.ClickAtTouchPositionWithHexa(adbPath, "000001c8", "000002bfe"); // Gebäude anwählen
