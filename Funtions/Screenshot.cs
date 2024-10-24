@@ -55,12 +55,12 @@ namespace EMU
                         {
                             // Extrahiere den erkannten Text
                             string text = page.GetText();
-                            
+                            /*
                             WriteLogs.LogAndConsoleWirite($"\n[Extrahierter Text]");
                             WriteLogs.LogAndConsoleWirite($"______________________________________________________________");
                             WriteLogs.LogAndConsoleWirite(text);
                             WriteLogs.LogAndConsoleWirite($"______________________________________________________________\n");
-                            
+                            */
                             if (text.Contains(textToFind) || text.Contains(textToFind2))
                             {
                                 //WriteLogs.LogAndConsoleWirite($"Der Text '{textToFind}' wurde gefunden!\n");

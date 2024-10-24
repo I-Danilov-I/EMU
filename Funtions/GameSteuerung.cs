@@ -39,7 +39,7 @@ namespace EMU
             DeviceRemote.DrueckeZurueckTaste(adbPath);
 
             Screenshot.TakeScreenshot(adbPath, screenshotDirectory);
-            bool prufeObSpielBereit = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Spiel verlassen", "Spiel verlassen");
+            bool prufeObSpielBereit = Screenshot.CheckTextInScreenshot(screenshotDirectory, "Spiel", "Abbrechen");
             if (prufeObSpielBereit == true)
             {
                 DeviceRemote.DrueckeZurueckTaste(adbPath);

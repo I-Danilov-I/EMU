@@ -2,8 +2,7 @@
 {
     internal class TruppenTraining
     {
-        internal static int gesamtTruppenTraniert = 0;
-
+        
         internal static void TruppenAnzahldieTraniertWerden(string adbPath, int truppenAnzahl)
         {
             // Truppen Anzahl_____________________________________________________________________
@@ -79,7 +78,7 @@
 
                 CheckResoursenByTruppenAusbildung(adbPath, screenshotDirectory);
 
-                gesamtTruppenTraniert += truppenAnzahl; // Truppen adieren
+                Program.gesamtTruppenTraniert += truppenAnzahl; // Truppen adieren
                 WriteLogs.LogAndConsoleWirite("Infaterie Truppen Training erfogreich gestartet! ;)");
                 DeviceRemote.DrueckeZurueckTaste(adbPath);
             }

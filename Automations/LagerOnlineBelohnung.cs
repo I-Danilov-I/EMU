@@ -4,7 +4,6 @@ namespace EMU
 {
     internal class LagerOnlineBelohnung
     {
-        internal static int counter = 0; 
 
         internal static void Abholen(string adbPath, string screenshotDirectory)
         {
@@ -29,9 +28,9 @@ namespace EMU
                 DeviceRemote.ClickAtTouchPositionWithHexa(adbPath, "0000023f", "000002a6"); // Schliese das Seitenmenü
                 Thread.Sleep(5000);
 
-                counter++;
+                Program.lagerBonusCounter++;
                 WriteLogs.LogAndConsoleWirite($"Lager Online Belohnung erforgreich abgeholt!");
-                WriteLogs.LogAndConsoleWirite($"Erfogreiche Abholungen: {counter}");
+                WriteLogs.LogAndConsoleWirite($"Erfogreiche Abholungen: {Program.lagerBonusCounter}");
 
             }
             else

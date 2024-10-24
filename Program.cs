@@ -8,6 +8,10 @@
         internal static string logFilePath = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Logs\\";
         internal static string packeName = "com.gof.global"; // Warte für erneuten Start fall anderes Gerät aktiv ist.
         internal static int timeSleepMin = 1; // Warte für erneuten Start fall anderes Gerät aktiv ist.
+        
+        internal static int lagerBonusCounter = 0;
+        internal static int gesamtTruppenTraniert = 0;
+
 
         private static void Main()
         {
@@ -15,7 +19,7 @@
             {
                 try
                 {
-                    WriteLogs.LogAndConsoleWirite("[PROGRAMM START]___________________________________________________________");
+                    WriteLogs.LogAndConsoleWirite("\n\n[PROGRAMM START]___________________________________________________________");
                     //NoxControl.StartNoxPlayer();
                     //NoxControl.StartADBConnection(adbPath);
                     //DeviceInfo.ListAllDevices(adbPath);
@@ -27,7 +31,7 @@
                     while (true)
                     {
                         WriteLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]__________________________________");
-                        WriteLogs.LogAndConsoleWirite($"Lagerbonus abgeholt: {LagerOnlineBelohnung.counter}  Infaterie Einheiten traniert: {TruppenTraining.gesamtTruppenTraniert}");
+                        WriteLogs.LogAndConsoleWirite($"Lagerbonus abgeholt: {lagerBonusCounter}  Infaterie Einheiten traniert: {gesamtTruppenTraniert}");
                         WriteLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------\n");
 
                         if (DeviceRemote.IsAppRunning(adbPath, packeName) == true)
@@ -43,12 +47,10 @@
                     }
 
                 }
-                catch (Exception e)
-                {
-              
-                }
+                catch (Exception){  }
             }
          
+
         }
     }
 }
