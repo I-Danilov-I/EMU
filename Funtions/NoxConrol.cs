@@ -13,7 +13,7 @@ namespace EMU
 
                 if (processes.Length > 0)
                 {
-                    Console.WriteLine("NoxPlayer läuft bereits.");
+                    WriteLogs.LogAndConsoleWirite("NoxPlayer läuft bereits.");
                 }
                 else
                 {
@@ -27,13 +27,13 @@ namespace EMU
                     };
 
                     Process.Start(startInfo);
-                    Console.WriteLine("NoxPlayer wurde gestartet.");
+                    WriteLogs.LogAndConsoleWirite("NoxPlayer wurde gestartet.");
                     Thread.Sleep(30000); // Warten, bis Nox vollständig gestartet ist
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Fehler beim Starten des NoxPlayers: " + ex.Message);
+                WriteLogs.LogAndConsoleWirite("Fehler beim Starten des NoxPlayers: " + ex.Message);
             }
         }
 
@@ -47,7 +47,7 @@ namespace EMU
 
                 if (adbDevicesOutput.Contains("127.0.0.1:62001"))
                 {
-                    Console.WriteLine("ADB ist bereits mit Nox verbunden.");
+                    WriteLogs.LogAndConsoleWirite("ADB ist bereits mit Nox verbunden.");
                 }
                 else
                 {
@@ -55,12 +55,12 @@ namespace EMU
                     AdbCommand.ExecuteAdbCommand(adbPath, "kill-server");
                     AdbCommand.ExecuteAdbCommand(adbPath, "start-server");
                     AdbCommand.ExecuteAdbCommand(adbPath, "connect 127.0.0.1:62001"); // Standard-ADB-Port von Nox
-                    Console.WriteLine("ADB-Verbindung neu hergestellt.");
+                    WriteLogs.LogAndConsoleWirite("ADB-Verbindung neu hergestellt.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Fehler bei der ADB-Verbindung: " + ex.Message);
+                WriteLogs.LogAndConsoleWirite("Fehler bei der ADB-Verbindung: " + ex.Message);
             }
         }
 

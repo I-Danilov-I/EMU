@@ -20,6 +20,7 @@
                 try
                 {
                     WriteLogs.LogAndConsoleWirite("\n\n[PROGRAMM START]");
+                    WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
                     NoxControl.StartNoxPlayer();
                     NoxControl.StartADBConnection(adbPath);
                     //DeviceInfo.ListAllDevices(adbPath);
@@ -29,29 +30,22 @@
 
                     while (true)
                     {
-                        WriteLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]__________________________________");
-                        WriteLogs.LogAndConsoleWirite($"Lagerbonus abgeholt: {lagerBonusCounter}  Infaterie Einheiten traniert: {gesamtTruppenTraniert}");
-                        WriteLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------\n");
-
                         if (DeviceRemote.IsAppRunning(adbPath, packeName) == true)
                         {
-                            TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 1);
+                            // DeviceRemote.RestartApp(adbPath, packeName);
+                            DeviceRemote.MonitorISGameOnStartpointAndMakeReady(adbPath, screenshotDirectory);
+                            WriteLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]_________________________________");
+                            WriteLogs.LogAndConsoleWirite($"Lagerbonus abgeholt: {lagerBonusCounter}  Infaterie Einheiten traniert: {gesamtTruppenTraniert}");
+                            WriteLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------\n");
+
+                            TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 5);
                             LagerOnlineBelohnung.Abholen(adbPath, screenshotDirectory);
                         }
                         else
                         {
                             DeviceRemote.StartApp(adbPath, packeName);
-                            while (true) 
-                            {
-                                Thread.Sleep(5 * 1000);
-                                Screenshot.TakeScreenshot(adbPath, screenshotDirectory);
-                               
-                                if (Screenshot.CheckTextInScreenshot(screenshotDirectory, "Welt", "Allianz") == true)
-                                {
-                                    GameSteuerung.FirstStart(adbPath, screenshotDirectory);
-                                    break;
-                                }                              
-                            }
+                            DeviceRemote.MonitorISGameOnStartpointAndMakeReady(adbPath, screenshotDirectory);
+                            GameSteuerung.FirstStart(adbPath, screenshotDirectory);
                         }
                     }
 

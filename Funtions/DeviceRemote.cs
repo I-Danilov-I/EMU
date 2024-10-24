@@ -5,6 +5,30 @@ namespace EMU
     internal class DeviceRemote
     {
 
+        internal static void RestartApp(string adbPath, string packageName)
+        {
+            try
+            {
+                // App stoppen
+                string stopCommand = $"shell am force-stop {packageName}";
+                AdbCommand.ExecuteAdbCommand(adbPath, stopCommand);
+                Console.WriteLine($"{packageName} wurde gestoppt.");
+
+                // Kurze Pause, um sicherzustellen, dass die App vollständig gestoppt ist
+                Thread.Sleep(2000);
+
+                // App neu starten
+                string startCommand = $"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1";
+                AdbCommand.ExecuteAdbCommand(adbPath, startCommand);
+                Console.WriteLine($"{packageName} wurde neu gestartet.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Neustarten der App {packageName}: " + ex.Message);
+            }
+        }
+
+
         internal static void Wiederverbinden(string adbPath, string screenshotDirectory, string packageName,  int timeSleepMin)
         {
             // Wiederverbinden wenn von anderem Gerät beigetreten.
@@ -23,6 +47,33 @@ namespace EMU
 
                 // Ausnahme werfen
                 throw new Exception("Ein anderes Gerät hat sich verbunden. Programm wird beendet.");             
+            }
+        }
+
+
+        internal static void MonitorISGameOnStartpointAndMakeReady(string adbPath, string screenshotDirectory)
+        {
+            DateTime startTime = DateTime.Now; // Startzeitpunkt erfassen
+            TimeSpan maxDuration = TimeSpan.FromMinutes(2); // Maximale Dauer von 2 Minuten festlegen
+
+            while (true)
+            {
+                // Überprüfe, ob die maximale Zeitdauer überschritten wurde
+                if (DateTime.Now - startTime > maxDuration)
+                {
+                    WriteLogs.LogAndConsoleWirite("Schleife beendet nach 2 Minuten.");
+                    break; // Schleife beenden, wenn 2 Minuten überschritten wurden
+                }
+
+                // Führe die Screenshot-Logik aus
+                Thread.Sleep(5 * 1000); // 5 Sekunden warten
+                Screenshot.TakeScreenshot(adbPath, screenshotDirectory);
+
+                if (Screenshot.CheckTextInScreenshot(screenshotDirectory, "Welt", "Allianz") == true)
+                {
+                    WriteLogs.LogAndConsoleWirite("Spiel erfogreich gestartet und bereit.");                  
+                    break; // Schleife beenden, wenn der Text gefunden wird
+                }
             }
         }
 
