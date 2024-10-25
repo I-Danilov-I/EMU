@@ -1,29 +1,29 @@
 ﻿namespace EMU
 {
-    internal class WriteLogs
+    internal class WriteLogs : DeviceControl
     {
 
-        internal static void LogAndConsoleWirite(string inputString)
+        internal void LogAndConsoleWirite(string inputString)
         {
             try
             {
                 // Überprüfen, ob das Verzeichnis für die Log-Datei existiert, und ggf. erstellen
-                if (!Directory.Exists(Program.logFilePath))
+                if (!Directory.Exists(Get_logFilerFolderPath()))
                 {
-                    Directory.CreateDirectory(Program.logFilePath);
+                    Directory.CreateDirectory(Get_logFilerFolderPath());
                 }
 
                 // Pfad zur Log-Datei selbst
-                string logFilePath = Path.Combine(Program.logFilePath, "Logs.txt");
+                string logFileFolderPath = Path.Combine(Get_logFilerFolderPath(), "Logs.txt");
 
                 // Überprüfen, ob die Log-Datei existiert, und ggf. erstellen
-                if (!File.Exists(logFilePath))
+                if (!File.Exists(logFileFolderPath))
                 {
-                    File.Create(logFilePath).Close(); 
+                    File.Create(logFileFolderPath).Close(); 
                 }
 
                 // In die Log-Datei schreiben
-                using (StreamWriter writer = new StreamWriter(logFilePath, true)) // 'true' hängt an die Datei an
+                using (StreamWriter writer = new StreamWriter(logFileFolderPath, true)) // 'true' hängt an die Datei an
                 {
                     if (!string.IsNullOrEmpty(inputString))
                     {

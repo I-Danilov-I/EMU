@@ -3,6 +3,7 @@
     internal class LagerOnlineBelohnung : DeviceControl
     {
         GameControl GameControl = new GameControl();
+        WriteLogs WriteLogs = new WriteLogs();
 
         internal void GeschnekAbholen()
         {

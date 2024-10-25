@@ -1,11 +1,7 @@
 ﻿namespace EMU
 {
     internal static class Program
-    {
-        internal static string logFilePath = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Logs\\";
-        
-        internal static int timeSleepMin = 1; 
-
+    {  
         internal static int offlineErtrege = 0; 
         internal static int infaterieTruppenTraniert = 0;
         internal static int latenztregerTruppenTraniert = 0;
@@ -18,9 +14,10 @@
             DeviceControl deviceControl = new DeviceControl();
             NoxControl noxControl = new NoxControl();
             GameControl gameControl = new GameControl();
+            WriteLogs writeLogs = new WriteLogs();
 
-            WriteLogs.LogAndConsoleWirite("\n\n[PROGRAMM START]");
-            WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
+            writeLogs.LogAndConsoleWirite("\n\n[PROGRAMM START]");
+            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ShowSetting();
             //deviceControl.TrackTouchEvents();
             
@@ -32,13 +29,13 @@
                     noxControl.StartADBConnection();
                     if (deviceControl.IsAppRunning() == true)
                     {                     
-                        WriteLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]_________________________________");
-                        WriteLogs.LogAndConsoleWirite($"Lagerbonus Geschenk: {lagerBonusGeschenkCounter}");
-                        WriteLogs.LogAndConsoleWirite($"Lagerbounus Ausdauer: {Program.lagerBonusAausdauerCounter}");
-                        WriteLogs.LogAndConsoleWirite($"Infaterie Einheiten traniert: {infaterieTruppenTraniert}");
-                        WriteLogs.LogAndConsoleWirite($"Latenzträger Einheiten traniert: {latenztregerTruppenTraniert}");
-                        WriteLogs.LogAndConsoleWirite($"Sniper Einheiten traniert: {sniperTruppenTraniert}");
-                        WriteLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
+                        writeLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]_________________________________");
+                        writeLogs.LogAndConsoleWirite($"Lagerbonus Geschenk: {lagerBonusGeschenkCounter}");
+                        writeLogs.LogAndConsoleWirite($"Lagerbounus Ausdauer: {Program.lagerBonusAausdauerCounter}");
+                        writeLogs.LogAndConsoleWirite($"Infaterie Einheiten traniert: {infaterieTruppenTraniert}");
+                        writeLogs.LogAndConsoleWirite($"Latenzträger Einheiten traniert: {latenztregerTruppenTraniert}");
+                        writeLogs.LogAndConsoleWirite($"Sniper Einheiten traniert: {sniperTruppenTraniert}");
+                        writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
 
                         Erkundung erkundung = new Erkundung();
                         erkundung.ErkundungAbholen();
@@ -65,8 +62,6 @@
                 }
                 catch (Exception)
                 {
-                    WriteLogs.LogAndConsoleWirite($"Neustart");
-                    deviceControl.StopApp();
                     noxControl.KillNoxPlayerProcess();
                     Thread.Sleep(10000);
                 }

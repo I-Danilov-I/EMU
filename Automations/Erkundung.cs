@@ -2,6 +2,8 @@
 {
     internal class Erkundung : DeviceControl
     {
+        WriteLogs WriteLogs = new WriteLogs();
+
         // Methode zum Abholen der Belohnung
         public void ErkundungAbholen()
         {

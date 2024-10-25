@@ -2,7 +2,7 @@
 {
     internal class GameControl : DeviceControl
     {
-        NoxControl NoxControl = new NoxControl();
+        WriteLogs WriteLogs = new WriteLogs();
 
         internal void SeitenMenuOpen()
         {
@@ -29,7 +29,6 @@
                 Program.offlineErtrege++;
                 WriteLogs.LogAndConsoleWirite($"Offline Erträge wurden abgeholt. {Program.offlineErtrege}");
             }
-
         }
 
     }

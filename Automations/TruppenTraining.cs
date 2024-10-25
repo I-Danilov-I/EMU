@@ -3,6 +3,7 @@
     internal class TruppenTraining : DeviceControl
     {
         GameControl GameControl = new GameControl();
+        WriteLogs WriteLogs = new WriteLogs();
 
         private void TruppenAnzahl(int truppenAnzahl)
         {

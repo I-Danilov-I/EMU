@@ -4,6 +4,8 @@ namespace EMU
 {
     internal class NoxControl : DeviceControl
     {
+        WriteLogs WriteLogs = new WriteLogs();
+
         internal void StartNoxPlayer()
         {
             try

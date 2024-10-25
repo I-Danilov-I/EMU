@@ -5,11 +5,12 @@ namespace EMU
 {
     internal class DeviceControl
     {
-        private string adbPath;
-        private string inputDevice;
-        private string packageName;
-        private string screenshotDirectory;
-
+        private readonly string adbPath;
+        private readonly string inputDevice;
+        private readonly string packageName;
+        private readonly string screenshotDirectory;
+        private readonly string logFileFolderPath;
+        private readonly int timeSleepMin;
 
         internal DeviceControl()
         {
@@ -17,35 +18,35 @@ namespace EMU
             inputDevice = "/dev/input/event4";
             packageName = "com.gof.global";
             screenshotDirectory = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Screens";
+            logFileFolderPath = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Logs\\";
+            timeSleepMin = 1;
+
         }
 
+        WriteLogs writeLogs = new WriteLogs();
+        NoxControl noxControl = new NoxControl();
+
+        internal string Get_logFilerFolderPath() { return logFileFolderPath; }
 
         internal void TakeScreenshot(string screenshotDirectory)
         {
             try
             {
                 Thread.Sleep(3000);
-                // Console.WriteLine("Screenshot wird erstellt...");
                 if (!Directory.Exists(screenshotDirectory))
                 {
                     Directory.CreateDirectory(screenshotDirectory);
                 }
 
-                // Screenshot auf dem Emulator erstellen und auf den PC übertragen
-                string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png");
-
-                // Screenshot auf dem Emulator erstellen und speichern
-                string screenshotCommand = "shell screencap -p /sdcard/screenshot.png";
+                string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png"); // Screenshot auf dem Emulator erstellen und auf den PC übertragen
+                string screenshotCommand = "shell screencap -p /sdcard/screenshot.png";  // Screenshot auf dem Emulator erstellen und speichern
                 ExecuteAdbCommand(screenshotCommand);
-
-                // Screenshot vom Emulator auf den PC übertragen
-                string pullCommand = $"pull /sdcard/screenshot.png {screenshotDirectory}";
+                string pullCommand = $"pull /sdcard/screenshot.png {screenshotDirectory}"; // Screenshot vom Emulator auf den PC übertragen
                 ExecuteAdbCommand(pullCommand);
-                //WriteLogs.LogAndConsoleWirite($"Screenshot erfolgreich erstellt und gespeichert unter: {screenshotDirectory}");
             }
             catch (Exception ex)
             {
-                WriteLogs.LogAndConsoleWirite("Fehler beim Erstellen des Screenshots: " + ex.Message);
+                writeLogs.LogAndConsoleWirite("Fehler beim Erstellen des Screenshots: " + ex.Message);
             }
         }
 
@@ -54,8 +55,6 @@ namespace EMU
         {
             try
             {
-                // Console.WriteLine("\nPrüfe verfügbarkeit, suche nach Text in Screenshot...");
-                // Screenshot auf dem Emulator erstellen und auf den PC übertragen
                 string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png");
 
                 // OCR-Engine initialisieren
@@ -76,12 +75,10 @@ namespace EMU
                             */
                             if (text.Contains(textToFind) || text.Contains(textToFind2))
                             {
-                                //WriteLogs.LogAndConsoleWirite($"Der Text '{textToFind}' wurde gefunden!\n");
                                 return true;
                             }
                             else
                             {
-                                //WriteLogs.LogAndConsoleWirite($"Der Text '{textToFind}' wurde nicht gefunden.\n");
                                 return false;
                             }
                         }
@@ -91,7 +88,7 @@ namespace EMU
             }
             catch (Exception ex)
             {
-                WriteLogs.LogAndConsoleWirite($"Ein Fehler ist aufgetreten: {ex.Message}");
+                writeLogs.LogAndConsoleWirite($"Ein Fehler ist aufgetreten: {ex.Message}");
                 return false;
             }
         }
@@ -102,16 +99,15 @@ namespace EMU
             try
             {
                 Process process = new Process();
-                process.StartInfo.FileName = adbPath; // ADB-Pfad verwenden
+                process.StartInfo.FileName = adbPath;
                 process.StartInfo.Arguments = command;
                 process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true; // Fehlerausgabe auch protokollieren
+                process.StartInfo.RedirectStandardError = true;
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.CreateNoWindow = true;
 
                 process.Start();
 
-                // Ergebnis auslesen
                 string output = process.StandardOutput.ReadToEnd();
                 string errorOutput = process.StandardError.ReadToEnd();
 
@@ -120,7 +116,7 @@ namespace EMU
             }
             catch (Exception ex)
             {
-                WriteLogs.LogAndConsoleWirite(ex.Message);
+                writeLogs.LogAndConsoleWirite(ex.Message);
                 return "";
             }
         }
@@ -129,22 +125,19 @@ namespace EMU
 
         internal void ShowSetting()
         {
-            WriteLogs.LogAndConsoleWirite($"ADB Path: {adbPath}");
-            WriteLogs.LogAndConsoleWirite($"Inpu device: {inputDevice}");
+            writeLogs.LogAndConsoleWirite($"ADB Path: {adbPath}");
+            writeLogs.LogAndConsoleWirite($"Inpu device: {inputDevice}");
         }
 
 
         internal void Wiederverbinden(int timeSleep)
         {
-            NoxControl NoxControl = new NoxControl();
-            // Prüfe um Training erfoglreich gestartet wurde.
-            TakeScreenshot(screenshotDirectory); // Mache ein Screenshot
-            bool erfolg = CheckTextInScreenshot("Kontankt", "Konto"); // Suche nach Text im Screenshot
+            TakeScreenshot(screenshotDirectory);
+            bool erfolg = CheckTextInScreenshot("Kontankt", "Konto");
             if (erfolg == true)
             {
-                WriteLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {timeSleep} Min erneut.");
-                StopApp();
-                NoxControl.KillNoxPlayerProcess();
+                writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {timeSleep} Min erneut.");
+                noxControl.KillNoxPlayerProcess();
                 Thread.Sleep(60 * 1000 * timeSleep);
             }
         }
@@ -152,7 +145,7 @@ namespace EMU
 
         public void ClickAtTouchPositionWithHexa(string hexX, string hexY)
         {
-            Wiederverbinden(1);
+            Wiederverbinden(timeSleepMin);
             int x = int.Parse(hexX, System.Globalization.NumberStyles.HexNumber);
             int y = int.Parse(hexY, System.Globalization.NumberStyles.HexNumber);
 
@@ -190,8 +183,7 @@ namespace EMU
 
         internal bool IsAppRunning()
         {
-            // Befehl, um zu überprüfen, ob die App läuft
-            string adbCommand = $"shell pidof {packageName}";
+            string adbCommand = $"shell pidof {packageName}"; // Befehl, um zu überprüfen, ob die App läuft
             string result = ExecuteAdbCommand(adbCommand);
             return !string.IsNullOrEmpty(result); // Wenn ein Ergebnis vorliegt, läuft die App
         }
@@ -205,24 +197,8 @@ namespace EMU
             }
             string adbCommand = $"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1";
             ExecuteAdbCommand(adbCommand);
-            WriteLogs.LogAndConsoleWirite($"App {packageName} wird gestartet.");
+            writeLogs.LogAndConsoleWirite($"App {packageName} wird gestartet.");
             Thread.Sleep(60 * 1000);
-        }
-
-
-        internal void StopApp()
-        {
-            try
-            {
-                // Befehl zum Stoppen der App
-                string adbCommand = $"shell am force-stop {packageName}";
-                ExecuteAdbCommand(adbCommand);
-                Console.WriteLine($"App {packageName} wurde gestoppt.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Fehler beim Stoppen der App: {ex.Message}");
-            }
         }
 
 
@@ -230,22 +206,17 @@ namespace EMU
         {
             try
             {
-                // App stoppen
-                string stopCommand = $"shell am force-stop {packageName}";
+                writeLogs.LogAndConsoleWirite($"Die App wird neugestartet...");
+                string stopCommand = $"shell am force-stop {packageName}"; // App stoppen
                 ExecuteAdbCommand(stopCommand);
-                Console.WriteLine($"{packageName} wurde gestoppt.");
-
-                // Kurze Pause, um sicherzustellen, dass die App vollständig gestoppt ist
                 Thread.Sleep(2000);
-
-                // App neu starten
-                string startCommand = $"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1";
+                string startCommand = $"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1";  // App neu starten
                 ExecuteAdbCommand(startCommand);
-                Console.WriteLine($"{packageName} wurde neu gestartet.");
+                writeLogs.LogAndConsoleWirite($"{packageName} wurde neu gestartet.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Fehler beim Neustarten der App {packageName}: " + ex.Message);
+                writeLogs.LogAndConsoleWirite($"Fehler beim Neustarten der App {packageName}: " + ex.Message);
             }
         }
 
@@ -253,22 +224,18 @@ namespace EMU
         public void TrackTouchEvents()
         {
             string command = $"shell getevent -lt {inputDevice}"; // Verwende getevent ohne -lp für Live-Daten
-            string logFileFolder = Program.logFilePath;
-            WriteLogs.LogAndConsoleWirite("Starte die Erfassung von Touch-Ereignissen...");
+            writeLogs.LogAndConsoleWirite("Starte die Erfassung von Touch-Ereignissen...");
 
-            // Erstelle das Verzeichnis, falls es nicht existiert
-            if (!Directory.Exists(logFileFolder))
+            if (!Directory.Exists(logFileFolderPath))
             {
-                Directory.CreateDirectory(logFileFolder);
+                Directory.CreateDirectory(logFileFolderPath);
             }
 
-            // Pfad zur Log-Datei selbst
-            string logFilePath = Path.Combine(logFileFolder, "touchEventsLog.txt");
+            string logFilePathTouchEvens = Path.Combine(logFileFolderPath, "TouchEventsLogs.txt");
 
-            // Führe den ADB-Befehl aus und speichere die Ausgabe in einer Datei
             try
             {
-                using (StreamWriter writer = new StreamWriter(logFilePath, true)) // Append mode
+                using (StreamWriter writer = new StreamWriter(logFilePathTouchEvens, true)) // Append mode
                 {
                     Process process = new Process();
                     process.StartInfo.FileName = adbPath;
@@ -281,9 +248,8 @@ namespace EMU
                     {
                         if (!string.IsNullOrEmpty(args.Data))
                         {
-                            // Schreibe die Touch-Ereignisse in die Logdatei und auf die Konsole
                             writer.WriteLine(args.Data);
-                            WriteLogs.LogAndConsoleWirite(args.Data);
+                            writeLogs.LogAndConsoleWirite(args.Data);
                         }
                     };
 
@@ -292,31 +258,28 @@ namespace EMU
                     process.WaitForExit();
                 }
 
-                WriteLogs.LogAndConsoleWirite($"Touch-Ereignisse wurden in {logFilePath} gespeichert.");
+                writeLogs.LogAndConsoleWirite($"Touch-Ereignisse wurden in {logFilePathTouchEvens} gespeichert.");
             }
             catch (Exception ex)
             {
-                WriteLogs.LogAndConsoleWirite($"Fehler bei der Erfassung der Touch-Ereignisse: {ex.Message}");
+                writeLogs.LogAndConsoleWirite($"Fehler bei der Erfassung der Touch-Ereignisse: {ex.Message}");
             }
         }
 
 
-        public void ListRunningApps(string adbPath)
+        public void ListRunningApps()
         {
             string command = "shell ps | grep u0_a";
-            string logFileFolder = Program.logFilePath;
-            WriteLogs.LogAndConsoleWirite("Liste der laufenden Apps...");
+            writeLogs.LogAndConsoleWirite("Liste der laufenden Apps...");
             string output = ExecuteAdbCommand(command);
 
-            if (!Directory.Exists(logFileFolder))
+            if (!Directory.Exists(logFileFolderPath))
             {
-                Directory.CreateDirectory(logFileFolder);
+                Directory.CreateDirectory(logFileFolderPath);
             }
 
-            string logFilePath = Path.Combine(logFileFolder, "runningAppsLogs.txt");
-
-            // Schreibe die Ausgabe in die Log-Datei
-            using (StreamWriter writer = new StreamWriter(logFilePath, true)) // Append mode
+            string logFilePathRunningApps = Path.Combine(logFileFolderPath, "RunningAppsLogs.txt");
+            using (StreamWriter writer = new StreamWriter(logFilePathRunningApps, true)) // Append mode
             {
                 if (!string.IsNullOrEmpty(output))
                 {
