@@ -60,7 +60,7 @@
         private void CheckeObTruppeAusgebildetWerden(int truppenAnzahl)
         {
             deviceControl.TakeScreenshot();
-            bool findOrNot = deviceControl.CheckTextInScreenshot("Ausbildung", "gungen");
+            bool findOrNot = deviceControl.CheckTextInScreenshot("Ausbildung", "Befödern");
             if (!findOrNot)
             {
                 TruppenAnzahl(truppenAnzahl);
