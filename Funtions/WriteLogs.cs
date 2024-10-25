@@ -1,24 +1,30 @@
 ﻿namespace EMU
 {
-    internal class WriteLogs : DeviceControl
+    internal class WriteLogs
     {
+        private string logFileFolderPath = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Logs\\";
 
         internal void LogAndConsoleWirite(string inputString)
         {
             try
             {
-                if (!Directory.Exists(Get_logFilerFolderPath()))
+                // Überprüfen, ob das Verzeichnis existiert
+                if (!Directory.Exists(logFileFolderPath))
                 {
-                    Directory.CreateDirectory(Get_logFilerFolderPath());
+                    Directory.CreateDirectory(logFileFolderPath);
                 }
 
-                string logFileFolderPath = Path.Combine(Get_logFilerFolderPath(), "Logs.txt");
-                if (!File.Exists(logFileFolderPath))
+                // Ändere den Namen der lokalen Variablen, um Konflikte zu vermeiden
+                string logFilePath = Path.Combine(logFileFolderPath, "Logs.txt");
+
+                // Falls die Datei nicht existiert, erstelle sie
+                if (!File.Exists(logFilePath))
                 {
-                    File.Create(logFileFolderPath).Close(); 
+                    File.Create(logFilePath).Close();
                 }
 
-                using (StreamWriter writer = new StreamWriter(logFileFolderPath, true)) // 'true' hängt an die Datei an
+                // Schreiben in die Datei und Konsole
+                using (StreamWriter writer = new StreamWriter(logFilePath, true)) // 'true' bedeutet, dass an die Datei angehängt wird
                 {
                     if (!string.IsNullOrEmpty(inputString))
                     {
@@ -29,10 +35,8 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"An error occurred while writing to the log file: {ex.Message}");
+                Console.WriteLine($"Ein Fehler ist beim Schreiben in die Logdatei aufgetreten: {ex.Message}");
             }
         }
-
-
     }
 }

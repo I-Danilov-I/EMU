@@ -9,28 +9,127 @@ namespace EMU
         private readonly string inputDevice;
         private readonly string packageName;
         private readonly string screenshotDirectory;
-        private readonly string logFileFolderPath;
         private readonly int timeSleepMin;
 
+        private readonly WriteLogs writeLogs;
 
-        internal DeviceControl()
+        internal DeviceControl(WriteLogs writeLogs)
         {
+            this.writeLogs = writeLogs;  // Zuweisung der writeLogs-Instanz
+
             adbPath = "C:\\Program Files\\Nox\\bin\\adb.exe";
             inputDevice = "/dev/input/event4";
             packageName = "com.gof.global";
             screenshotDirectory = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Screens";
-            logFileFolderPath = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Logs\\";
             timeSleepMin = 1;
         }
 
 
-        WriteLogs writeLogs = new WriteLogs();
-        NoxControl noxControl = new NoxControl();
+        internal void StartNoxPlayer()
+        {
+            try
+            {
+                // Überprüfen, ob NoxPlayer bereits läuft
+                Process[] processes = Process.GetProcessesByName("Nox"); // Name des Prozesses für NoxPlayer
+
+                if (processes.Length > 0)
+                {
+                    //WriteLogs.LogAndConsoleWirite("NoxPlayer läuft bereits.");
+                }
+                else
+                {
+                    string noxPath = @"C:\Program Files\Nox\bin\Nox.exe"; // Pfad zu Nox
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = noxPath,
+                        Arguments = "-clone:Nox_0", // Verwende dies, um eine spezifische Instanz zu starten (z.B. Nox_0)
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+
+                    Process.Start(startInfo);
+                    writeLogs.LogAndConsoleWirite("NoxPlayer wurde gestartet.");
+                    Thread.Sleep(30000); // Warten, bis Nox vollständig gestartet ist
+                }
+            }
+            catch (Exception ex)
+            {
+                writeLogs.LogAndConsoleWirite("Fehler beim Starten des NoxPlayers: " + ex.Message);
+            }
+        }
 
 
-        internal string Get_logFilerFolderPath() 
-        { 
-            return logFileFolderPath;
+        internal void KillNoxPlayerProcess()
+        {
+            try
+            {
+                // Finde und beende den NoxPlayer-Prozess
+                foreach (var process in Process.GetProcessesByName("Nox"))
+                {
+                    process.Kill();
+                    Console.WriteLine("NoxPlayer wurde geschlossen.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Schließen des NoxPlayers: {ex.Message}");
+            }
+        }
+
+
+        internal void StartADBConnection()
+        {
+            try
+            {
+                string adbDevicesOutput = ExecuteAdbCommand("devices"); // Überprüfen, ob bereits eine ADB-Verbindung besteht
+                if (adbDevicesOutput.Contains("127.0.0.1:62001"))
+                {
+                    //WriteLogs.LogAndConsoleWirite("ADB ist bereits mit Nox verbunden.");
+                }
+                else
+                {
+                    // ADB Server neu starten und mit Nox verbinden, wenn keine Verbindung besteht
+                    ExecuteAdbCommand("kill-server");
+                    ExecuteAdbCommand("start-server");
+                    ExecuteAdbCommand("connect 127.0.0.1:62001"); // Standard-ADB-Port von Nox
+                    writeLogs.LogAndConsoleWirite("ADB-Verbindung neu hergestellt.");
+                }
+            }
+            catch (Exception ex)
+            {
+                writeLogs.LogAndConsoleWirite("Fehler bei der ADB-Verbindung: " + ex.Message);
+            }
+        }
+
+
+        internal void SeitenMenuOpen()
+        {
+            ClickAtTouchPositionWithHexa("00000017", "000002b0"); // Öffne Seitenmenü
+        }
+
+
+        internal void SeitenMenuClose()
+        {
+            ClickAtTouchPositionWithHexa("0000023f", "000002a6"); // Schliese das Seitenmenü
+        }
+
+
+        internal void SeitenMenuScrolDown()
+        {
+            ClickAndHoldAndScroll("0000005b", "000003ab", "00000025", "000000b5", 300, 500); // Switsche runter im Seitenmenü
+        }
+
+
+        internal void OfflineErtregeAbholen()
+        {
+            TakeScreenshot(GetScreenDir());
+            bool offlineErtrege = CheckTextInScreenshot("Willkommen", "Offline");
+            if (offlineErtrege == true)
+            {
+                ClickAtTouchPositionWithHexa("000001bf", "000004d3"); // Bestätigen Button klicken
+                Program.offlineErtrege++;
+                writeLogs.LogAndConsoleWirite($"Offline Erträge wurden abgeholt. {Program.offlineErtrege}");
+            }
         }
 
 
@@ -61,10 +160,13 @@ namespace EMU
         {
             try
             {
+                HelperFuntions.CurrenDir("TrainedData", "");
                 string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png");
 
+                string trainedDataPath = HelperFuntions.CurrenDir("TrainedData", "");
+
                 // OCR-Engine initialisieren
-                using (var engine = new TesseractEngine("C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Data\\", "deu", EngineMode.Default))
+                using (var engine = new TesseractEngine(trainedDataPath, "deu", EngineMode.Default))
                 {
                     engine.DefaultPageSegMode = PageSegMode.SingleBlock; // Setze den Seitensegmentierungsmodus
                     using (var img = Pix.LoadFromFile(localScreenshotPath)) // Verwende das verarbeitete Bild
@@ -148,7 +250,7 @@ namespace EMU
             if (erfolg == true)
             {
                 writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {timeSleep} Min erneut.");
-                noxControl.KillNoxPlayerProcess();
+                KillNoxPlayerProcess();
                 Thread.Sleep(60 * 1000 * timeSleep);
             }
         }
@@ -232,8 +334,15 @@ namespace EMU
         }
 
 
+
+
+
+        // [FÜR ETWICKLER]
+        // ##################################################################
         public void TrackTouchEvents()
         {
+
+            string logFileFolderPath = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Logs\\";
             string command = $"shell getevent -lt {inputDevice}"; // Verwende getevent ohne -lp für Live-Daten
             writeLogs.LogAndConsoleWirite("Starte die Erfassung von Touch-Ereignissen...");
 
@@ -280,6 +389,7 @@ namespace EMU
 
         public void ListRunningApps()
         {
+            string logFileFolderPath = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Logs\\";
             string command = "shell ps | grep u0_a";
             writeLogs.LogAndConsoleWirite("Liste der laufenden Apps...");
             string output = ExecuteAdbCommand(command);

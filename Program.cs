@@ -12,24 +12,26 @@
 
         private static void Main()
         {
-            DeviceControl deviceControl = new DeviceControl();
-            NoxControl noxControl = new NoxControl();
-            GameControl gameControl = new GameControl();
             WriteLogs writeLogs = new WriteLogs();
+            DeviceControl deviceControl = new DeviceControl(writeLogs);
+            Erkundung erkundung = new Erkundung(writeLogs, deviceControl);
+            TruppenTraining truppenTraining = new TruppenTraining(writeLogs, deviceControl);
+            LagerOnlineBelohnung lagerOnlineBelohnung = new LagerOnlineBelohnung(writeLogs, deviceControl);
 
 
-            writeLogs.LogAndConsoleWirite("\n\n[PROGRAMM START]");
+            writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ShowSetting();
+            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             //deviceControl.TrackTouchEvents();
-            
+
 
             while (true)
             {
                 try
                 {
-                    noxControl.StartNoxPlayer();
-                    noxControl.StartADBConnection();
+                    deviceControl.StartNoxPlayer();
+                    deviceControl.StartADBConnection();
                     if (deviceControl.IsAppRunning() == true)
                     {                     
                         writeLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]_________________________________");
@@ -40,19 +42,15 @@
                         writeLogs.LogAndConsoleWirite($"Sniper Einheiten traniert: {sniperTruppenTraniert}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
 
-                        Erkundung erkundung = new Erkundung();
+                        deviceControl.OfflineErtregeAbholen();
+
                         erkundung.ErkundungAbholen();
                         erkundung.Erkundungskampf();
-                        
-                        GameControl gameControl1 = new GameControl();
-                        gameControl.OfflineErtregeAbholen();
 
-                        TruppenTraining truppenTraining = new TruppenTraining();
                         truppenTraining.TrainiereInfaterie(10);
                         truppenTraining.TrainiereLatenzTreger(10);
                         truppenTraining.TrainiereSniper(10);
 
-                        LagerOnlineBelohnung lagerOnlineBelohnung = new LagerOnlineBelohnung();
                         lagerOnlineBelohnung.GeschnekAbholen();
                         lagerOnlineBelohnung.AusdauerAbholen();
                         
@@ -60,12 +58,11 @@
                     else
                     {
                         deviceControl.StartApp();
-                        gameControl.OfflineErtregeAbholen();
                     }
                 }
                 catch (Exception)
                 {
-                    noxControl.KillNoxPlayerProcess();
+                    deviceControl.KillNoxPlayerProcess();
                     Thread.Sleep(10000);
                 }
             }
