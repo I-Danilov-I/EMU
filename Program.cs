@@ -37,7 +37,7 @@ namespace EMU
             TruppenTraining truppenTraining = new TruppenTraining(writeLogs, deviceControl);
             LagerOnlineBelohnung lagerOnlineBelohnung = new LagerOnlineBelohnung(writeLogs, deviceControl);
             Allianz allianz = new Allianz(writeLogs, deviceControl);
-            Jagt bestienJagt = new Jagt(writeLogs, deviceControl);
+            Jagt Jagt = new Jagt(writeLogs, deviceControl);
             TruppenHeilen truppenHeilen = new TruppenHeilen(writeLogs, deviceControl);
             Helden helden = new Helden(writeLogs, deviceControl);
             LebensBaum lebensBaum = new LebensBaum(writeLogs, deviceControl);
@@ -78,7 +78,6 @@ namespace EMU
                         writeLogs.LogAndConsoleWirite($"Helden rekuritiert: {heldenRecurtCount}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
                         //deviceControl.BackUneversal();
-                        bestienJagt.PolarTerrorStarten(5, false);
 
 
                         /*
@@ -91,6 +90,7 @@ namespace EMU
                         lebensBaum.BaumBelohnungAbholen();
                         deviceControl.StableControl();
 
+                        bestienJagt.PolarTerrorStarten(5, false);
                         bestienJagt.BestienJagtStarten(25, false);
                         deviceControl.StableControl();
 
