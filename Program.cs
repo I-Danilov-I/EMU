@@ -43,15 +43,19 @@
                         Erkundung erkundung = new Erkundung();
                         erkundung.ErkundungAbholen();
                         erkundung.Erkundungskampf();
-                        /*
-                        //GameControl.OfflineErtregeAbholen(adbPath, screenshotDirectory);
-                        TruppenTraining.TrainiereInfaterie(adbPath, screenshotDirectory, 10);
-                        TruppenTraining.TrainiereLatenzTreger(adbPath, screenshotDirectory, 10);
-                        TruppenTraining.TrainiereSniper(adbPath, screenshotDirectory, 10);
+                        
+                        GameControl gameControl1 = new GameControl();
+                        gameControl.OfflineErtregeAbholen();
 
-                        LagerOnlineBelohnung.GeschnekAbholen(adbPath, screenshotDirectory);
-                        LagerOnlineBelohnung.AusdauerAbholen(adbPath, screenshotDirectory);
-                        */
+                        TruppenTraining truppenTraining = new TruppenTraining();
+                        truppenTraining.TrainiereInfaterie(10);
+                        truppenTraining.TrainiereLatenzTreger(10);
+                        truppenTraining.TrainiereSniper(10);
+
+                        LagerOnlineBelohnung lagerOnlineBelohnung = new LagerOnlineBelohnung();
+                        lagerOnlineBelohnung.GeschnekAbholen();
+                        lagerOnlineBelohnung.AusdauerAbholen();
+                        
                     }
                     else
                     {

@@ -34,7 +34,7 @@
             }
         }
 
-        internal void AusdauerAbholen(string screenshotDirectory)
+        internal void AusdauerAbholen()
         {
             WriteLogs.LogAndConsoleWirite("\n\nLager Online Ausdauer wird abgeholt...");
             WriteLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
@@ -45,7 +45,7 @@
             ClickAtTouchPositionWithHexa("000001c8", "000002bfe"); // Gebäude anwählen
             ClickAtTouchPositionWithHexa("000001c1", "000002c6"); // Abholen 
 
-            TakeScreenshot(screenshotDirectory); // Mache ein Screenshot
+            TakeScreenshot(GetScreenDir()); // Mache ein Screenshot
             bool findOrNot = CheckTextInScreenshot("Nehmen", "herzliches"); // Suche nach Text im Screenshot
             if (findOrNot)
             {
