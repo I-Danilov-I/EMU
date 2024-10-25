@@ -2,8 +2,10 @@
 {
     internal class TruppenTraining : DeviceControl
     {
+
         GameControl GameControl = new GameControl();
         WriteLogs WriteLogs = new WriteLogs();
+
 
         private void TruppenAnzahl(int truppenAnzahl)
         {
@@ -98,6 +100,7 @@
             Program.infaterieTruppenTraniert += truppenAnzahl; // Truppen adieren
         }
 
+
         internal void TrainiereLatenzTreger(int truppenAnzahl)
         {
             WriteLogs.LogAndConsoleWirite("\n\nLatenzträger-Truppen Training wird gestartet...");
@@ -115,6 +118,7 @@
             CheckeObTruppeAusgebildetWerden(truppenAnzahl); 
             Program.latenztregerTruppenTraniert += truppenAnzahl; // Truppen adieren
         }
+
 
         internal void TrainiereSniper(int truppenAnzahl)
         {
@@ -134,5 +138,7 @@
             CheckeObTruppeAusgebildetWerden(truppenAnzahl);
             Program.sniperTruppenTraniert += truppenAnzahl; // Truppen adieren
         }
+
+
     }
 }

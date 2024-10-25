@@ -9,6 +9,7 @@
         internal static int lagerBonusGeschenkCounter = 0;
         internal static int lagerBonusAausdauerCounter = 0;
 
+
         private static void Main()
         {
             DeviceControl deviceControl = new DeviceControl();
@@ -16,11 +17,13 @@
             GameControl gameControl = new GameControl();
             WriteLogs writeLogs = new WriteLogs();
 
+
             writeLogs.LogAndConsoleWirite("\n\n[PROGRAMM START]");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ShowSetting();
             //deviceControl.TrackTouchEvents();
             
+
             while (true)
             {
                 try
@@ -66,7 +69,6 @@
                     Thread.Sleep(10000);
                 }
             }
-
         }
 
 

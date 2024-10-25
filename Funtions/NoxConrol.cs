@@ -4,7 +4,9 @@ namespace EMU
 {
     internal class NoxControl : DeviceControl
     {
+
         WriteLogs WriteLogs = new WriteLogs();
+
 
         internal void StartNoxPlayer()
         {
@@ -58,14 +60,11 @@ namespace EMU
         }
 
 
-
         internal void StartADBConnection()
         {
             try
             {
-                // Überprüfen, ob bereits eine ADB-Verbindung besteht
-                string adbDevicesOutput = ExecuteAdbCommand("devices");
-
+                string adbDevicesOutput = ExecuteAdbCommand("devices"); // Überprüfen, ob bereits eine ADB-Verbindung besteht
                 if (adbDevicesOutput.Contains("127.0.0.1:62001"))
                 {
                     //WriteLogs.LogAndConsoleWirite("ADB ist bereits mit Nox verbunden.");
@@ -84,6 +83,7 @@ namespace EMU
                 WriteLogs.LogAndConsoleWirite("Fehler bei der ADB-Verbindung: " + ex.Message);
             }
         }
+
 
     }
 }

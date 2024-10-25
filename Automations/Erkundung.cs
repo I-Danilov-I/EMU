@@ -2,9 +2,10 @@
 {
     internal class Erkundung : DeviceControl
     {
+
         WriteLogs WriteLogs = new WriteLogs();
 
-        // Methode zum Abholen der Belohnung
+
         public void ErkundungAbholen()
         {
             WriteLogs.LogAndConsoleWirite("\n\nErkundung wird abgeholt...");
@@ -21,7 +22,7 @@
             WriteLogs.LogAndConsoleWirite("Erkundung erfogreich abgeholt! ;)");
         }
 
-        // Methode zum Abholen der Belohnung
+
         public void Erkundungskampf()
         {
             WriteLogs.LogAndConsoleWirite("\n\nErkundungs kampf wird vorbereitet...");
@@ -35,5 +36,7 @@
             PressButtonBack();
             WriteLogs.LogAndConsoleWirite("Erkundungskapmf erfogreich durchgeführt! ;)");
         }
+
+
     }
 }

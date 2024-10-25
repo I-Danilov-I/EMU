@@ -2,8 +2,10 @@
 {
     internal class LagerOnlineBelohnung : DeviceControl
     {
+
         GameControl GameControl = new GameControl();
         WriteLogs WriteLogs = new WriteLogs();
+
 
         internal void GeschnekAbholen()
         {
@@ -34,6 +36,7 @@
                 Thread.Sleep(5000);
             }
         }
+
 
         internal void AusdauerAbholen()
         {

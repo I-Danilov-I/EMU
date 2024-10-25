@@ -12,6 +12,7 @@ namespace EMU
         private readonly string logFileFolderPath;
         private readonly int timeSleepMin;
 
+
         internal DeviceControl()
         {
             adbPath = "C:\\Program Files\\Nox\\bin\\adb.exe";
@@ -20,13 +21,18 @@ namespace EMU
             screenshotDirectory = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Screens";
             logFileFolderPath = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Logs\\";
             timeSleepMin = 1;
-
         }
+
 
         WriteLogs writeLogs = new WriteLogs();
         NoxControl noxControl = new NoxControl();
 
-        internal string Get_logFilerFolderPath() { return logFileFolderPath; }
+
+        internal string Get_logFilerFolderPath() 
+        { 
+            return logFileFolderPath;
+        }
+
 
         internal void TakeScreenshot(string screenshotDirectory)
         {
@@ -121,7 +127,12 @@ namespace EMU
             }
         }
 
-        internal string GetScreenDir() { return screenshotDirectory; }
+
+        internal string GetScreenDir() 
+        {
+            return screenshotDirectory;
+        }
+
 
         internal void ShowSetting()
         {
@@ -295,7 +306,8 @@ namespace EMU
 
 
 
-        //############################################################################
+        // [Aktuel nicht verwendet!]
+        // ##################################################################
         internal void ClickAtPositionWithDecimal(string adbPath, int x, int y)
         {
             string adbCommand = $"shell input tap {x} {y}";
