@@ -6,7 +6,7 @@
         {
             writeLogs.LogAndConsoleWirite("\n\nBestien Jagt wird gestartet...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            CheckePosition();
+            deviceControl.CheckePosition();
             deviceControl.ClickAtTouchPositionWithHexa("00000036", "00000443"); // Suchicon wählen
             TierLevel(bestienLevel); // Bestienlevel Eingabe
             deviceControl.ClickAtTouchPositionWithHexa("000001be", "000005eb"); // Suchen Button
@@ -31,6 +31,7 @@
 
             deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); // Einsetzen
             writeLogs.LogAndConsoleWirite("Bestien Jagt erfogreich gestartet! ;)");
+            deviceControl.CheckePosition();
         }
 
 
@@ -54,17 +55,6 @@
             string enterCommand = "shell input keyevent KEYCODE_ENTER"; // Bestätigen oder Enter drücken
             deviceControl.ExecuteAdbCommand(enterCommand);
         }
-
-
-        private void CheckePosition()
-        {
-            deviceControl.TakeScreenshot();
-            if (deviceControl.CheckTextInScreenshot("Welt", "Welt") == true)
-            {
-                deviceControl.ClickAtTouchPositionWithHexa("0000032f", "000005fd"); // Welt / Stadt
-            }
-        }
-
 
     }
 }

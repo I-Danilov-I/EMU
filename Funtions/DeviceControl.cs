@@ -26,6 +26,30 @@ namespace EMU
         }
 
 
+        internal void BackUneversal()
+        {
+            PressButtonBack();
+            PressButtonBack();
+            PressButtonBack();
+            PressButtonBack();
+            TakeScreenshot();
+            if (CheckTextInScreenshot("Spiel", "verlassen?") == true)
+            {
+                PressButtonBack();
+            }
+        }
+
+
+        internal void CheckePosition()
+        {
+            TakeScreenshot();
+            if (CheckTextInScreenshot("Welt", "Welt") == true)
+            {
+                ClickAtTouchPositionWithHexa("0000032f", "000005fd"); // Welt / Stadt
+            }
+        }
+
+
         internal void CloseApp()
         {
             string adbCommand = $"shell am force-stop {packageName}";  // Befehl zum Schließen der App
@@ -248,13 +272,12 @@ namespace EMU
         internal void StableControl()
         {
             TakeScreenshot();
-            bool checkAnoterDeviceAtviti = CheckTextInScreenshot("Kontankt", "Konto");
+            bool checkAnoterDeviceAtviti = CheckTextInScreenshot("Tipps", "Konto");
             if (checkAnoterDeviceAtviti == true)
             {
                 writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {timeSleepMin} Min erneut.");
-                CloseApp();
-                KillNoxPlayerProcess();
                 Thread.Sleep(60 * 1000 * timeSleepMin);
+                throw new Exception();
             }
         }
 
