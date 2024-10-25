@@ -1,4 +1,4 @@
-﻿namespace EMU.Automations
+﻿namespace EMU
 {
     internal class Jagt(WriteLogs writeLogs, DeviceControl deviceControl)
     {
@@ -9,11 +9,7 @@
             deviceControl.CheckePosition();
             deviceControl.ClickAtTouchPositionWithHexa("00000036", "00000443"); // Suchicon wählen
             TierLevel(bestienLevel); // Bestienlevel Eingabe
-            deviceControl.ClickAtTouchPositionWithHexa("000001be", "000005eb"); // Suchen Button
-
-            // MUSS GEMACHT WERDEN RESORSEN PRÜFEN
-            //deviceControl.TakeScreenshot();
-            //deviceControl.CheckTextInScreenshot("", "");
+            deviceControl.ClickAtTouchPositionWithHexa("000001be", "000005eb"); // Suchen Butto
             deviceControl.ClickAtTouchPositionWithHexa("000001c6", "000002ff"); // Angriff
 
             if (ausgleichen == true)
@@ -29,9 +25,28 @@
                 writeLogs.LogAndConsoleWirite("Der Ausgang währe fatal gewesen, Jagt nicht gestartet. :)");
             };
 
-            deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); // Einsetzen
-            writeLogs.LogAndConsoleWirite("Bestien Jagt erfogreich gestartet! ;)");
+            deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb");       
+            CheckAusdauer();
             deviceControl.CheckePosition();
+        }
+
+
+        private void CheckAusdauer()
+        {
+            writeLogs.LogAndConsoleWirite("Checke ob genug Ausdauer vorhaden ist...");
+            deviceControl.TakeScreenshot();
+            bool reichenResursen = deviceControl.CheckTextInScreenshot("Ausdauer", "VIP"); // Suche nach Text im Screenshot
+            if (reichenResursen)
+            {
+                writeLogs.LogAndConsoleWirite("Resoursen reichen nicht aus :(");
+                deviceControl.PressButtonBack();
+                deviceControl.PressButtonBack();
+                writeLogs.LogAndConsoleWirite("Jagt nicht gestartet. :)");
+                return;
+            }
+            Program.bestienJagtCount++;
+            writeLogs.LogAndConsoleWirite("Es ist genug Aadauer da!");
+            writeLogs.LogAndConsoleWirite("Bestien Jagt erfogreich gestartet! ;)");
         }
 
 

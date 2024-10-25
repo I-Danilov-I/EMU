@@ -31,7 +31,7 @@
 
             deviceControl.PressButtonBack();
             deviceControl.PressButtonBack();
-            Program.heldenRecurt += 1;
+            Program.heldenRecurtCount += 1;
             writeLogs.LogAndConsoleWirite("Held Rekurtierung abgeshclsosen! :)");
         }
 

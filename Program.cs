@@ -1,10 +1,8 @@
-﻿using EMU.Automations;
-
-namespace EMU
+﻿namespace EMU
 {
     internal static class Program
     {
-        internal static int geschwindigkeit = 4000; // Pause in ms zwischen jedem Befehl.
+        internal static int geschwindigkeit = 1000; // Pause in ms zwischen jedem Befehl.
 
         internal static int offlineErtregeCounter = 0; 
 
@@ -23,7 +21,8 @@ namespace EMU
         internal static int alianzTechnologie = 0;
 
         internal static int heilenCounter = 0;
-        internal static int heldenRecurt = 0;
+        internal static int heldenRecurtCount = 0;
+        internal static int bestienJagtCount = 0;
 
         private static void Main()
         {
@@ -69,14 +68,14 @@ namespace EMU
                         writeLogs.LogAndConsoleWirite($"Allianz Hilfe: {alianzHilfeCounter}");
                         writeLogs.LogAndConsoleWirite($"Allinaz Technolgie: {alianzTechnologie}");
                         writeLogs.LogAndConsoleWirite($"Heilung: {heilenCounter}");
-                        writeLogs.LogAndConsoleWirite($"Helden rekuritiert: {heldenRecurt}");
+                        writeLogs.LogAndConsoleWirite($"Helden rekuritiert: {heldenRecurtCount}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
                         //deviceControl.BackUneversal();
-
-                        helden.HeldenRecurtieren();
-                        deviceControl.StableControl();
                         
                         bestienJagt.BestienJagtStarten(25, false);
+                        deviceControl.StableControl();
+
+                        helden.HeldenRecurtieren();
                         deviceControl.StableControl();
                         
                         truppenHeilen.Heilen();

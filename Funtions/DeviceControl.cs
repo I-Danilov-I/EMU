@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using EMU.Funtions;
 using Tesseract;
 
 namespace EMU
