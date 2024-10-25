@@ -1,4 +1,6 @@
-﻿namespace EMU
+﻿using EMU.Automations;
+
+namespace EMU
 {
     internal static class Program
     {
@@ -39,6 +41,7 @@
             TruppenHeilen truppenHeilen = new TruppenHeilen(writeLogs, deviceControl);
             Helden helden = new Helden(writeLogs, deviceControl);
             LebensBaum lebensBaum = new LebensBaum(writeLogs, deviceControl);
+            GuvenourBefehl guvenourBefehl = new GuvenourBefehl(writeLogs, deviceControl);
 
 
             writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
@@ -76,10 +79,16 @@
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
                         //deviceControl.BackUneversal();
 
+                        guvenourBefehl.EilauftragAbholen();
+                        guvenourBefehl.FestlichkeitenAbholen();
+                        deviceControl.StableControl();
+
+                        /*
                         lebensBaum.EssensVonFreundenAbholen();
+                        deviceControl.StableControl();
                         lebensBaum.BaumBelohnungAbholen();
                         deviceControl.StableControl();
-                        /*
+
                         bestienJagt.BestienJagtStarten(25, false);
                         deviceControl.StableControl();
 

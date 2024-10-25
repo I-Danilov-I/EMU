@@ -1,4 +1,4 @@
-﻿namespace EMU
+﻿namespace EMU.Automations
 {
     internal class Helden(WriteLogs writeLogs, DeviceControl deviceControl)
     {
@@ -15,7 +15,7 @@
 
             deviceControl.ClickAtTouchPositionWithHexa("000000f1", "00000411"); // Erweiterte rekrutierung         
             deviceControl.TakeScreenshot();
-            if(deviceControl.CheckTextInScreenshot("Kaufen", "500") == true)
+            if (deviceControl.CheckTextInScreenshot("Kaufen", "500") == true)
             {
                 deviceControl.PressButtonBack();
                 writeLogs.LogAndConsoleWirite("Aktuell keine ErweiterteRekurtierung.");

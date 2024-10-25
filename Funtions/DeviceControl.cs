@@ -51,7 +51,6 @@ namespace EMU
             PressButtonBack();
             PressButtonBack();
             PressButtonBack();
-            PressButtonBack();
             TakeScreenshot();
             if (CheckTextInScreenshot("Spiel", "verlassen?") == true)
             {
@@ -60,13 +59,21 @@ namespace EMU
         }
 
 
-        internal void CheckePosition()
+        internal void CheckePositionAndGoWelt()
         {
             TakeScreenshot();
             if (CheckTextInScreenshot("Welt", "Welt") == true)
             {
                 ClickAtTouchPositionWithHexa("0000032f", "000005fd"); // Welt / Stadt
             }
+        }
+
+
+        internal void CheckePositionAndGoStadt()
+        {
+            ClickAtTouchPositionWithHexa("00000081", "0000004f"); // Bonusübersicht klick
+            ClickAtTouchPositionWithHexa("000001cf", "000003a6"); // Kraft klick
+            ClickAtTouchPositionWithHexa("000002f1", "00000540"); // Technologieforschung wälen
         }
 
 

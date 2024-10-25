@@ -1,4 +1,4 @@
-﻿namespace EMU
+﻿namespace EMU.Automations
 {
     internal class LebensBaum(WriteLogs writeLogs, DeviceControl deviceControl)
     {
@@ -20,7 +20,7 @@
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
 
             GoToBaum();
-                 
+
             deviceControl.ClickAtTouchPositionWithHexa("000001c3", "00000331"); // Baum anwählen
             deviceControl.ClickAtTouchPositionWithHexa("000001c3", "00000331"); // Baum (Vorsichthalber)
             deviceControl.ClickAtTouchPositionWithHexa("000002ac", "000003a6"); // Sammeln
@@ -38,7 +38,7 @@
             writeLogs.LogAndConsoleWirite("\n\nEssens von Freunden wird abgeholt...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             GoToBaum();
-            
+
             // Klicke 1 von unten an
             deviceControl.ClickAtTouchPositionWithHexa("00000346", "00000083"); // Freunde wählen
             deviceControl.ScrollDown(15);

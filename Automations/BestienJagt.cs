@@ -6,7 +6,7 @@
         {
             writeLogs.LogAndConsoleWirite("\n\nBestien Jagt wird gestartet...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            deviceControl.CheckePosition();
+            deviceControl.CheckePositionAndGoWelt();
             deviceControl.ClickAtTouchPositionWithHexa("00000036", "00000443"); // Suchicon wählen
             TierLevel(bestienLevel); // Bestienlevel Eingabe
             deviceControl.ClickAtTouchPositionWithHexa("000001be", "000005eb"); // Suchen Butto
@@ -27,7 +27,7 @@
 
             deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb");       
             CheckAusdauer();
-            deviceControl.CheckePosition();
+            deviceControl.CheckePositionAndGoWelt();
         }
 
 

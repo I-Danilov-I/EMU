@@ -14,7 +14,7 @@
             deviceControl.ClickAtTouchPositionWithHexa("000002d4", "000005dd"); // Heilen Button2
 
             deviceControl.TakeScreenshot();
-            if(deviceControl.CheckTextInScreenshot("Keine verletzten Truppen zum Anzeigen.", "Alles ist gut!") == true)
+            if (deviceControl.CheckTextInScreenshot("Keine verletzten Truppen zum Anzeigen.", "Alles ist gut!") == true)
             {
                 deviceControl.PressButtonBack();
             };
