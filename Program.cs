@@ -16,7 +16,7 @@
 
         internal static int alianzHilfeCounter = 0;
         internal static int alianzKistenCounter = 0;
-
+        internal static int alianzTechnologie = 0;
 
         private static void Main()
         {
@@ -50,15 +50,15 @@
                         writeLogs.LogAndConsoleWirite($"Sniper Einheiten traniert: {sniperTruppenTraniertCounter}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
 
-                        allianz.KistenAbholen();
-                        allianz.Hilfe();
-
-
                         deviceControl.OfflineErtregeAbholen();
 
                         erkundung.Erkundungskampf();
                         erkundung.ErkundungAbholen();
                         deviceControl.StableControl();
+
+                        allianz.KistenAbholen();
+                        allianz.Hilfe();
+                        allianz.Technologie(3);
 
                         truppenTraining.TrainiereInfaterie(10);
                         deviceControl.StableControl();

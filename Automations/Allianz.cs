@@ -33,5 +33,30 @@
             writeLogs.LogAndConsoleWirite("Allianz sagt Danke für deine Hilfe! ;)");
         }
 
+
+        public void Technologie(int anzahlBeitrege)
+        {
+            writeLogs.LogAndConsoleWirite("\n\nAllianz Technologie Beitrag wird ausgeführt...");
+            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
+            deviceControl.ClickAtTouchPositionWithHexa("0000029e", "000005fa"); // Allianz
+            deviceControl.ClickAtTouchPositionWithHexa("000002a5", "00000486"); // Technologie Label
+            deviceControl.ClickAtTouchPositionWithHexa("000001c3", "0000050c"); // Eigeschaft wählen
+
+            int counter = 0;
+            while (counter < anzahlBeitrege)
+            {
+                counter++;
+                deviceControl.ClickAtTouchPositionWithHexa("00000284", "00000505"); // Beitragen
+                Thread.Sleep(500);
+            }
+
+            deviceControl.PressButtonBack();
+            deviceControl.PressButtonBack();
+            deviceControl.PressButtonBack();
+            Program.alianzTechnologie += 1;
+            writeLogs.LogAndConsoleWirite("Allianz sagt Danke für dein Beitrag! ;)");
+        }
+
+
     }
 }
