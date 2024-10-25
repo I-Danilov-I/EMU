@@ -1,4 +1,4 @@
-﻿namespace EMU
+﻿namespace EMU.Funtions
 {
     internal class HelperFuntions
     {

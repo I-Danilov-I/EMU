@@ -23,7 +23,7 @@
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ShowSetting();
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            //deviceControl.TrackTouchEvents();
+            // deviceControl.TrackTouchEvents();
 
 
             while (true)
@@ -41,19 +41,30 @@
                         writeLogs.LogAndConsoleWirite($"Latenzträger Einheiten traniert: {latenztregerTruppenTraniert}");
                         writeLogs.LogAndConsoleWirite($"Sniper Einheiten traniert: {sniperTruppenTraniert}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
+                        erkundung.Erkundungskampf();
 
                         deviceControl.OfflineErtregeAbholen();
 
-                        erkundung.ErkundungAbholen();
-                        erkundung.Erkundungskampf();
-
                         truppenTraining.TrainiereInfaterie(10);
+                        deviceControl.Wiederverbinden();
+
                         truppenTraining.TrainiereLatenzTreger(10);
+                        deviceControl.Wiederverbinden();
+
                         truppenTraining.TrainiereSniper(10);
+                        deviceControl.Wiederverbinden();
+
+                        erkundung.ErkundungAbholen();
+                        deviceControl.Wiederverbinden();
 
                         lagerOnlineBelohnung.GeschnekAbholen();
+                        deviceControl.Wiederverbinden();
+
                         lagerOnlineBelohnung.AusdauerAbholen();
-                        
+                        deviceControl.Wiederverbinden();
+
+
+
                     }
                     else
                     {

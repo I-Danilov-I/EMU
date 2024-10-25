@@ -28,7 +28,7 @@
         private void CheckResoursen()
         {
             // PÜrfe o bresursen reichen
-            deviceControl.TakeScreenshot(deviceControl.GetScreenDir()); // Mache ein Screenshot
+            deviceControl.TakeScreenshot(); // Mache ein Screenshot
             bool reichenResursen = deviceControl.CheckTextInScreenshot("Erhalte mehr", "Erhalte mehr"); // Suche nach Text im Screenshot
             if (reichenResursen)
             {
@@ -43,7 +43,7 @@
         private void CheckeErfolg()
         {
             // Prüfe um Training erfoglreich gestartet wurde.
-            deviceControl.TakeScreenshot(deviceControl.GetScreenDir()); // Mache ein Screenshot
+            deviceControl.TakeScreenshot(); // Mache ein Screenshot
             bool erfolg = deviceControl.CheckTextInScreenshot("Ausbildung", "gungen"); // Suche nach Text im Screenshot
             if (erfolg == true)
             {
@@ -59,7 +59,7 @@
 
         private void CheckeObTruppeAusgebildetWerden(int truppenAnzahl)
         {
-            deviceControl.TakeScreenshot(deviceControl.GetScreenDir());
+            deviceControl.TakeScreenshot();
             bool findOrNot = deviceControl.CheckTextInScreenshot("Ausbildung", "gungen");
             if (!findOrNot)
             {

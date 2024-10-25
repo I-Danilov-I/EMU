@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using EMU.Funtions;
 using Tesseract;
 
 namespace EMU
@@ -9,7 +10,7 @@ namespace EMU
         private readonly string inputDevice;
         private readonly string packageName;
         private readonly string screenshotDirectory;
-        private readonly int timeSleepMin;
+        private int timeSleepMin;
 
         private readonly WriteLogs writeLogs;
 
@@ -122,7 +123,7 @@ namespace EMU
 
         internal void OfflineErtregeAbholen()
         {
-            TakeScreenshot(GetScreenDir());
+            TakeScreenshot();
             bool offlineErtrege = CheckTextInScreenshot("Willkommen", "Offline");
             if (offlineErtrege == true)
             {
@@ -133,7 +134,7 @@ namespace EMU
         }
 
 
-        internal void TakeScreenshot(string screenshotDirectory)
+        internal void TakeScreenshot()
         {
             try
             {
@@ -160,7 +161,6 @@ namespace EMU
         {
             try
             {
-                HelperFuntions.CurrenDir("TrainedData", "");
                 string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png");
 
                 string trainedDataPath = HelperFuntions.CurrenDir("TrainedData", "");
@@ -220,6 +220,7 @@ namespace EMU
                 string errorOutput = process.StandardError.ReadToEnd();
 
                 process.WaitForExit();
+                Thread.Sleep(1000);
                 return output;
             }
             catch (Exception ex)
@@ -230,12 +231,6 @@ namespace EMU
         }
 
 
-        internal string GetScreenDir() 
-        {
-            return screenshotDirectory;
-        }
-
-
         internal void ShowSetting()
         {
             writeLogs.LogAndConsoleWirite($"ADB Path: {adbPath}");
@@ -243,28 +238,26 @@ namespace EMU
         }
 
 
-        internal void Wiederverbinden(int timeSleep)
+        internal void Wiederverbinden()
         {
-            TakeScreenshot(screenshotDirectory);
+            TakeScreenshot();
             bool erfolg = CheckTextInScreenshot("Kontankt", "Konto");
             if (erfolg == true)
             {
-                writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {timeSleep} Min erneut.");
+                writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {timeSleepMin} Min erneut.");
                 KillNoxPlayerProcess();
-                Thread.Sleep(60 * 1000 * timeSleep);
+                Thread.Sleep(60 * 1000 * timeSleepMin);
             }
         }
 
 
         public void ClickAtTouchPositionWithHexa(string hexX, string hexY)
-        {
-            Wiederverbinden(timeSleepMin);
+        {          
             int x = int.Parse(hexX, System.Globalization.NumberStyles.HexNumber);
             int y = int.Parse(hexY, System.Globalization.NumberStyles.HexNumber);
 
             string adbCommand = $"shell input tap {x} {y}";
-            ExecuteAdbCommand(adbCommand);
-
+            ExecuteAdbCommand(adbCommand);          
         }
 
 

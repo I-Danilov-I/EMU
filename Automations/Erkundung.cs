@@ -23,12 +23,16 @@
 
         public void Erkundungskampf()
         {
-            writeLogs.LogAndConsoleWirite("\n\nErkundungs kampf wird vorbereitet...");
+            writeLogs.LogAndConsoleWirite("\n\nErkundungs kampf wird durchgeführt...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ClickAtTouchPositionWithHexa("00000054", "000005f3"); // Erkundung
             deviceControl.ClickAtTouchPositionWithHexa("000001c1", "000005b7"); // Erkunden (Kampf)
             deviceControl.ClickAtTouchPositionWithHexa("000000d8", "000005e2"); // Schneller Einsatz
             deviceControl.ClickAtTouchPositionWithHexa("00000296", "000005da"); // Kampf
+
+            deviceControl.ClickAtTouchPositionWithHexa("0000033c", "0000042a"); // Aktiviere  Speed 2x
+            deviceControl.ClickAtTouchPositionWithHexa("00000335", "000004ab"); // Aktiviere Auto Attack
+
             Thread.Sleep(45 * 1000);
             deviceControl.PressButtonBack();
             deviceControl.PressButtonBack();
