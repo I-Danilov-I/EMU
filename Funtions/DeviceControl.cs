@@ -238,15 +238,25 @@ namespace EMU
         }
 
 
-        internal void Wiederverbinden()
+        internal void StableControl()
         {
             TakeScreenshot();
-            bool erfolg = CheckTextInScreenshot("Kontankt", "Konto");
-            if (erfolg == true)
+            bool checkAnoterDeviceAtviti = CheckTextInScreenshot("Kontankt", "Konto");
+            if (checkAnoterDeviceAtviti == true)
             {
                 writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {timeSleepMin} Min erneut.");
                 KillNoxPlayerProcess();
                 Thread.Sleep(60 * 1000 * timeSleepMin);
+            }
+
+            bool checkPosition = CheckTextInScreenshot("Stadt", "UTC");
+            if (checkPosition== true)
+            {
+                writeLogs.LogAndConsoleWirite($"Du bist in der Welt aktuell.");
+            }
+            else
+            {
+                writeLogs.LogAndConsoleWirite($"Du bist in der Stadt aktuell.");
             }
         }
 

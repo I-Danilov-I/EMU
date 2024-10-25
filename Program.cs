@@ -41,27 +41,27 @@
                         writeLogs.LogAndConsoleWirite($"Latenzträger Einheiten traniert: {latenztregerTruppenTraniert}");
                         writeLogs.LogAndConsoleWirite($"Sniper Einheiten traniert: {sniperTruppenTraniert}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
+                        
+                        erkundung.Erkundungskampf();
+                        erkundung.ErkundungAbholen();
+                        deviceControl.StableControl();
 
                         deviceControl.OfflineErtregeAbholen();
 
                         truppenTraining.TrainiereInfaterie(10);
-                        deviceControl.Wiederverbinden();
+                        deviceControl.StableControl();
 
                         truppenTraining.TrainiereLatenzTreger(10);
-                        deviceControl.Wiederverbinden();
+                        deviceControl.StableControl();
                         
                         truppenTraining.TrainiereSniper(10);
-                        deviceControl.Wiederverbinden();
-
-                        erkundung.ErkundungAbholen();
-                        erkundung.Erkundungskampf();
-                        deviceControl.Wiederverbinden();
+                        deviceControl.StableControl();
 
                         lagerOnlineBelohnung.GeschnekAbholen();
-                        deviceControl.Wiederverbinden();
+                        deviceControl.StableControl();
 
                         lagerOnlineBelohnung.AusdauerAbholen();
-                        deviceControl.Wiederverbinden();
+                        deviceControl.StableControl();
 
                     }
                     else

@@ -33,10 +33,16 @@
             deviceControl.ClickAtTouchPositionWithHexa("0000033c", "0000042a"); // Aktiviere  Speed 2x
             deviceControl.ClickAtTouchPositionWithHexa("00000335", "000004ab"); // Aktiviere Auto Attack
 
-            Thread.Sleep(45 * 1000);
+            Thread.Sleep(35 * 1000);
+
+            deviceControl.TakeScreenshot();
+            if (deviceControl.CheckTextInScreenshot("Zum Verlassen irgendwo tippen", "Steigere Kraft durch:") == true)
+            {
+                writeLogs.LogAndConsoleWirite("Erkundungskapmf durchgeführt, abe leider gescheitert :)");
+            }
+            else { writeLogs.LogAndConsoleWirite("Erkundungskapmf wurde nicht beendet."); }
             deviceControl.PressButtonBack();
             deviceControl.PressButtonBack();
-            writeLogs.LogAndConsoleWirite("Erkundungskapmf erfogreich durchgeführt! ;)");
         }
 
 
