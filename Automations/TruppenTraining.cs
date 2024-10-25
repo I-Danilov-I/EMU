@@ -27,7 +27,7 @@
 
         private void CheckResoursen()
         {
-            // PÜrfe o bresursen reichen
+            writeLogs.LogAndConsoleWirite("Checke ob Resoursen ausreichen...");
             deviceControl.TakeScreenshot(); // Mache ein Screenshot
             bool reichenResursen = deviceControl.CheckTextInScreenshot("Erhalte mehr", "Erhalte mehr"); // Suche nach Text im Screenshot
             if (reichenResursen)
@@ -37,6 +37,7 @@
                 deviceControl.PressButtonBack();
                 return;
             }
+            writeLogs.LogAndConsoleWirite("Es sind genug Resorsen da! ;)");
         }
 
 
@@ -60,7 +61,7 @@
         private void CheckeObTruppeAusgebildetWerden(int truppenAnzahl)
         {
             deviceControl.TakeScreenshot();
-            bool findOrNot = deviceControl.CheckTextInScreenshot("Ausbildung", "Befödern");
+            bool findOrNot = deviceControl.CheckTextInScreenshot("Ausbildung", "Befördert:");
             if (!findOrNot)
             {
                 TruppenAnzahl(truppenAnzahl);
@@ -72,7 +73,7 @@
             }
             else
             {
-                writeLogs.LogAndConsoleWirite("Truppen werden bereits ausgebildet. ;)");
+                writeLogs.LogAndConsoleWirite("Truppen werden bereits ausgebildet oder befödert. ;)");
                 deviceControl.PressButtonBack();
             }
         }
