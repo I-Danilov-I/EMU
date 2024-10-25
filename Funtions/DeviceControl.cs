@@ -25,6 +25,27 @@ namespace EMU
         }
 
 
+        internal void ScrollDown(int anzahlScroll)
+        {
+            int count = 0;
+            while (count < anzahlScroll) 
+            {
+                count++;
+                // Beispielkoordinaten für eine Wischgeste von oben nach unten
+                int startX = 500;  // X-Koordinate für den Startpunkt des Wischens
+                int startY = 1000; // Y-Koordinate für den Startpunkt des Wischens (oben)
+                int endX = 500;    // X-Koordinate für den Endpunkt des Wischens (gleichbleibend)
+                int endY = 300;    // Y-Koordinate für den Endpunkt des Wischens (unten)
+                int duration = 300; // Dauer der Wischgeste in Millisekunden
+
+                // ADB-Befehl zum Wischen
+                string adbCommand = $"shell input swipe {startX} {startY} {endX} {endY} {duration}";
+                ExecuteAdbCommand(adbCommand);
+            }
+            writeLogs.LogAndConsoleWirite($"Scrollen nach unten wurde {anzahlScroll} ausgeführt.");
+        }
+
+
         internal void BackUneversal()
         {
             PressButtonBack();

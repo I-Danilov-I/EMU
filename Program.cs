@@ -23,6 +23,8 @@
         internal static int heilenCounter = 0;
         internal static int heldenRecurtCount = 0;
         internal static int bestienJagtCount = 0;
+        internal static int lebensbaumEssens = 0;
+
 
         private static void Main()
         {
@@ -36,6 +38,8 @@
             Jagt bestienJagt = new Jagt(writeLogs, deviceControl);
             TruppenHeilen truppenHeilen = new TruppenHeilen(writeLogs, deviceControl);
             Helden helden = new Helden(writeLogs, deviceControl);
+            LebensBaum lebensBaum = new LebensBaum(writeLogs, deviceControl);
+
 
             writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
@@ -71,7 +75,11 @@
                         writeLogs.LogAndConsoleWirite($"Helden rekuritiert: {heldenRecurtCount}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
                         //deviceControl.BackUneversal();
-                        
+
+                        lebensBaum.EssensVonFreundenAbholen();
+                        lebensBaum.BaumBelohnungAbholen();
+                        deviceControl.StableControl();
+                        /*
                         bestienJagt.BestienJagtStarten(25, false);
                         deviceControl.StableControl();
 
@@ -110,7 +118,7 @@
                         
                         truppenTraining.TrainiereSniper(10);
                         deviceControl.StableControl();
-                        
+                        */
 
                     }
                 }
