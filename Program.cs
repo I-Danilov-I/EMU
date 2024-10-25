@@ -28,6 +28,8 @@
             TruppenTraining truppenTraining = new TruppenTraining(writeLogs, deviceControl);
             LagerOnlineBelohnung lagerOnlineBelohnung = new LagerOnlineBelohnung(writeLogs, deviceControl);
             Allianz allianz = new Allianz(writeLogs, deviceControl);
+            Jagt bestienJagt = new Jagt(writeLogs, deviceControl);
+
 
             writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
@@ -59,6 +61,8 @@
                         writeLogs.LogAndConsoleWirite($"Allianz Hilfe: {alianzHilfeCounter}");
                         writeLogs.LogAndConsoleWirite($"Allinaz Technolgie: {alianzTechnologie}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
+                        
+                        bestienJagt.BestienJagtStarten(27, false);
 
                         deviceControl.OfflineErtregeAbholen();
 
