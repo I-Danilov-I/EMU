@@ -1,4 +1,4 @@
-﻿namespace EMU
+﻿namespace EMU.Automations
 {
     internal class Jagt(WriteLogs writeLogs, DeviceControl deviceControl)
     {
@@ -16,21 +16,21 @@
             //deviceControl.CheckTextInScreenshot("", "");
             deviceControl.ClickAtTouchPositionWithHexa("000001c6", "000002ff"); // Angriff
 
-            if(ausgleichen == true) 
+            if (ausgleichen == true)
             {
                 deviceControl.ClickAtTouchPositionWithHexa("000000fa", "000005ba"); // Ausgleichen?
             }
 
             // Prüfe Ausgangsituation
             deviceControl.TakeScreenshot();
-            if(deviceControl.CheckTextInScreenshot("Vorsicht!", "nicht") == true)
+            if (deviceControl.CheckTextInScreenshot("scheitern", "Einsatz wird") == true)
             {
                 deviceControl.PressButtonBack();
                 writeLogs.LogAndConsoleWirite("Der Ausgang währe fatal gewesen, Jagt nicht gestartet. :)");
             };
-            
+
             deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); // Einsetzen
-            writeLogs.LogAndConsoleWirite("\n\nBestien Jagt erfogreich gestartet! ;)");
+            writeLogs.LogAndConsoleWirite("Bestien Jagt erfogreich gestartet! ;)");
         }
 
 
@@ -59,7 +59,7 @@
         private void CheckePosition()
         {
             deviceControl.TakeScreenshot();
-            if(!deviceControl.CheckTextInScreenshot("UTC", "Stadt"))
+            if (deviceControl.CheckTextInScreenshot("Welt", "Welt") == true)
             {
                 deviceControl.ClickAtTouchPositionWithHexa("0000032f", "000005fd"); // Welt / Stadt
             }

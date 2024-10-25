@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Folder Include="Logs\" />
+    <Folder Include="Screens\" />
     <Folder Include="Temp\" />
   </ItemGroup>
 

@@ -1,4 +1,6 @@
-﻿namespace EMU
+﻿using EMU.Automations;
+
+namespace EMU
 {
     internal static class Program
     {
@@ -62,9 +64,10 @@
                         writeLogs.LogAndConsoleWirite($"Allinaz Technolgie: {alianzTechnologie}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
                         
-                        bestienJagt.BestienJagtStarten(27, false);
 
                         deviceControl.OfflineErtregeAbholen();
+
+                        bestienJagt.BestienJagtStarten(25, false);
 
                         lagerOnlineBelohnung.AusdauerAbholen();
                         lagerOnlineBelohnung.GeschnekAbholen();
