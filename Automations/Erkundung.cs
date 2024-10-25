@@ -17,6 +17,7 @@
             deviceControl.ClickAtTouchPositionWithHexa("000001cd", "00000481"); // Bestätigen3
 
             deviceControl.PressButtonBack();
+            Program.erkungBonusCounter += 1;
             writeLogs.LogAndConsoleWirite("Erkundung erfogreich abgeholt! ;)");
         }
 
@@ -38,6 +39,7 @@
             deviceControl.TakeScreenshot();
             if (deviceControl.CheckTextInScreenshot("Zum Verlassen irgendwo tippen", "Steigere Kraft durch:") == true)
             {
+                Program.erkundungKampfCounter += 1;
                 writeLogs.LogAndConsoleWirite("Erkundungskapmf durchgeführt, abe leider gescheitert :)");
             }
             else { writeLogs.LogAndConsoleWirite("Erkundungskapmf wurde nicht beendet."); }

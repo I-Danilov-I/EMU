@@ -94,7 +94,7 @@
             deviceControl.ClickAtTouchPositionWithHexa("000001ba", "000002d0"); // !!!!!!
 
             CheckeObTruppeAusgebildetWerden(truppenAnzahl);
-            Program.infaterieTruppenTraniert += truppenAnzahl; // Truppen adieren
+            Program.infaterieTruppenTraniertCounter += truppenAnzahl; // Truppen adieren
         }
 
 
@@ -113,7 +113,7 @@
             deviceControl.ClickAtTouchPositionWithHexa("000001ba", "000002d0"); // !!!!!!
 
             CheckeObTruppeAusgebildetWerden(truppenAnzahl); 
-            Program.latenztregerTruppenTraniert += truppenAnzahl; // Truppen adieren
+            Program.latenztregerTruppenTraniertCounter += truppenAnzahl; // Truppen adieren
         }
 
 
@@ -133,7 +133,7 @@
             deviceControl.ClickAtTouchPositionWithHexa("000001ba", "000002d0"); // !!!!!!
 
             CheckeObTruppeAusgebildetWerden(truppenAnzahl);
-            Program.sniperTruppenTraniert += truppenAnzahl; // Truppen adieren
+            Program.sniperTruppenTraniertCounter += truppenAnzahl; // Truppen adieren
         }
 
 

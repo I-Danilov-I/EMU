@@ -128,8 +128,8 @@ namespace EMU
             if (offlineErtrege == true)
             {
                 ClickAtTouchPositionWithHexa("000001bf", "000004d3"); // Bestätigen Button klicken
-                Program.offlineErtrege++;
-                writeLogs.LogAndConsoleWirite($"Offline Erträge wurden abgeholt. {Program.offlineErtrege}");
+                Program.offlineErtregeCounter++;
+                writeLogs.LogAndConsoleWirite($"Offline Erträge wurden abgeholt. {Program.offlineErtregeCounter}");
             }
         }
 

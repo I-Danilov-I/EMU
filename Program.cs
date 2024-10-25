@@ -2,12 +2,20 @@
 {
     internal static class Program
     {  
-        internal static int offlineErtrege = 0; 
-        internal static int infaterieTruppenTraniert = 0;
-        internal static int latenztregerTruppenTraniert = 0;
-        internal static int sniperTruppenTraniert = 0;
+        internal static int offlineErtregeCounter = 0; 
+
+        internal static int infaterieTruppenTraniertCounter = 0;
+        internal static int latenztregerTruppenTraniertCounter = 0;
+        internal static int sniperTruppenTraniertCounter = 0;
+
         internal static int lagerBonusGeschenkCounter = 0;
         internal static int lagerBonusAausdauerCounter = 0;
+
+        internal static int erkungBonusCounter = 0;
+        internal static int erkundungKampfCounter = 0;
+
+        internal static int alianzHilfeCounter = 0;
+        internal static int alianzKistenCounter = 0;
 
 
         private static void Main()
@@ -17,13 +25,13 @@
             Erkundung erkundung = new Erkundung(writeLogs, deviceControl);
             TruppenTraining truppenTraining = new TruppenTraining(writeLogs, deviceControl);
             LagerOnlineBelohnung lagerOnlineBelohnung = new LagerOnlineBelohnung(writeLogs, deviceControl);
-
+            Allianz allianz = new Allianz(writeLogs, deviceControl);
 
             writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ShowSetting();
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            // deviceControl.TrackTouchEvents();
+            //deviceControl.TrackTouchEvents();
 
 
             while (true)
@@ -37,16 +45,20 @@
                         writeLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]_________________________________");
                         writeLogs.LogAndConsoleWirite($"Lagerbonus Geschenk: {lagerBonusGeschenkCounter}");
                         writeLogs.LogAndConsoleWirite($"Lagerbounus Ausdauer: {Program.lagerBonusAausdauerCounter}");
-                        writeLogs.LogAndConsoleWirite($"Infaterie Einheiten traniert: {infaterieTruppenTraniert}");
-                        writeLogs.LogAndConsoleWirite($"Latenzträger Einheiten traniert: {latenztregerTruppenTraniert}");
-                        writeLogs.LogAndConsoleWirite($"Sniper Einheiten traniert: {sniperTruppenTraniert}");
+                        writeLogs.LogAndConsoleWirite($"Infaterie Einheiten traniert: {infaterieTruppenTraniertCounter}");
+                        writeLogs.LogAndConsoleWirite($"Latenzträger Einheiten traniert: {latenztregerTruppenTraniertCounter}");
+                        writeLogs.LogAndConsoleWirite($"Sniper Einheiten traniert: {sniperTruppenTraniertCounter}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
-                        
+
+                        allianz.KistenAbholen();
+                        allianz.Hilfe();
+
+
+                        deviceControl.OfflineErtregeAbholen();
+
                         erkundung.Erkundungskampf();
                         erkundung.ErkundungAbholen();
                         deviceControl.StableControl();
-
-                        deviceControl.OfflineErtregeAbholen();
 
                         truppenTraining.TrainiereInfaterie(10);
                         deviceControl.StableControl();
