@@ -77,10 +77,9 @@ namespace EMU
                         writeLogs.LogAndConsoleWirite($"Heilung: {heilenCounter}");
                         writeLogs.LogAndConsoleWirite($"Helden rekuritiert: {heldenRecurtCount}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
+                        
                         //deviceControl.BackUneversal();
 
-
-                        /*
                         guvenourBefehl.EilauftragAbholen();
                         guvenourBefehl.FestlichkeitenAbholen();
                         deviceControl.StableControl();
@@ -90,8 +89,8 @@ namespace EMU
                         lebensBaum.BaumBelohnungAbholen();
                         deviceControl.StableControl();
 
-                        bestienJagt.PolarTerrorStarten(5, false);
-                        bestienJagt.BestienJagtStarten(25, false);
+                        Jagt.PolarTerrorStarten(5, false);
+                        Jagt.BestienJagtStarten(25, false);
                         deviceControl.StableControl();
 
                         helden.HeldenRecurtieren();
@@ -129,7 +128,7 @@ namespace EMU
                         
                         truppenTraining.TrainiereSniper(10);
                         deviceControl.StableControl();
-                        */
+                        
 
                     }
                 }

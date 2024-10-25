@@ -14,12 +14,10 @@
             deviceControl.ClickAtTouchPositionWithHexa("000001c1", "00000261"); // Rally
             deviceControl.ClickAtTouchPositionWithHexa("000001bf", "00000419"); // Rally bestätigen // ZEitauwahl
        
-
             if (ausgleichen == true)
             {
                 deviceControl.ClickAtTouchPositionWithHexa("000000fa", "000005ba"); // Ausgleichen?
             }
-
 
             deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); //7 Einsetzen
             CheckAusdauer();
