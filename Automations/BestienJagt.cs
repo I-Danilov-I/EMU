@@ -2,12 +2,38 @@
 {
     internal class Jagt(WriteLogs writeLogs, DeviceControl deviceControl)
     {
+        internal void PolarTerrorStarten(int tierLevel, bool ausgleichen)
+        {
+            writeLogs.LogAndConsoleWirite("\n\nPolar Terror wird gestartet...");
+            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
+            deviceControl.CheckePositionAndGoWelt();
+            deviceControl.ClickAtTouchPositionWithHexa("00000036", "00000443"); // Such icon wählen
+            deviceControl.ClickAtTouchPositionWithHexa("00000133", "0000047a"); // Polar Terror Auswahl
+            TierLevel(tierLevel); // Bestienlevel Eingabe
+            deviceControl.ClickAtTouchPositionWithHexa("000001be", "000005eb"); // Suche
+            deviceControl.ClickAtTouchPositionWithHexa("000001c1", "00000261"); // Rally
+            deviceControl.ClickAtTouchPositionWithHexa("000001bf", "00000419"); // Rally bestätigen // ZEitauwahl
+       
+
+            if (ausgleichen == true)
+            {
+                deviceControl.ClickAtTouchPositionWithHexa("000000fa", "000005ba"); // Ausgleichen?
+            }
+
+
+            deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); //7 Einsetzen
+            CheckAusdauer();
+            deviceControl.CheckePositionAndGoWelt();
+            writeLogs.LogAndConsoleWirite("Polar Terror erfogreich gestartet! ;)");
+        }
+
         internal void BestienJagtStarten(int bestienLevel, bool ausgleichen)
         {
             writeLogs.LogAndConsoleWirite("\n\nBestien Jagt wird gestartet...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.CheckePositionAndGoWelt();
             deviceControl.ClickAtTouchPositionWithHexa("00000036", "00000443"); // Suchicon wählen
+            deviceControl.ClickAtTouchPositionWithHexa("00000061", "0000046d"); // Bestien Auswahl
             TierLevel(bestienLevel); // Bestienlevel Eingabe
             deviceControl.ClickAtTouchPositionWithHexa("000001be", "000005eb"); // Suchen Butto
             deviceControl.ClickAtTouchPositionWithHexa("000001c6", "000002ff"); // Angriff

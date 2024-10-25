@@ -78,12 +78,14 @@ namespace EMU
                         writeLogs.LogAndConsoleWirite($"Helden rekuritiert: {heldenRecurtCount}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
                         //deviceControl.BackUneversal();
+                        bestienJagt.PolarTerrorStarten(5, false);
 
+
+                        /*
                         guvenourBefehl.EilauftragAbholen();
                         guvenourBefehl.FestlichkeitenAbholen();
                         deviceControl.StableControl();
 
-                        /*
                         lebensBaum.EssensVonFreundenAbholen();
                         deviceControl.StableControl();
                         lebensBaum.BaumBelohnungAbholen();
