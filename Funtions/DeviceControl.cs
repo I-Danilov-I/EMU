@@ -20,9 +20,17 @@ namespace EMU
 
             adbPath = "C:\\Program Files\\Nox\\bin\\adb.exe";
             inputDevice = "/dev/input/event4";
-            packageName = "com.gof.global";
+            packageName = "com.gof.global"; // Paketname des Spiels
             screenshotDirectory = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Screens";
             timeSleepMin = 1;
+        }
+
+
+        internal void CloseApp()
+        {
+            string adbCommand = $"shell am force-stop {packageName}";  // Befehl zum Schließen der App
+            ExecuteAdbCommand(adbCommand);
+            writeLogs.LogAndConsoleWirite($"Die App {packageName} wurde geschlossen.");
         }
 
 
@@ -138,7 +146,6 @@ namespace EMU
         {
             try
             {
-                Thread.Sleep(3000);
                 if (!Directory.Exists(screenshotDirectory))
                 {
                     Directory.CreateDirectory(screenshotDirectory);
@@ -220,7 +227,7 @@ namespace EMU
                 string errorOutput = process.StandardError.ReadToEnd();
 
                 process.WaitForExit();
-                Thread.Sleep(1000);
+                Thread.Sleep(Program.geschwindigkeit);
                 return output;
             }
             catch (Exception ex)
@@ -245,18 +252,9 @@ namespace EMU
             if (checkAnoterDeviceAtviti == true)
             {
                 writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {timeSleepMin} Min erneut.");
+                CloseApp();
                 KillNoxPlayerProcess();
                 Thread.Sleep(60 * 1000 * timeSleepMin);
-            }
-
-            bool checkPosition = CheckTextInScreenshot("Stadt", "UTC");
-            if (checkPosition== true)
-            {
-                writeLogs.LogAndConsoleWirite($"Du bist in der Welt aktuell.");
-            }
-            else
-            {
-                writeLogs.LogAndConsoleWirite($"Du bist in der Stadt aktuell.");
             }
         }
 

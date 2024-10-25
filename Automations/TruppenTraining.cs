@@ -13,7 +13,7 @@
             {
                 string deleteCommand = "shell input keyevent KEYCODE_DEL"; // Löschen taster drücken
                 deviceControl.ExecuteAdbCommand(deleteCommand);
-                Thread.Sleep(100); // Kurze Pause zwischen den Löschvorgängen
+                Thread.Sleep(50); // Kurze Pause zwischen den Löschvorgängen
             }
        
             string adbCommand = $"shell input text {truppenAnzahl}";

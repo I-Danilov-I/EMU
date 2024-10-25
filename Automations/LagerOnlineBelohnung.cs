@@ -41,7 +41,10 @@
 
             deviceControl.ClickAtTouchPositionWithHexa("00000081", "0000004f"); // Bonusübersicht klick
             deviceControl.ClickAtTouchPositionWithHexa("000001cf", "000003a6"); // Kraft klick
-            deviceControl.ClickAtTouchPositionWithHexa("000002fe", "0000024b"); // Gebäudekraft klick
+
+            deviceControl.ClickAtTouchPositionWithHexa("000002f1", "00000540"); // Technologieforschung wälen
+            deviceControl.ClickAtTouchPositionWithHexa("00000086", "000002ad"); // Lagerhausgebäude wählen
+
             deviceControl.ClickAtTouchPositionWithHexa("000001c8", "000002bfe"); // Gebäude anwählen
             deviceControl.ClickAtTouchPositionWithHexa("000001c1", "000002c6"); // Abholen 
 

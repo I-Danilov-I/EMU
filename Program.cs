@@ -1,15 +1,17 @@
 ﻿namespace EMU
 {
     internal static class Program
-    {  
+    {
+        internal static int geschwindigkeit = 3000; // Pause in ms zwischen jedem Befehl.
+
         internal static int offlineErtregeCounter = 0; 
+
+        internal static int lagerBonusGeschenkCounter = 0;
+        internal static int lagerBonusAausdauerCounter = 0;
 
         internal static int infaterieTruppenTraniertCounter = 0;
         internal static int latenztregerTruppenTraniertCounter = 0;
         internal static int sniperTruppenTraniertCounter = 0;
-
-        internal static int lagerBonusGeschenkCounter = 0;
-        internal static int lagerBonusAausdauerCounter = 0;
 
         internal static int erkungBonusCounter = 0;
         internal static int erkundungKampfCounter = 0;
@@ -45,12 +47,24 @@
                         writeLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]_________________________________");
                         writeLogs.LogAndConsoleWirite($"Lagerbonus Geschenk: {lagerBonusGeschenkCounter}");
                         writeLogs.LogAndConsoleWirite($"Lagerbounus Ausdauer: {Program.lagerBonusAausdauerCounter}");
+
                         writeLogs.LogAndConsoleWirite($"Infaterie Einheiten traniert: {infaterieTruppenTraniertCounter}");
                         writeLogs.LogAndConsoleWirite($"Latenzträger Einheiten traniert: {latenztregerTruppenTraniertCounter}");
                         writeLogs.LogAndConsoleWirite($"Sniper Einheiten traniert: {sniperTruppenTraniertCounter}");
+
+                        writeLogs.LogAndConsoleWirite($"Erkundungsbonus: {erkungBonusCounter}");
+                        writeLogs.LogAndConsoleWirite($"Erkundungskämpfe: {erkundungKampfCounter}");
+
+                        writeLogs.LogAndConsoleWirite($"Allianz Kisten: {alianzKistenCounter}");
+                        writeLogs.LogAndConsoleWirite($"Allianz Hilfe: {alianzHilfeCounter}");
+                        writeLogs.LogAndConsoleWirite($"Allinaz Technolgie: {alianzTechnologie}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
 
                         deviceControl.OfflineErtregeAbholen();
+
+                        lagerOnlineBelohnung.AusdauerAbholen();
+                        lagerOnlineBelohnung.GeschnekAbholen();
+                        deviceControl.StableControl();
 
                         erkundung.Erkundungskampf();
                         erkundung.ErkundungAbholen();
@@ -59,6 +73,7 @@
                         allianz.KistenAbholen();
                         allianz.Hilfe();
                         allianz.Technologie(3);
+                        deviceControl.StableControl();
 
                         truppenTraining.TrainiereInfaterie(10);
                         deviceControl.StableControl();
@@ -69,12 +84,6 @@
                         truppenTraining.TrainiereSniper(10);
                         deviceControl.StableControl();
 
-                        lagerOnlineBelohnung.GeschnekAbholen();
-                        deviceControl.StableControl();
-
-                        lagerOnlineBelohnung.AusdauerAbholen();
-                        deviceControl.StableControl();
-
                     }
                     else
                     {
@@ -83,6 +92,7 @@
                 }
                 catch (Exception)
                 {
+                    deviceControl.CloseApp();
                     deviceControl.KillNoxPlayerProcess();
                     Thread.Sleep(10000);
                 }
