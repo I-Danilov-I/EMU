@@ -74,58 +74,59 @@
                         writeLogs.LogAndConsoleWirite($"Lebens Baum: {vipCount}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
 
-                        vip.KistenAbholen();
-                        deviceControl.StableControl();
-
-                        allianz.KistenAbholen();
-                        deviceControl.StableControl();
-
-                        //Jagt.PolarTerrorStarten(5, false);
-                        Jagt.BestienJagtStarten(25, false);
-                        deviceControl.StableControl();
-
+                        // Truppen Heilung
                         truppenHeilen.Heilen();
                         deviceControl.StableControl();
 
+                        // Allianz
+                        allianz.Hilfe();
+                        deviceControl.StableControl();
+                        allianz.Technologie(3);
+                        deviceControl.StableControl();
+                        allianz.KistenAbholen();
+                        deviceControl.StableControl();
+
+                        // Jagt
+                        Jagt.BestienJagtStarten(25, false);
+                        deviceControl.StableControl();
+                        //Jagt.PolarTerrorStarten(5, false);
+                        deviceControl.StableControl();
+
+                        // VIP
+                        vip.KistenAbholen();
+                        deviceControl.StableControl();
+
+                        // Lager
                         helden.HeldenRekrutieren();
                         deviceControl.StableControl();
-
                         lagerOnlineBelohnung.GeschnekAbholen();
                         deviceControl.StableControl();
-
                         lagerOnlineBelohnung.AusdauerAbholen();
                         deviceControl.StableControl();
 
+                        // Erkundung
                         erkundung.Erkundungskampf();
                         deviceControl.StableControl();
-
                         erkundung.ErkundungAbholen();
                         deviceControl.StableControl();
 
-
-                        allianz.Hilfe();
-                        deviceControl.StableControl();
-
-                        allianz.Technologie(3);
-                        deviceControl.StableControl();
-
+                        // Truppen Training
                         truppenTraining.TrainiereInfaterie(10);
                         deviceControl.StableControl();
-
                         truppenTraining.TrainiereLatenzTreger(10);
-                        deviceControl.StableControl();
-                        
+                        deviceControl.StableControl();                   
                         truppenTraining.TrainiereSniper(10);
                         deviceControl.StableControl();
-                        
+
+                        // Guvenour Befehle
                         guvenourBefehl.EilauftragAbholen();
                         guvenourBefehl.FestlichkeitenAbholen();
                         deviceControl.StableControl();
 
-                        lebensBaum.EssensVonFreundenAbholen();
-                        deviceControl.StableControl();
-
+                        // Lebens Baum
                         lebensBaum.BaumBelohnungAbholen();
+                        deviceControl.StableControl();
+                        lebensBaum.EssensVonFreundenAbholen();
                         deviceControl.StableControl();
                     }
                 }
