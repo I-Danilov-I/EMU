@@ -4,32 +4,23 @@
     {
         internal static int geschwindigkeit = 3000; // Pause in ms zwischen jedem Befehl.
         internal static int timeSleepMin = 10; // Nach wiederverbinden
-
         internal static int offlineErtregeCounter = 0; 
-
         internal static int lagerBonusGeschenkCounter = 0;
         internal static int lagerBonusAausdauerCounter = 0;
-
         internal static int infaterieTruppenTraniertCounter = 0;
         internal static int latenztregerTruppenTraniertCounter = 0;
         internal static int sniperTruppenTraniertCounter = 0;
-
         internal static int erkungBonusCounter = 0;
         internal static int erkundungKampfCounter = 0;
-
         internal static int alianzHilfeCounter = 0;
         internal static int alianzKistenCounter = 0;
         internal static int alianzTechnologie = 0;
-
         internal static int heilenCounter = 0;
-
         internal static int heldenRekrurtErweitertCount = 0;
         internal static int heldenRekrurtEpischCount = 0;
-
         internal static int bestienJagtCount = 0;
-
         internal static int lebensBaumEssensCount = 0;
-
+        internal static int vipCount = 0;
 
         private static void Main()
         {
@@ -45,14 +36,14 @@
             Helden helden = new Helden(writeLogs, deviceControl);
             LebensBaum lebensBaum = new LebensBaum(writeLogs, deviceControl);
             GuvenourBefehl guvenourBefehl = new GuvenourBefehl(writeLogs, deviceControl);
-
+            VIP vip = new VIP(writeLogs, deviceControl);
 
             writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ShowSetting();
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            deviceControl.TrackTouchEvents();        
-            deviceControl.OfflineErtregeAbholen();
+            //deviceControl.TrackTouchEvents();        
+            //deviceControl.OfflineErtregeAbholen();
 
             while (true)
             {
@@ -80,7 +71,14 @@
                         writeLogs.LogAndConsoleWirite($"Helden Rekrutierung episch: {heldenRekrurtEpischCount}");
                         writeLogs.LogAndConsoleWirite($"Bestien Jagt: {bestienJagtCount}");
                         writeLogs.LogAndConsoleWirite($"Lebens Baum: {lebensBaumEssensCount}");
+                        writeLogs.LogAndConsoleWirite($"Lebens Baum: {vipCount}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
+
+                        vip.KistenAbholen();
+                        deviceControl.StableControl();
+
+                        allianz.KistenAbholen();
+                        deviceControl.StableControl();
 
                         //Jagt.PolarTerrorStarten(5, false);
                         Jagt.BestienJagtStarten(25, false);
@@ -104,8 +102,6 @@
                         erkundung.ErkundungAbholen();
                         deviceControl.StableControl();
 
-                        allianz.KistenAbholen();
-                        deviceControl.StableControl();
 
                         allianz.Hilfe();
                         deviceControl.StableControl();

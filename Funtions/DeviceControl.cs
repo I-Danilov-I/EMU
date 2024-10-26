@@ -222,12 +222,12 @@ namespace EMU
                 // Überprüfen, ob die Ausgabe den Erfolg des Pings anzeigt
                 if (!string.IsNullOrEmpty(output) && output.Contains("1 packets transmitted, 1 received"))
                 {
-                    writeLogs.LogAndConsoleWirite("Das Gerät hat eine aktive Internetverbindung.");
+                    writeLogs.LogAndConsoleWirite("Internetverbindung: Aktiv");
                     return true;
                 }
                 else
                 {
-                    writeLogs.LogAndConsoleWirite("Das Gerät hat keine aktive Internetverbindung.");
+                    writeLogs.LogAndConsoleWirite("Internetverbindung: Nicht aktiv");
                     return false;
                 }
             }
@@ -255,7 +255,7 @@ namespace EMU
                 }
                 else
                 {
-                    writeLogs.LogAndConsoleWirite("Die App ist weiterhin responsiv.");
+                    writeLogs.LogAndConsoleWirite("App Zustand: Responsiv");
                     return true;
                 }
             }
@@ -271,7 +271,8 @@ namespace EMU
 
         internal void StableControl()
         {
-            writeLogs.LogAndConsoleWirite($"\n[StableControl]------------------------------------------------------------");
+            writeLogs.LogAndConsoleWirite($"\n\n[Stabilitätskontrolle]");
+            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             if (IsNetworkConnected() == false) 
             {
                 throw new Exception();
@@ -291,8 +292,8 @@ namespace EMU
             bool checkAnoterDeviceAtviti = CheckTextInScreenshot("Tipps", "Konto");
             if (checkAnoterDeviceAtviti == true)
             {
-                CloseApp();
                 writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {Program.timeSleepMin} Min erneut.");  
+                CloseApp();
                 Thread.Sleep(60 * 1000 * Program.timeSleepMin);
                 throw new Exception();
             }

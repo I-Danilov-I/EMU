@@ -9,8 +9,11 @@
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ClickAtTouchPositionWithHexa("0000029e", "000005fa"); // Allianz
             deviceControl.ClickAtTouchPositionWithHexa("000002af", "00000346"); // Kiste
+            deviceControl.ClickAtTouchPositionWithHexa("0000029d", "000001f3"); // Alliangeschenke 
             deviceControl.ClickAtTouchPositionWithHexa("000002fc", "000005f0"); // Alliangeschenke nehmen
+            deviceControl.ClickAtTouchPositionWithHexa("000002fc", "000005f0"); // Alliangeschenke nehmen2
             deviceControl.ClickAtTouchPositionWithHexa("0000000fa", "000001f1"); // Beutekiste
+            deviceControl.ClickAtTouchPositionWithHexa("000001cb", "000005e7"); // Beutekiste nehmen
             deviceControl.ClickAtTouchPositionWithHexa("000001cb", "000005e7"); // Beutekiste nehmen
             deviceControl.ClickAtTouchPositionWithHexa("000001c1", "00000100"); // Große Kiste
             deviceControl.ClickAtTouchPositionWithHexa("000001c1", "00000100"); // Große Kiste zum verlassen klicken
