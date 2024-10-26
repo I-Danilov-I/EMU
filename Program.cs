@@ -59,10 +59,12 @@ namespace EMU
             {
                 try
                 {
+                    // Connection
                     deviceControl.StartNoxPlayer();
                     deviceControl.StartADBConnection();
                     deviceControl.StartApp();
                    
+                    // Timer
                     printInfo.PrintSummary();                    
                     stopwatch.Stop();
                     writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");
