@@ -4,25 +4,29 @@ namespace EMU
 {
     internal static class Program
     {
-        internal static int geschwindigkeit = 3000; // Pause in ms zwischen jedem Befehl.
-        internal static int timeSleepMin = 10; // Nach wiederverbinden
-        internal static int offlineErtregeCounter = 0; 
-        internal static int lagerBonusGeschenkCounter = 0;
-        internal static int lagerBonusAausdauerCounter = 0;
-        internal static int infaterieTruppenTraniertCounter = 0;
-        internal static int latenztregerTruppenTraniertCounter = 0;
-        internal static int sniperTruppenTraniertCounter = 0;
-        internal static int erkungBonusCounter = 0;
-        internal static int erkundungKampfCounter = 0;
-        internal static int alianzHilfeCounter = 0;
-        internal static int alianzKistenCounter = 0;
-        internal static int alianzTechnologie = 0;
-        internal static int heilenCounter = 0;
-        internal static int heldenRekrurtErweitertCount = 0;
-        internal static int heldenRekrurtEpischCount = 0;
-        internal static int bestienJagtCount = 0;
-        internal static int lebensBaumEssensCount = 0;
-        internal static int vipCount = 0;
+        internal static int commandDelay = 3000; // Pause in milliseconds between each command.
+        internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
+        internal static int roundCount = 0;
+
+        internal static int offlineEarningsCounter = 0;
+        internal static int storageBonusGiftCounter = 0;
+        internal static int storageBonusStaminaCounter = 0;
+        internal static int infantryUnitsTrainedCounter = 0;
+        internal static int latencyCarrierUnitsTrainedCounter = 0;
+        internal static int sniperUnitsTrainedCounter = 0;
+        internal static int explorationBonusCounter = 0;
+        internal static int explorationBattleCounter = 0;
+        internal static int allianceHelpCounter = 0;
+        internal static int allianceChestsCounter = 0;
+        internal static int allianceTechnologyCounter = 0;
+        internal static int healingCounter = 0;
+        internal static int advancedHeroRecruitmentCounter = 0;
+        internal static int epicHeroRecruitmentCounter = 0;
+        internal static int beastHuntCounter = 0;
+        internal static int lifeTreeEssenceCounter = 0;
+        internal static int vipStatusCounter = 0;
+        internal static int allianceHealingCounter = 0;
+
 
         private static void Main()
         {
@@ -30,7 +34,7 @@ namespace EMU
             WriteLogs writeLogs = new WriteLogs();
             DeviceControl deviceControl = new DeviceControl(writeLogs);
             Stopwatch stopwatch = new Stopwatch();
-
+            PrintInfo printInfo = new PrintInfo(writeLogs);
 
             // Automations in Game Klassen
             Erkundung erkundung = new Erkundung(writeLogs, deviceControl);
@@ -63,25 +67,15 @@ namespace EMU
                     deviceControl.StartApp();
                     if (deviceControl.IsAppRunning() == true)
                     {                     
-                        writeLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]_________________________________");
-                        writeLogs.LogAndConsoleWirite($"Offline Erträge: {offlineErtregeCounter}");
-                        writeLogs.LogAndConsoleWirite($"Lager Geschenk: {lagerBonusGeschenkCounter}");
-                        writeLogs.LogAndConsoleWirite($"Lager Ausdauer: {Program.lagerBonusAausdauerCounter}");
-                        writeLogs.LogAndConsoleWirite($"Infaterie Einheiten: {infaterieTruppenTraniertCounter}");
-                        writeLogs.LogAndConsoleWirite($"Latenzträger Einheiten: {latenztregerTruppenTraniertCounter}");
-                        writeLogs.LogAndConsoleWirite($"Scharfschützen Einheiten: {sniperTruppenTraniertCounter}");
-                        writeLogs.LogAndConsoleWirite($"Erkundungsbonus: {erkungBonusCounter}");
-                        writeLogs.LogAndConsoleWirite($"Erkundungskämpfe: {erkundungKampfCounter}");
-                        writeLogs.LogAndConsoleWirite($"Allianz Kisten: {alianzKistenCounter}");
-                        writeLogs.LogAndConsoleWirite($"Allianz Hilfe: {alianzHilfeCounter}");
-                        writeLogs.LogAndConsoleWirite($"Allinaz Technolgie: {alianzTechnologie}");
-                        writeLogs.LogAndConsoleWirite($"Allianz Heilung: {heilenCounter}");
-                        writeLogs.LogAndConsoleWirite($"Helden Rekrutierung erweitert: {heldenRekrurtErweitertCount}");
-                        writeLogs.LogAndConsoleWirite($"Helden Rekrutierung episch: {heldenRekrurtEpischCount}");
-                        writeLogs.LogAndConsoleWirite($"Bestien Jagt: {bestienJagtCount}");
-                        writeLogs.LogAndConsoleWirite($"Lebens Baum: {lebensBaumEssensCount}");
-                        writeLogs.LogAndConsoleWirite($"Lebens Baum: {vipCount}");
+                        printInfo.PrintSummary();
+                        stopwatch.Stop();
+                        writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
+                        stopwatch.Restart();
+
+                        deviceControl.BackUneversal();
+                        deviceControl.CheckePositionAndGoStadt();
+                        deviceControl.StableControl();
 
                         // Truppen Heilung
                         truppenHeilen.Heilen();
@@ -98,7 +92,7 @@ namespace EMU
                         // Jagt
                         Jagt.BestienJagtStarten(25, false);
                         deviceControl.StableControl();
-                        //Jagt.PolarTerrorStarten(5, false);
+                        Jagt.PolarTerrorStarten(5, false);
                         deviceControl.StableControl();
 
                         // VIP
@@ -137,10 +131,13 @@ namespace EMU
                         deviceControl.StableControl();
                         lebensBaum.EssensVonFreundenAbholen();
                         deviceControl.StableControl();
+
+                        // Stoppen der Zeitmessung und Ausgabe der Dauer
+                        roundCount++;
+                        stopwatch.Stop();
+                        writeLogs.LogAndConsoleWirite($"\nRundendauer: {stopwatch.Elapsed.TotalSeconds} Sekunden, Runde {roundCount}");
+                        writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
                     }
-                    // Stoppen der Zeitmessung und Ausgabe der Dauer
-                    stopwatch.Stop();
-                    writeLogs.LogAndConsoleWirite($"Dauer der Runde: {stopwatch.Elapsed.TotalSeconds} Sekunden");
                 }
                 catch
                 {

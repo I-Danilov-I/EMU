@@ -22,7 +22,7 @@
 
                 deviceControl.ClickAtTouchPositionWithHexa("0000023f", "000002a6"); // Schliese das Seitenmenü
 
-                Program.lagerBonusGeschenkCounter++;
+                Program.storageBonusGiftCounter++;
                 writeLogs.LogAndConsoleWirite($"Lager Online Belohnung erforgreich abgeholt!");
             }
             else
@@ -53,7 +53,7 @@
             if (findOrNot)
             {
                 deviceControl.ClickAtTouchPositionWithHexa("000001cb", "0000049a"); // Bestätigen
-                Program.lagerBonusAausdauerCounter += 120;
+                Program.storageBonusStaminaCounter += 120;
                 writeLogs.LogAndConsoleWirite($"Lager Online Ausdauer erforgreich abgeholt!");
             }
             else

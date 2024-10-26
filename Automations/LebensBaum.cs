@@ -27,7 +27,7 @@
             Thread.Sleep(2000);
             deviceControl.ClickAtTouchPositionWithHexa("0000032f", "000005e4"); // Stadt
 
-            Program.lebensBaumEssensCount += 1;
+            Program.lifeTreeEssenceCounter += 1;
             writeLogs.LogAndConsoleWirite("Lebensbaum Essens erfogreich abgeholt! ;)");
             Thread.Sleep(3000);
         }
@@ -75,7 +75,7 @@
             Thread.Sleep(3000);
 
             deviceControl.ClickAtTouchPositionWithHexa("0000032f", "000005e4"); // Stadt
-            Program.lebensBaumEssensCount += 1;
+            Program.lifeTreeEssenceCounter += 1;
 
             writeLogs.LogAndConsoleWirite("Essens von Freunden erfogreich abgeholt! ;)");
             Thread.Sleep(3000);

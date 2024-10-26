@@ -129,8 +129,8 @@ namespace EMU
             if (offlineErtrege == true)
             {
                 ClickAtTouchPositionWithHexa("000001bf", "000004d3"); // Bestätigen Button klicken
-                Program.offlineErtregeCounter++;
-                writeLogs.LogAndConsoleWirite($"Offline Erträge wurden abgeholt. {Program.offlineErtregeCounter}");
+                Program.offlineEarningsCounter++;
+                writeLogs.LogAndConsoleWirite($"Offline Erträge wurden abgeholt.");
             }
         }
 
@@ -220,7 +220,7 @@ namespace EMU
                 string errorOutput = process.StandardError.ReadToEnd();
 
                 process.WaitForExit();
-                Thread.Sleep(Program.geschwindigkeit);
+                Thread.Sleep(Program.commandDelay);
                 return output;
             }
             catch (Exception ex)
@@ -313,9 +313,9 @@ namespace EMU
             bool checkAnoterDeviceAtviti = CheckTextInScreenshot("Tipps", "Konto");
             if (checkAnoterDeviceAtviti == true)
             {
-                writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {Program.timeSleepMin} Min erneut.");  
+                writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {Program.reconnectSleepTime} Min erneut.");  
                 CloseApp();
-                Thread.Sleep(60 * 1000 * Program.timeSleepMin);
+                Thread.Sleep(60 * 1000 * Program.reconnectSleepTime);
                 throw new Exception();
             }
 

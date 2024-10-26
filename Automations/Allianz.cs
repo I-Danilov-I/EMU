@@ -20,7 +20,7 @@
             deviceControl.ClickAtTouchPositionWithHexa("000001cb", "000005e7"); // Verlassen
             deviceControl.PressButtonBack();
             deviceControl.PressButtonBack();
-            Program.alianzKistenCounter += 1;
+            Program.allianceChestsCounter += 1;
             writeLogs.LogAndConsoleWirite("Allianz Kisten abholung beendet! :)");
         }
 
@@ -34,7 +34,7 @@
             deviceControl.ClickAtTouchPositionWithHexa("000001bf", " 000005dc"); // Allen helfen
             deviceControl.PressButtonBack();
             deviceControl.PressButtonBack();
-            Program.alianzHilfeCounter += 1;
+            Program.allianceHelpCounter += 1;
             writeLogs.LogAndConsoleWirite("Allianz sagt Danke für deine Hilfe! ;)");
         }
 
@@ -58,7 +58,7 @@
             deviceControl.PressButtonBack();
             deviceControl.PressButtonBack();
             deviceControl.PressButtonBack();
-            Program.alianzTechnologie += 1;
+            Program.allianceTechnologyCounter += 1;
             writeLogs.LogAndConsoleWirite("Allianz sagt Danke für dein Beitrag! ;)");
         }
 

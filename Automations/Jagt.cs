@@ -68,7 +68,7 @@
                 writeLogs.LogAndConsoleWirite("Jagt nicht gestartet. :)");
                 return;
             }
-            Program.bestienJagtCount++;
+            Program.beastHuntCounter++;
             writeLogs.LogAndConsoleWirite("Es ist genug Aadauer da!");
             writeLogs.LogAndConsoleWirite("Bestien Jagt erfogreich gestartet! ;)");
         }

@@ -28,7 +28,7 @@
                 deviceControl.ClickAtTouchPositionWithHexa("000002d4", "000005dd"); // Hilfe bitton
                 deviceControl.PressButtonBack();
 
-                Program.heilenCounter += 1;
+                Program.healingCounter += 1;
                 writeLogs.LogAndConsoleWirite("Truppen Heilung erfogreich gestartet! ;)");
             }
         }

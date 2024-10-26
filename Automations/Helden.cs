@@ -24,7 +24,7 @@
             {
                 deviceControl.PressButtonBack();
                 writeLogs.LogAndConsoleWirite("Erweiterte Rekrutierung: Erfolgreich!");
-                Program.heldenRekrurtErweitertCount += 1;
+                Program.advancedHeroRecruitmentCounter += 1;
             }
 
             deviceControl.ClickAtTouchPositionWithHexa("000000f6", "000005e1"); // Normale rekurtierung
@@ -36,7 +36,7 @@
             else
             {
                 writeLogs.LogAndConsoleWirite("Epische Rekrutierung: Erfolgreich");
-                Program.heldenRekrurtEpischCount += 1;
+                Program.epicHeroRecruitmentCounter += 1;
             }
             deviceControl.BackUneversal();
         }
