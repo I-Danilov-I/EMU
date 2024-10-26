@@ -213,14 +213,87 @@ namespace EMU
         }
 
 
+        internal bool IsNetworkConnected()
+        {
+            try
+            {
+                // ADB-Befehl, um die Erreichbarkeit von Google zu überprüfen (als Beispiel)
+                string adbCommand = "shell ping -c 1 www.google.com";
+                string output = ExecuteAdbCommand(adbCommand);
+
+                // Überprüfen, ob die Ausgabe den Erfolg des Pings anzeigt
+                if (!string.IsNullOrEmpty(output) && output.Contains("1 packets transmitted, 1 received"))
+                {
+                    writeLogs.LogAndConsoleWirite("Das Gerät hat eine aktive Internetverbindung.");
+                    return true;
+                }
+                else
+                {
+                    writeLogs.LogAndConsoleWirite("Das Gerät hat keine aktive Internetverbindung.");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                writeLogs.LogAndConsoleWirite($"Fehler bei der Überprüfung der Internetverbindung: {ex.Message}");
+                return false;
+            }
+        }
+
+
+        internal bool IsAppResponsive()
+        {
+            try
+            {
+                // ADB-Befehl, um Informationen über den App-Status zu erhalten
+                string adbCommand = "shell dumpsys activity";
+                string output = ExecuteAdbCommand(adbCommand);
+
+                // Überprüfen, ob der ANR-Status in der Ausgabe enthalten ist
+                if (!string.IsNullOrEmpty(output) && output.Contains("ANR"))
+                {
+                    writeLogs.LogAndConsoleWirite("Die App scheint nicht mehr zu reagieren (ANR).");
+                    return false;
+                }
+                else
+                {
+                    writeLogs.LogAndConsoleWirite("Die App ist weiterhin responsiv.");
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                writeLogs.LogAndConsoleWirite($"Fehler bei der Überprüfung der App-Responsivität: {ex.Message}");
+                return false;
+            }
+        }
+
+
+
+
         internal void StableControl()
         {
             TakeScreenshot();
             bool checkAnoterDeviceAtviti = CheckTextInScreenshot("Tipps", "Konto");
             if (checkAnoterDeviceAtviti == true)
             {
-                writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {timeSleepMin} Min erneut.");
+                writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {timeSleepMin} Min erneut.");             
                 Thread.Sleep(60 * 1000 * timeSleepMin);
+                throw new Exception();
+            }
+
+            if(IsAppRunning() == false)
+            {
+                throw new Exception();
+            }
+
+            if (IsNetworkConnected() == false) 
+            {
+                throw new Exception();
+            }
+
+            if(IsAppResponsive() == false)
+            {
                 throw new Exception();
             }
         }
@@ -270,7 +343,18 @@ namespace EMU
         {
             string adbCommand = $"shell pidof {packageName}"; // Befehl, um zu überprüfen, ob die App läuft
             string result = ExecuteAdbCommand(adbCommand);
-            return !string.IsNullOrEmpty(result); // Wenn ein Ergebnis vorliegt, läuft die App
+
+            // Überprüfen, ob das Ergebnis nicht leer ist
+            if (!string.IsNullOrEmpty(result))
+            {
+                writeLogs.LogAndConsoleWirite($"Die App {packageName} läuft.");
+                return true; // Wenn ein Ergebnis vorliegt, läuft die App
+            }
+            else
+            {
+                writeLogs.LogAndConsoleWirite($"Die App {packageName} ist nicht aktiv.");
+                return false;
+            }
         }
 
 
@@ -308,6 +392,10 @@ namespace EMU
 
         internal void CloseApp()
         {
+            if (IsAppRunning() == false)
+            {
+                return;
+            }
             string adbCommand = $"shell am force-stop {packageName}";  // Befehl zum Schließen der App
             ExecuteAdbCommand(adbCommand);
             writeLogs.LogAndConsoleWirite($"Die App {packageName} wurde geschlossen.");
@@ -327,7 +415,7 @@ namespace EMU
 
                 if (processes.Length > 0)
                 {
-                    //WriteLogs.LogAndConsoleWirite("NoxPlayer läuft bereits.");
+                    writeLogs.LogAndConsoleWirite("NoxPlayer läuft bereits.");
                 }
                 else
                 {
@@ -360,25 +448,14 @@ namespace EMU
                 foreach (var process in Process.GetProcessesByName("Nox"))
                 {
                     process.Kill();
-                    Console.WriteLine("NoxPlayer wurde geschlossen.");
+                    writeLogs.LogAndConsoleWirite("NoxPlayer wurde geschlossen.");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Fehler beim Schließen des NoxPlayers: {ex.Message}");
+                writeLogs.LogAndConsoleWirite($"Fehler beim Schließen des NoxPlayers: {ex.Message}");
             }
         }
-
-
-        // Überprüfungsmethode, ob der NoxPlayer läuft (über adb)
-        internal bool IsNoxPlayerRunning()
-        {
-            string adbCommand = "shell ps | grep com.nox";
-            string output = ExecuteAdbCommand(adbCommand);
-            return !string.IsNullOrEmpty(output);
-        }
-
-
 
 
         // [ADB]
@@ -390,7 +467,7 @@ namespace EMU
                 string adbDevicesOutput = ExecuteAdbCommand("devices"); // Überprüfen, ob bereits eine ADB-Verbindung besteht
                 if (adbDevicesOutput.Contains("127.0.0.1:62001"))
                 {
-                    //WriteLogs.LogAndConsoleWirite("ADB ist bereits mit Nox verbunden.");
+                    writeLogs.LogAndConsoleWirite("ADB ist bereits mit Nox verbunden.");
                 }
                 else
                 {
@@ -405,17 +482,6 @@ namespace EMU
             {
                 writeLogs.LogAndConsoleWirite("Fehler bei der ADB-Verbindung: " + ex.Message);
             }
-        }
-
-
-        internal bool IsAdbConnected()
-        {
-            // ADB-Befehl, um die Liste der verbundenen Geräte abzurufen
-            string adbCommand = "devices";
-            string output = ExecuteAdbCommand(adbCommand);
-
-            // Überprüfen, ob ein Gerät in der Ausgabe aufgelistet ist
-            return !string.IsNullOrEmpty(output) && output.Contains("device");
         }
 
 

@@ -61,7 +61,7 @@
                     deviceControl.StartNoxPlayer();
                     deviceControl.StartADBConnection();
                     deviceControl.StartApp();
-                    if (deviceControl.IsAppRunning() == true && deviceControl.IsNoxPlayerRunning() == true && deviceControl.IsAdbConnected())
+                    if (deviceControl.IsAppRunning() == true)
                     {                     
                         writeLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]_________________________________");
                         writeLogs.LogAndConsoleWirite($"Offline Erträge: {offlineErtregeCounter}");
@@ -81,6 +81,8 @@
                         writeLogs.LogAndConsoleWirite($"Bestien Jagt: {bestienJagtCount}");
                         writeLogs.LogAndConsoleWirite($"Lebens Baum: {lebensBaumEssensCount}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
+                        deviceControl.OfflineErtregeAbholen();
+                        deviceControl.StableControl();
 
                         helden.HeldenRekrutieren();
                         deviceControl.StableControl();
@@ -90,10 +92,6 @@
 
                         //Jagt.PolarTerrorStarten(5, false);
                         Jagt.BestienJagtStarten(25, false);
-                        deviceControl.StableControl();
-                 
-                    
-                        deviceControl.OfflineErtregeAbholen();
                         deviceControl.StableControl();
 
                         lagerOnlineBelohnung.GeschnekAbholen();
@@ -131,20 +129,10 @@
                         lebensBaum.BaumBelohnungAbholen();
                         deviceControl.StableControl();
                     }
-                    else
-                    {
-                        writeLogs.LogAndConsoleWirite("Entweder die App oder der NoxPlayer sind nicht aktiv.");
-                        deviceControl.CloseApp();
-                        deviceControl.KillNoxPlayerProcess();
-                        deviceControl.DisconnectAdb();
-                    }
-
                 }
-                catch (Exception)
+                catch
                 {
                     deviceControl.CloseApp();
-                    deviceControl.KillNoxPlayerProcess();
-                    Thread.Sleep(10000);
                 }
             }
         }
