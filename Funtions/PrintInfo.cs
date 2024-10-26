@@ -31,7 +31,7 @@
             Console.ResetColor();
         }
 
-        private void PrintCounter(string label, int value)
+        internal void PrintCounter(string label, int value)
         {
             // Die Breite, die das Label einnehmen soll, damit alle Werte an der gleichen Stelle beginnen.
             int labelWidth = 30;
@@ -49,6 +49,7 @@
             // Setzt die Konsolenfarbe zurück.
             Console.ResetColor();
         }
+
 
 
     }

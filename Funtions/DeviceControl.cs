@@ -25,9 +25,13 @@ namespace EMU
 
         internal void ShowSetting()
         {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
+            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             writeLogs.LogAndConsoleWirite($"ADB Path: {adbPath}");
             writeLogs.LogAndConsoleWirite($"Inpu device: {inputDevice}");
             Get_Resolution();
+            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
 
         }
 
@@ -372,12 +376,12 @@ namespace EMU
             // Überprüfen, ob das Ergebnis nicht leer ist
             if (!string.IsNullOrEmpty(result))
             {
-                writeLogs.LogAndConsoleWirite($"Die App {packageName} läuft.");
+                writeLogs.LogAndConsoleWirite($"App Status '{packageName}' : Aktiv");
                 return true; // Wenn ein Ergebnis vorliegt, läuft die App
             }
             else
             {
-                writeLogs.LogAndConsoleWirite($"Die App {packageName} ist nicht aktiv.");
+                writeLogs.LogAndConsoleWirite($"App Status '{packageName}' : Off");
                 return false;
             }
         }
@@ -385,9 +389,14 @@ namespace EMU
 
         internal void StartApp()
         {
+            if (IsAppRunning()) 
+            {
+                return;
+            }
+
             string adbCommand = $"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1";
             ExecuteAdbCommand(adbCommand);
-            writeLogs.LogAndConsoleWirite($"App {packageName} wird gestartet.");
+            writeLogs.LogAndConsoleWirite($"Die App '{packageName}': wird gestartet...");
             Thread.Sleep(60 * 1000);
         }
 
@@ -436,7 +445,7 @@ namespace EMU
 
                 if (processes.Length > 0)
                 {
-                    writeLogs.LogAndConsoleWirite("NoxPlayer läuft bereits.");
+                    writeLogs.LogAndConsoleWirite("Status NoxPlayer: Aktiv");
                 }
                 else
                 {
@@ -450,7 +459,7 @@ namespace EMU
                     };
 
                     Process.Start(startInfo);
-                    writeLogs.LogAndConsoleWirite("NoxPlayer wurde gestartet.");
+                    writeLogs.LogAndConsoleWirite("Status NoxPlayer: Startevorgang...");
                     Thread.Sleep(30000); // Warten, bis Nox vollständig gestartet ist
                 }
             }
@@ -488,11 +497,12 @@ namespace EMU
                 string adbDevicesOutput = ExecuteAdbCommand("devices"); // Überprüfen, ob bereits eine ADB-Verbindung besteht
                 if (adbDevicesOutput.Contains("127.0.0.1:62001"))
                 {
-                    writeLogs.LogAndConsoleWirite("ADB ist bereits mit Nox verbunden.");
+                    writeLogs.LogAndConsoleWirite("Status ADB: Connect!");
                 }
                 else
                 {
                     // ADB Server neu starten und mit Nox verbinden, wenn keine Verbindung besteht
+                    writeLogs.LogAndConsoleWirite("Status ADB: Off");
                     ExecuteAdbCommand("kill-server");
                     ExecuteAdbCommand("start-server");
                     ExecuteAdbCommand("connect 127.0.0.1:62001"); // Standard-ADB-Port von Nox

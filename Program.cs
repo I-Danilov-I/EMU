@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Reflection.Emit;
 
 namespace EMU
 {
@@ -30,10 +31,12 @@ namespace EMU
 
         private static void Main()
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Restart();
+
             // System Klassen
             WriteLogs writeLogs = new WriteLogs();
             DeviceControl deviceControl = new DeviceControl(writeLogs);
-            Stopwatch stopwatch = new Stopwatch();
             PrintInfo printInfo = new PrintInfo(writeLogs);
 
             // Automations in Game Klassen
@@ -48,96 +51,91 @@ namespace EMU
             GuvenourBefehl guvenourBefehl = new GuvenourBefehl(writeLogs, deviceControl);
             VIP vip = new VIP(writeLogs, deviceControl);
 
-
-            writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
-            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");     
             deviceControl.ShowSetting();
-            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             //deviceControl.TrackTouchEvents();        
-            deviceControl.OfflineErtregeAbholen();
-
+            deviceControl.OfflineErtregeAbholen(); // Nur beim ersten Start auszuführen.
 
             while (true)
             {
                 try
                 {
-                    stopwatch.Restart();
                     deviceControl.StartNoxPlayer();
                     deviceControl.StartADBConnection();
                     deviceControl.StartApp();
-                    if (deviceControl.IsAppRunning() == true)
-                    {                     
-                        printInfo.PrintSummary();
-                        stopwatch.Stop();
-                        writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");
-                        writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
-                        stopwatch.Restart();
+                   
+                    printInfo.PrintSummary();                    
+                    stopwatch.Stop();
+                    writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");
+                    writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
+                    Console.ResetColor();
+                    stopwatch.Restart();
 
-                        deviceControl.BackUneversal();
-                        deviceControl.CheckePositionAndGoStadt();
-                        deviceControl.StableControl();
+                    // Stabilität Check
+                    deviceControl.BackUneversal();
+                    deviceControl.CheckePositionAndGoStadt();
+                    deviceControl.StableControl();
 
-                        // Truppen Heilung
-                        truppenHeilen.Heilen();
-                        deviceControl.StableControl();
+                    // Truppen Heilung
+                    truppenHeilen.Heilen();
+                    deviceControl.StableControl();
 
-                        // Allianz
-                        allianz.Hilfe();
-                        deviceControl.StableControl();
-                        allianz.Technologie(3);
-                        deviceControl.StableControl();
-                        allianz.KistenAbholen();
-                        deviceControl.StableControl();
+                    // Allianz
+                    allianz.Hilfe();
+                    deviceControl.StableControl();
+                    allianz.Technologie(3);
+                    deviceControl.StableControl();
+                    allianz.KistenAbholen();
+                    deviceControl.StableControl();
 
-                        // Jagt
-                        Jagt.BestienJagtStarten(25, false);
-                        deviceControl.StableControl();
-                        Jagt.PolarTerrorStarten(5, false);
-                        deviceControl.StableControl();
+                    // Jagt
+                    Jagt.BestienJagtStarten(25, false);
+                    deviceControl.StableControl();
+                    Jagt.PolarTerrorStarten(5, false);
+                    deviceControl.StableControl();
 
-                        // VIP
-                        vip.KistenAbholen();
-                        deviceControl.StableControl();
+                    // VIP
+                    vip.KistenAbholen();
+                    deviceControl.StableControl();
 
-                        // Lager
-                        helden.HeldenRekrutieren();
-                        deviceControl.StableControl();
-                        lagerOnlineBelohnung.GeschnekAbholen();
-                        deviceControl.StableControl();
-                        lagerOnlineBelohnung.AusdauerAbholen();
-                        deviceControl.StableControl();
+                    // Lager
+                    helden.HeldenRekrutieren();
+                    deviceControl.StableControl();
+                    lagerOnlineBelohnung.GeschnekAbholen();
+                    deviceControl.StableControl();
+                    lagerOnlineBelohnung.AusdauerAbholen();
+                    deviceControl.StableControl();
 
-                        // Erkundung
-                        erkundung.Erkundungskampf();
-                        deviceControl.StableControl();
-                        erkundung.ErkundungAbholen();
-                        deviceControl.StableControl();
+                    // Erkundung
+                    erkundung.Erkundungskampf();
+                    deviceControl.StableControl();
+                    erkundung.ErkundungAbholen();
+                    deviceControl.StableControl();
 
-                        // Truppen Training
-                        truppenTraining.TrainiereInfaterie(10);
-                        deviceControl.StableControl();
-                        truppenTraining.TrainiereLatenzTreger(10);
-                        deviceControl.StableControl();                   
-                        truppenTraining.TrainiereSniper(10);
-                        deviceControl.StableControl();
+                    // Truppen Training
+                    truppenTraining.TrainiereInfaterie(10);
+                    deviceControl.StableControl();
+                    truppenTraining.TrainiereLatenzTreger(10);
+                    deviceControl.StableControl();                   
+                    truppenTraining.TrainiereSniper(10);
+                    deviceControl.StableControl();
 
-                        // Guvenour Befehle
-                        guvenourBefehl.EilauftragAbholen();
-                        guvenourBefehl.FestlichkeitenAbholen();
-                        deviceControl.StableControl();
+                    // Guvenour Befehle
+                    guvenourBefehl.EilauftragAbholen();
+                    guvenourBefehl.FestlichkeitenAbholen();
+                    deviceControl.StableControl();
 
-                        // Lebens Baum
-                        lebensBaum.BaumBelohnungAbholen();
-                        deviceControl.StableControl();
-                        lebensBaum.EssensVonFreundenAbholen();
-                        deviceControl.StableControl();
+                    // Lebens Baum
+                    lebensBaum.BaumBelohnungAbholen();
+                    deviceControl.StableControl();
+                    lebensBaum.EssensVonFreundenAbholen();
+                    deviceControl.StableControl();
 
-                        // Stoppen der Zeitmessung und Ausgabe der Dauer
-                        roundCount++;
-                        stopwatch.Stop();
-                        writeLogs.LogAndConsoleWirite($"\nRundendauer: {stopwatch.Elapsed.TotalSeconds} Sekunden, Runde {roundCount}");
-                        writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
-                    }
+                    // Stoppen der Zeitmessung und Ausgabe der Dauer
+                    roundCount++;
+                    stopwatch.Stop();
+                    writeLogs.LogAndConsoleWirite($"\nRundendauer: {stopwatch.Elapsed.TotalSeconds} Sekunden, Runde {roundCount}");
+                    writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
+                    
                 }
                 catch
                 {
