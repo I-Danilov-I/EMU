@@ -36,8 +36,8 @@ namespace EMU
 
             // System Klassen
             WriteLogs writeLogs = new WriteLogs();
-            DeviceControl deviceControl = new DeviceControl(writeLogs);
             PrintInfo printInfo = new PrintInfo(writeLogs);
+            DeviceControl deviceControl = new DeviceControl(writeLogs, printInfo);
 
             // Automations in Game Klassen
             Erkundung erkundung = new Erkundung(writeLogs, deviceControl);
@@ -52,18 +52,14 @@ namespace EMU
             VIP vip = new VIP(writeLogs, deviceControl);
 
             deviceControl.ShowSetting();
+
             //deviceControl.TrackTouchEvents();        
-            deviceControl.OfflineErtregeAbholen(); // Nur beim ersten Start auszuführen.
 
             while (true)
             {
                 try
                 {
-                    // Connection
-                    deviceControl.StartNoxPlayer();
-                    deviceControl.StartADBConnection();
-                    deviceControl.StartApp();
-                   
+                    deviceControl.StableControl();
                     // Timer
                     printInfo.PrintSummary();                    
                     stopwatch.Stop();
@@ -71,6 +67,8 @@ namespace EMU
                     writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
                     Console.ResetColor();
                     stopwatch.Restart();
+
+                    deviceControl.OfflineErtregeAbholen(); // Nur beim ersten Start auszuführen.
 
                     // Stabilität Check
                     deviceControl.BackUneversal();
@@ -135,7 +133,7 @@ namespace EMU
                     // Stoppen der Zeitmessung und Ausgabe der Dauer
                     roundCount++;
                     stopwatch.Stop();
-                    writeLogs.LogAndConsoleWirite($"\nRundendauer: {stopwatch.Elapsed.TotalSeconds} Sekunden, Runde {roundCount}");
+                    writeLogs.LogAndConsoleWirite($"\nRundendauer: {stopwatch.Elapsed.TotalMinutes} Minuten, Runde {roundCount}");
                     writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
                     
                 }

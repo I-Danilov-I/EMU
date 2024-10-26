@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Runtime;
 using Tesseract;
 
 namespace EMU
@@ -11,10 +12,12 @@ namespace EMU
         private readonly string screenshotDirectory;
 
         private readonly WriteLogs writeLogs;
+        private readonly PrintInfo printInfo;
 
-        internal DeviceControl(WriteLogs writeLogs)
+        internal DeviceControl(WriteLogs writeLogs, PrintInfo printInfo)
         {
             this.writeLogs = writeLogs;  // Zuweisung der writeLogs-Instanz
+            this.printInfo = printInfo;
 
             adbPath = "C:\\Program Files\\Nox\\bin\\adb.exe";
             inputDevice = "/dev/input/event4";
@@ -25,15 +28,13 @@ namespace EMU
 
         internal void ShowSetting()
         {
-            int labelWidth = 20; // Breite der Labels, um die Ausrichtung konsistent zu halten.
-
             Console.ForegroundColor = ConsoleColor.Yellow;
             writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
 
             // Ausgabe der Einstellungen mit einheitlicher Ausrichtung.
-            PrintSetting("ADB Path: ", adbPath, labelWidth);
-            PrintSetting("Input Device:", inputDevice, labelWidth);
+            printInfo.PrintSetting("ADB Path: ", adbPath);
+            printInfo.PrintSetting("Input Device: ", inputDevice);
 
             // Auflösung abrufen.
             string adbCommand = "shell wm size";
@@ -42,34 +43,16 @@ namespace EMU
             // Ausgabe der Auflösung, falls verfügbar.
             if (!string.IsNullOrEmpty(output))
             {
-                PrintSetting("Resolution: ", output.Trim(), labelWidth);
+                printInfo.PrintSetting("Resolution: ", output.Trim());
             }
             else
             {
-                PrintSetting("Resolution", "Fehler beim Abrufen der Bildschirmauflösung", labelWidth);
+                printInfo.PrintSetting("Resolution", "Fehler beim Abrufen der Bildschirmauflösung");
             }
 
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             Console.ResetColor();
         }
-
-
-        private void PrintSetting(string label, string value, int labelWidth)
-        {
-            // Label in Gelb und Wert in Grün ausgeben, in einem einzigen Write-Aufruf.
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            string formattedLabel = label.PadRight(labelWidth); // Label wird rechts mit Leerzeichen aufgefüllt.
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            string formattedValue = value;
-
-            // Die Ausgabe erfolgt in einem einzigen Aufruf, sodass die Ausrichtung erhalten bleibt.
-            writeLogs.LogAndConsoleWirite($"{formattedLabel}{formattedValue}");
-
-            // Setzt die Konsolenfarbe zurück.
-            Console.ResetColor();
-        }
-
 
 
         internal void ScrollDown(int anzahlScroll)
@@ -265,12 +248,12 @@ namespace EMU
                 // Überprüfen, ob die Ausgabe den Erfolg des Pings anzeigt
                 if (!string.IsNullOrEmpty(output) && output.Contains("1 packets transmitted, 1 received"))
                 {
-                    writeLogs.LogAndConsoleWirite("Internetverbindung: Aktiv");
+                    printInfo.PrintFormatet("Netzwerk :", "Aktiv");
                     return true;
                 }
                 else
                 {
-                    writeLogs.LogAndConsoleWirite("Internetverbindung: Nicht aktiv");
+                    printInfo.PrintFormatet("Netzwerk :", "Not active");
                     return false;
                 }
             }
@@ -293,12 +276,12 @@ namespace EMU
                 // Überprüfen, ob der ANR-Status in der Ausgabe enthalten ist
                 if (!string.IsNullOrEmpty(output) && output.Contains("ANR"))
                 {
-                    writeLogs.LogAndConsoleWirite("Die App scheint nicht mehr zu reagieren (ANR).");
+                    printInfo.PrintFormatet("App Zustand :", "No Action");
                     return false;
                 }
                 else
                 {
-                    writeLogs.LogAndConsoleWirite("App Zustand: Responsiv");
+                    printInfo.PrintFormatet("App Zustand :", "Responsiv");
                     return true;
                 }
             }
@@ -307,42 +290,6 @@ namespace EMU
                 writeLogs.LogAndConsoleWirite($"Fehler bei der Überprüfung der App-Responsivität: {ex.Message}");
                 return false;
             }
-        }
-
-
-
-
-        internal void StableControl()
-        {
-            writeLogs.LogAndConsoleWirite($"\n\n[Stabilitätskontrolle]");
-            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            if (IsNetworkConnected() == false) 
-            {
-                throw new Exception();
-            }
-
-            if(IsAppRunning() == false)
-            {
-                throw new Exception();
-            }
-
-            if(IsAppResponsive() == false)
-            {
-                throw new Exception();
-            }
-
-            TakeScreenshot();
-            bool checkAnoterDeviceAtviti = CheckTextInScreenshot("Tipps", "Konto");
-            if (checkAnoterDeviceAtviti == true)
-            {
-                writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {Program.reconnectSleepTime} Min erneut.");  
-                CloseApp();
-                Thread.Sleep(60 * 1000 * Program.reconnectSleepTime);
-                throw new Exception();
-            }
-
-
-            writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
         }
 
 
@@ -383,6 +330,60 @@ namespace EMU
 
 
 
+        internal void StableControl()
+        {
+            writeLogs.LogAndConsoleWirite($"\n\n[Stabilitätskontrolle]");
+            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
+
+            // Netzwerk
+            if (IsNetworkConnected() == false)
+            {
+                throw new Exception();
+            }
+
+            // NOX
+            if (IsNoxPlayerRunning() == false)
+            {
+                StartNoxPlayer();
+            }
+
+            // ADB
+            if (IsADBConnected() == false)
+            {
+                StartADBConnection();
+            }
+
+            // App
+            if (IsAppRunning() == false)
+            {
+                StartApp();
+                throw new Exception();
+            }
+
+            if (IsAppResponsive() == false)
+            {
+                RestartApp();
+                throw new Exception();
+            }
+
+
+            // App Anderes Konto
+            TakeScreenshot();
+            bool checkAnoterDeviceAtviti = CheckTextInScreenshot("Tipps", "Konto");
+            if (checkAnoterDeviceAtviti == true)
+            {
+                writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {Program.reconnectSleepTime} Min erneut.");
+                CloseApp();
+                Thread.Sleep(60 * 1000 * Program.reconnectSleepTime);
+                StartApp();
+                throw new Exception();
+            }
+            writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
+        }
+
+
+
+
 
         // [APP]
         // ##################################################################
@@ -394,12 +395,12 @@ namespace EMU
             // Überprüfen, ob das Ergebnis nicht leer ist
             if (!string.IsNullOrEmpty(result))
             {
-                writeLogs.LogAndConsoleWirite($"App Status : Aktiv (Packegename: {packageName})");
+                printInfo.PrintFormatet("Status App :", "ON");
                 return true; // Wenn ein Ergebnis vorliegt, läuft die App
             }
             else
             {
-                writeLogs.LogAndConsoleWirite($"App Status : Off (Packegename: {packageName})");
+                printInfo.PrintFormatet("Status App :", "OFF");
                 return false;
             }
         }
@@ -414,7 +415,7 @@ namespace EMU
 
             string adbCommand = $"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1";
             ExecuteAdbCommand(adbCommand);
-            writeLogs.LogAndConsoleWirite($"Die App '{packageName}': wird gestartet...");
+            printInfo.PrintFormatet("Status App :", "Starting...");
             Thread.Sleep(60 * 1000);
         }
 
@@ -423,17 +424,18 @@ namespace EMU
         {
             try
             {
-                writeLogs.LogAndConsoleWirite($"Die App wird neugestartet...");
+                printInfo.PrintFormatet("Status App :", "Restarting...");
                 string stopCommand = $"shell am force-stop {packageName}"; // App stoppen
                 ExecuteAdbCommand(stopCommand);
                 Thread.Sleep(2000);
                 string startCommand = $"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1";  // App neu starten
                 ExecuteAdbCommand(startCommand);
-                writeLogs.LogAndConsoleWirite($"{packageName} wurde neu gestartet.");
+                printInfo.PrintFormatet($"Status App :", $"Starting...");
+                Thread.Sleep(60 * 1000);
             }
             catch (Exception ex)
             {
-                writeLogs.LogAndConsoleWirite($"Fehler beim Neustarten der App {packageName}: " + ex.Message);
+                printInfo.PrintFormatet("Status App :", ex.Message);
             }
         }
 
@@ -446,7 +448,7 @@ namespace EMU
             }
             string adbCommand = $"shell am force-stop {packageName}";  // Befehl zum Schließen der App
             ExecuteAdbCommand(adbCommand);
-            writeLogs.LogAndConsoleWirite($"Die App {packageName} wurde geschlossen.");
+            printInfo.PrintFormatet("Status App :", "Stoping...");
         }
 
 
@@ -458,35 +460,50 @@ namespace EMU
         {
             try
             {
-                // Überprüfen, ob NoxPlayer bereits läuft
-                Process[] processes = Process.GetProcessesByName("Nox"); // Name des Prozesses für NoxPlayer
+                string noxPath = @"C:\Program Files\Nox\bin\Nox.exe"; // Pfad zu Nox
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = noxPath,
+                    Arguments = "-clone:Nox_0", // Verwende dies, um eine spezifische Instanz zu starten (z.B. Nox_0)
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                Process.Start(startInfo);
+                printInfo.PrintFormatet("Status Nox :", "Starting...");
+                Thread.Sleep(30000); // Warten, bis Nox vollständig gestartet ist
+                
+            }
+            catch (Exception ex)
+            {
+                printInfo.PrintFormatet("Status Nox :", ex.Message);
+            }
+        }
+
+        internal bool IsNoxPlayerRunning()
+        {
+            try
+            {
+                // Überprüfen, ob ein Prozess mit dem Namen "Nox" läuft.
+                Process[] processes = Process.GetProcessesByName("Nox");
 
                 if (processes.Length > 0)
                 {
-                    writeLogs.LogAndConsoleWirite("Status Nox : Aktiv");
+                    printInfo.PrintFormatet("Status Nox :", "Running");
+                    return true;
                 }
                 else
                 {
-                    string noxPath = @"C:\Program Files\Nox\bin\Nox.exe"; // Pfad zu Nox
-                    ProcessStartInfo startInfo = new ProcessStartInfo
-                    {
-                        FileName = noxPath,
-                        Arguments = "-clone:Nox_0", // Verwende dies, um eine spezifische Instanz zu starten (z.B. Nox_0)
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    };
-
-                    Process.Start(startInfo);
-                    writeLogs.LogAndConsoleWirite("Status Nox : Startevorgang...");
-                    Thread.Sleep(30000); // Warten, bis Nox vollständig gestartet ist
+                    printInfo.PrintFormatet("Status Nox :", "Not Running");
+                    return false;
                 }
             }
             catch (Exception ex)
             {
-                writeLogs.LogAndConsoleWirite("Fehler beim Starten des NoxPlayers : " + ex.Message);
+                printInfo.PrintFormatet("Status Nox :", ex.Message);
+                return false;
             }
         }
-
 
         internal void KillNoxPlayerProcess()
         {
@@ -496,14 +513,16 @@ namespace EMU
                 foreach (var process in Process.GetProcessesByName("Nox"))
                 {
                     process.Kill();
-                    writeLogs.LogAndConsoleWirite("NoxPlayer wurde geschlossen.");
+                    printInfo.PrintFormatet("Status Nox :", "Closed");
                 }
             }
             catch (Exception ex)
             {
-                writeLogs.LogAndConsoleWirite($"Fehler beim Schließen des NoxPlayers: {ex.Message}");
+                printInfo.PrintFormatet("Status Nox :", ex.Message);
             }
         }
+        
+
 
 
         // [ADB]
@@ -512,40 +531,57 @@ namespace EMU
         {
             try
             {
-                string adbDevicesOutput = ExecuteAdbCommand("devices"); // Überprüfen, ob bereits eine ADB-Verbindung besteht
-                if (adbDevicesOutput.Contains("127.0.0.1:62001"))
-                {
-                    writeLogs.LogAndConsoleWirite("Status ADB : Connect!");
-                }
-                else
-                {
-                    // ADB Server neu starten und mit Nox verbinden, wenn keine Verbindung besteht
-                    writeLogs.LogAndConsoleWirite("Status ADB: Off");
-                    ExecuteAdbCommand("kill-server");
-                    ExecuteAdbCommand("start-server");
-                    ExecuteAdbCommand("connect 127.0.0.1:62001"); // Standard-ADB-Port von Nox
-                    writeLogs.LogAndConsoleWirite("ADB-Verbindung neu hergestellt.");
-                }
+                ExecuteAdbCommand("start-server");
+                ExecuteAdbCommand("connect 127.0.0.1"); // Standard-ADB-Port von Nox
+                printInfo.PrintFormatet("Status ADB :", "Connected");
+                
             }
             catch (Exception ex)
             {
-                writeLogs.LogAndConsoleWirite("Fehler bei der ADB-Verbindung: " + ex.Message);
+                printInfo.PrintFormatet($"Status ADB :", ex.Message);
             }
         }
 
+        internal bool IsADBConnected()
+        {
+            try
+            {
+                // ADB-Befehl, um verbundene Geräte aufzulisten
+                string adbCommand = "devices";
+                string output = ExecuteAdbCommand(adbCommand);
 
-        internal void DisconnectAdb()
+                // Überprüfe, ob in der ADB-Ausgabe eine NoxPlayer-Verbindung angezeigt wird
+                if (output.Contains("emulator") || output.Contains("127.0.0.1"))
+                {
+                    printInfo.PrintFormatet("Status ADB:", "Connected");
+                    return true;
+                }
+                else
+                {
+                    printInfo.PrintFormatet("Status ADB:", "Not Connected");
+                    return false;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                printInfo.PrintFormatet("Status ADB:", ex.Message);
+                return false;
+            }
+        }
+
+        internal void DisconnectADB()
         {
             try
             {
                 // ADB-Befehl zum Trennen der Verbindung
-                string adbCommand = "disconnect 127.0.0.1:62001"; // Standard-ADB-Port von Nox
+                string adbCommand = "disconnect 127.0.0.1"; // Standard-ADB-Port von Nox
                 ExecuteAdbCommand(adbCommand);
-                writeLogs.LogAndConsoleWirite("ADB-Verbindung zu 127.0.0.1:62001 wurde getrennt.");
+                printInfo.PrintFormatet($"Status ADB :", $"Disconecting... [Standard-ADB-Port von Nox | {adbCommand} ]");
             }
             catch (Exception ex)
             {
-                writeLogs.LogAndConsoleWirite($"Fehler beim Trennen der ADB-Verbindung: {ex.Message}");
+                printInfo.PrintFormatet($"Status ADB :", $"Disconecting... [Standard-ADB-Port von Nox | {ex.Message} ]");
             }
         }
 
