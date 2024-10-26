@@ -144,6 +144,11 @@ namespace EMU
         internal void StartNoxPlayer()
         {
             Process.Start(@"C:\Program Files\Nox\bin\Nox.exe", "-clone:Nox_0");
+            // Warte, bis Nox vollständig gestartet ist
+            while (!IsNoxReady())
+            {
+                Thread.Sleep(5000); // Überprüfe alle Sekunden
+            }
         }
 
         internal bool IsADBConnected()
@@ -156,6 +161,12 @@ namespace EMU
         {
             string output = deviceControl.ExecuteAdbCommand("shell ping -c 1 www.google.com");
             return output.Contains("1 received");
+        }
+
+        internal bool IsNoxReady()
+        {
+            string output = deviceControl.ExecuteAdbCommand("shell getprop init.svc.bootanim");
+            return output.Contains("stopped");
         }
 
         internal void StartADBConnection()
@@ -173,9 +184,30 @@ namespace EMU
             return !deviceControl.ExecuteAdbCommand("shell dumpsys activity").Contains("ANR");
         }
 
+        internal bool IsAppLoaded()
+        {
+            // Erste Überprüfung: Ist die App im Vordergrund?
+            string focusOutput = deviceControl.ExecuteAdbCommand("shell dumpsys window windows | grep mCurrentFocus");
+            bool isAppInFocus = focusOutput.Contains(deviceControl.packageName);
+
+            // Zweite Überprüfung: Sind alle Ladeelemente verschwunden?
+            string uiOutput = deviceControl.ExecuteAdbCommand("shell dumpsys window windows | grep -E 'LadeElementId'");
+            bool isLoadingElementGone = !uiOutput.Contains("LadeElementId");
+
+            // Nur als geladen betrachten, wenn beide Bedingungen erfüllt sind
+            return isAppInFocus && isLoadingElementGone;
+        }
+
+
+
         internal void StartApp()
         {
             deviceControl.ExecuteAdbCommand($"shell monkey -p {deviceControl.packageName} -c android.intent.category.LAUNCHER 1");
+            // Warte, bis die App geladen ist
+            while (!IsAppLoaded())
+            {
+                Thread.Sleep(5000); // Überprüfe alle Sekunden
+            }          
         }
 
         internal void RestartApp()
@@ -195,6 +227,7 @@ namespace EMU
             {
                 process.Kill();
             }
+            
         }
     }
 }
