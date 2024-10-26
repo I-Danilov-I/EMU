@@ -394,12 +394,12 @@ namespace EMU
             // Überprüfen, ob das Ergebnis nicht leer ist
             if (!string.IsNullOrEmpty(result))
             {
-                writeLogs.LogAndConsoleWirite($"App Status '{packageName}' : Aktiv");
+                writeLogs.LogAndConsoleWirite($"App Status : Aktiv (Packegename: {packageName})");
                 return true; // Wenn ein Ergebnis vorliegt, läuft die App
             }
             else
             {
-                writeLogs.LogAndConsoleWirite($"App Status '{packageName}' : Off");
+                writeLogs.LogAndConsoleWirite($"App Status : Off (Packegename: {packageName})");
                 return false;
             }
         }
@@ -463,7 +463,7 @@ namespace EMU
 
                 if (processes.Length > 0)
                 {
-                    writeLogs.LogAndConsoleWirite("Status NoxPlayer: Aktiv");
+                    writeLogs.LogAndConsoleWirite("Status Nox : Aktiv");
                 }
                 else
                 {
@@ -477,13 +477,13 @@ namespace EMU
                     };
 
                     Process.Start(startInfo);
-                    writeLogs.LogAndConsoleWirite("Status NoxPlayer: Startevorgang...");
+                    writeLogs.LogAndConsoleWirite("Status Nox : Startevorgang...");
                     Thread.Sleep(30000); // Warten, bis Nox vollständig gestartet ist
                 }
             }
             catch (Exception ex)
             {
-                writeLogs.LogAndConsoleWirite("Fehler beim Starten des NoxPlayers: " + ex.Message);
+                writeLogs.LogAndConsoleWirite("Fehler beim Starten des NoxPlayers : " + ex.Message);
             }
         }
 
@@ -515,7 +515,7 @@ namespace EMU
                 string adbDevicesOutput = ExecuteAdbCommand("devices"); // Überprüfen, ob bereits eine ADB-Verbindung besteht
                 if (adbDevicesOutput.Contains("127.0.0.1:62001"))
                 {
-                    writeLogs.LogAndConsoleWirite("Status ADB: Connect!");
+                    writeLogs.LogAndConsoleWirite("Status ADB : Connect!");
                 }
                 else
                 {
