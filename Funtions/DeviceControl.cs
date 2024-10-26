@@ -314,12 +314,10 @@ namespace EMU
 
                 if (isNetworkAvailable)
                 {
-                    printInfo.PrintFormatet("VM Network Status:", "Connected");
                     return true;
                 }
                 else
                 {
-                    printInfo.PrintFormatet("VM Network Status:", "Not Connected");
                     return false;
                 }
             }
@@ -339,9 +337,13 @@ namespace EMU
             // Netwerz am der MAschine
             if (IsNetworkAvailable() == false)
             {
-                printInfo.PrintFormatet("Network Status:", $"Not Network, reconnection in: { Program.reconnectSleepTime} Min");
+                printInfo.PrintFormatet("VM Network Status:", $"Not Network, reconnection in: {Program.reconnectSleepTime} Min");
                 Thread.Sleep(Program.reconnectSleepTime);
                 throw new Exception();
+            }
+            else 
+            {
+                printInfo.PrintFormatet("VM Network Status:", "Online");
             }
 
             // NOX
@@ -351,12 +353,20 @@ namespace EMU
                 StartNoxPlayer();
                 printInfo.PrintFormatet("Status Nox :", "Running");
             }
+            else
+            {
+                printInfo.PrintFormatet("Status Nox :", "Running");
+            }
 
             // ADB
             if (IsADBConnected() == false)
             {
                 printInfo.PrintFormatet("Status ADB:", "Not Connected");
                 StartADBConnection();
+                printInfo.PrintFormatet("Status ADB:", "Conneted");
+            }
+            else
+            {
                 printInfo.PrintFormatet("Status ADB:", "Conneted");
             }
 
@@ -374,9 +384,14 @@ namespace EMU
                 StartApp();
                 printInfo.PrintFormatet("Status App :", "Online");
             }
+            else
+            {
+                printInfo.PrintFormatet("Status App :", "Online");
+            }
 
             if (IsAppResponsive() == false)
             {
+                printInfo.PrintFormatet("Status App :", "Restarting");
                 RestartApp();
             }
 
@@ -435,13 +450,12 @@ namespace EMU
         {
             try
             {
-                printInfo.PrintFormatet("Status App :", "Restarting");
+                
                 string stopCommand = $"shell am force-stop {packageName}"; // App stoppen
                 ExecuteAdbCommand(stopCommand);
                 Thread.Sleep(2000);
                 string startCommand = $"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1";  // App neu starten
                 ExecuteAdbCommand(startCommand);
-                printInfo.PrintFormatet($"Status App :", $"Starting");
                 Thread.Sleep(60 * 1000);
             }
             catch (Exception ex)
