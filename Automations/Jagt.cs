@@ -59,7 +59,7 @@
         {
             writeLogs.LogAndConsoleWirite("Checke ob genug Ausdauer vorhaden ist...");
             deviceControl.TakeScreenshot();
-            bool reichenResursen = deviceControl.CheckTextInScreenshot("Ausdauer", "VIP"); // Suche nach Text im Screenshot
+            bool reichenResursen = deviceControl.CheckTextInScreenshot("Ausdauer", "Ausdauer"); // Suche nach Text im Screenshot
             if (reichenResursen)
             {
                 writeLogs.LogAndConsoleWirite("Resoursen reichen nicht aus :(");

@@ -1,11 +1,11 @@
-﻿namespace EMU.Automations
+﻿namespace EMU
 {
     internal class Helden(WriteLogs writeLogs, DeviceControl deviceControl)
     {
 
-        public void HeldenRecurtieren()
+        public void HeldenRekrutieren()
         {
-            writeLogs.LogAndConsoleWirite("\n\nHeld Rekurtierung gestartet...");
+            writeLogs.LogAndConsoleWirite("\n\nHeld Rekrutierung: Start...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ClickAtTouchPositionWithHexa("000000e9", "000005f8"); // Helden
             deviceControl.ClickAtTouchPositionWithHexa("0000029d", "000005df"); // Held rekrutieren
@@ -18,22 +18,29 @@
             if (deviceControl.CheckTextInScreenshot("Kaufen", "500") == true)
             {
                 deviceControl.PressButtonBack();
-                writeLogs.LogAndConsoleWirite("Aktuell keine ErweiterteRekurtierung.");
+                writeLogs.LogAndConsoleWirite("Erweiterte Rekrutierung: Nicht aktiv!");
+            }
+            else
+            {
+                deviceControl.PressButtonBack();
+                writeLogs.LogAndConsoleWirite("Erweiterte Rekrutierung: Erfolgreich!");
+                Program.heldenRekrurtErweitertCount += 1;
             }
 
             deviceControl.ClickAtTouchPositionWithHexa("000000f6", "000005e1"); // Normale rekurtierung
             deviceControl.TakeScreenshot();
             if (deviceControl.CheckTextInScreenshot("Kaufen", "500") == true)
             {
-                deviceControl.PressButtonBack();
-                writeLogs.LogAndConsoleWirite("Aktuell keine normale Rekurtierung.");
+                writeLogs.LogAndConsoleWirite("Epische Rekrutierung: Nicht aktiv.");
             }
-
-            deviceControl.PressButtonBack();
-            deviceControl.PressButtonBack();
-            Program.heldenRecurtCount += 1;
-            writeLogs.LogAndConsoleWirite("Held Rekurtierung abgeshclsosen! :)");
+            else
+            {
+                writeLogs.LogAndConsoleWirite("Epische Rekrutierung: Erfolgreich");
+                Program.heldenRekrurtEpischCount += 1;
+            }
+            deviceControl.BackUneversal();
         }
+
 
     }
 }

@@ -79,91 +79,6 @@ namespace EMU
         }
 
 
-        internal void CloseApp()
-        {
-            string adbCommand = $"shell am force-stop {packageName}";  // Befehl zum Schließen der App
-            ExecuteAdbCommand(adbCommand);
-            writeLogs.LogAndConsoleWirite($"Die App {packageName} wurde geschlossen.");
-        }
-
-
-        internal void StartNoxPlayer()
-        {
-            try
-            {
-                // Überprüfen, ob NoxPlayer bereits läuft
-                Process[] processes = Process.GetProcessesByName("Nox"); // Name des Prozesses für NoxPlayer
-
-                if (processes.Length > 0)
-                {
-                    //WriteLogs.LogAndConsoleWirite("NoxPlayer läuft bereits.");
-                }
-                else
-                {
-                    string noxPath = @"C:\Program Files\Nox\bin\Nox.exe"; // Pfad zu Nox
-                    ProcessStartInfo startInfo = new ProcessStartInfo
-                    {
-                        FileName = noxPath,
-                        Arguments = "-clone:Nox_0", // Verwende dies, um eine spezifische Instanz zu starten (z.B. Nox_0)
-                        UseShellExecute = false,
-                        CreateNoWindow = true
-                    };
-
-                    Process.Start(startInfo);
-                    writeLogs.LogAndConsoleWirite("NoxPlayer wurde gestartet.");
-                    Thread.Sleep(30000); // Warten, bis Nox vollständig gestartet ist
-                }
-            }
-            catch (Exception ex)
-            {
-                writeLogs.LogAndConsoleWirite("Fehler beim Starten des NoxPlayers: " + ex.Message);
-            }
-        }
-
-
-        internal void KillNoxPlayerProcess()
-        {
-            try
-            {
-                // Finde und beende den NoxPlayer-Prozess
-                foreach (var process in Process.GetProcessesByName("Nox"))
-                {
-                    process.Kill();
-                    Console.WriteLine("NoxPlayer wurde geschlossen.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Fehler beim Schließen des NoxPlayers: {ex.Message}");
-            }
-        }
-
-
-        internal void StartADBConnection()
-        {
-            try
-            {
-                string adbDevicesOutput = ExecuteAdbCommand("devices"); // Überprüfen, ob bereits eine ADB-Verbindung besteht
-                if (adbDevicesOutput.Contains("127.0.0.1:62001"))
-                {
-                    //WriteLogs.LogAndConsoleWirite("ADB ist bereits mit Nox verbunden.");
-                }
-                else
-                {
-                    // ADB Server neu starten und mit Nox verbinden, wenn keine Verbindung besteht
-                    ExecuteAdbCommand("kill-server");
-                    ExecuteAdbCommand("start-server");
-                    ExecuteAdbCommand("connect 127.0.0.1:62001"); // Standard-ADB-Port von Nox
-                    writeLogs.LogAndConsoleWirite("ADB-Verbindung neu hergestellt.");
-                }
-            }
-            catch (Exception ex)
-            {
-                writeLogs.LogAndConsoleWirite("Fehler bei der ADB-Verbindung: " + ex.Message);
-            }
-        }
-
-
         internal void SeitenMenuOpen()
         {
             ClickAtTouchPositionWithHexa("00000017", "000002b0"); // Öffne Seitenmenü
@@ -347,6 +262,10 @@ namespace EMU
         }
 
 
+
+
+        // [APP]
+        // ##################################################################
         internal bool IsAppRunning()
         {
             string adbCommand = $"shell pidof {packageName}"; // Befehl, um zu überprüfen, ob die App läuft
@@ -386,6 +305,118 @@ namespace EMU
             }
         }
 
+
+        internal void CloseApp()
+        {
+            string adbCommand = $"shell am force-stop {packageName}";  // Befehl zum Schließen der App
+            ExecuteAdbCommand(adbCommand);
+            writeLogs.LogAndConsoleWirite($"Die App {packageName} wurde geschlossen.");
+        }
+
+
+
+
+        // [NOX]
+        // ##################################################################
+        internal void StartNoxPlayer()
+        {
+            try
+            {
+                // Überprüfen, ob NoxPlayer bereits läuft
+                Process[] processes = Process.GetProcessesByName("Nox"); // Name des Prozesses für NoxPlayer
+
+                if (processes.Length > 0)
+                {
+                    //WriteLogs.LogAndConsoleWirite("NoxPlayer läuft bereits.");
+                }
+                else
+                {
+                    string noxPath = @"C:\Program Files\Nox\bin\Nox.exe"; // Pfad zu Nox
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = noxPath,
+                        Arguments = "-clone:Nox_0", // Verwende dies, um eine spezifische Instanz zu starten (z.B. Nox_0)
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+
+                    Process.Start(startInfo);
+                    writeLogs.LogAndConsoleWirite("NoxPlayer wurde gestartet.");
+                    Thread.Sleep(30000); // Warten, bis Nox vollständig gestartet ist
+                }
+            }
+            catch (Exception ex)
+            {
+                writeLogs.LogAndConsoleWirite("Fehler beim Starten des NoxPlayers: " + ex.Message);
+            }
+        }
+
+
+        internal void KillNoxPlayerProcess()
+        {
+            try
+            {
+                // Finde und beende den NoxPlayer-Prozess
+                foreach (var process in Process.GetProcessesByName("Nox"))
+                {
+                    process.Kill();
+                    Console.WriteLine("NoxPlayer wurde geschlossen.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Schließen des NoxPlayers: {ex.Message}");
+            }
+        }
+
+
+        // Überprüfungsmethode, ob der NoxPlayer läuft (über adb)
+        internal bool IsNoxPlayerRunning()
+        {
+            string adbCommand = "shell ps | grep com.nox";
+            string output = ExecuteAdbCommand(adbCommand);
+            return !string.IsNullOrEmpty(output);
+        }
+
+
+
+
+        // [ADB]
+        // ##################################################################
+        internal void StartADBConnection()
+        {
+            try
+            {
+                string adbDevicesOutput = ExecuteAdbCommand("devices"); // Überprüfen, ob bereits eine ADB-Verbindung besteht
+                if (adbDevicesOutput.Contains("127.0.0.1:62001"))
+                {
+                    //WriteLogs.LogAndConsoleWirite("ADB ist bereits mit Nox verbunden.");
+                }
+                else
+                {
+                    // ADB Server neu starten und mit Nox verbinden, wenn keine Verbindung besteht
+                    ExecuteAdbCommand("kill-server");
+                    ExecuteAdbCommand("start-server");
+                    ExecuteAdbCommand("connect 127.0.0.1:62001"); // Standard-ADB-Port von Nox
+                    writeLogs.LogAndConsoleWirite("ADB-Verbindung neu hergestellt.");
+                }
+            }
+            catch (Exception ex)
+            {
+                writeLogs.LogAndConsoleWirite("Fehler bei der ADB-Verbindung: " + ex.Message);
+            }
+        }
+
+
+        internal bool IsAdbConnected()
+        {
+            // ADB-Befehl, um die Liste der verbundenen Geräte abzurufen
+            string adbCommand = "devices";
+            string output = ExecuteAdbCommand(adbCommand);
+
+            // Überprüfen, ob ein Gerät in der Ausgabe aufgelistet ist
+            return !string.IsNullOrEmpty(output) && output.Contains("device");
+        }
 
 
 

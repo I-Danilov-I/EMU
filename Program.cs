@@ -1,10 +1,9 @@
-﻿using EMU.Automations;
-
-namespace EMU
+﻿namespace EMU
 {
     internal static class Program
     {
-        internal static int geschwindigkeit = 1000; // Pause in ms zwischen jedem Befehl.
+        internal static int geschwindigkeit = 3000; // Pause in ms zwischen jedem Befehl.
+        internal static int timeSleepMin = 10; // Nach wiederverbinden
 
         internal static int offlineErtregeCounter = 0; 
 
@@ -23,9 +22,13 @@ namespace EMU
         internal static int alianzTechnologie = 0;
 
         internal static int heilenCounter = 0;
-        internal static int heldenRecurtCount = 0;
+
+        internal static int heldenRekrurtErweitertCount = 0;
+        internal static int heldenRekrurtEpischCount = 0;
+
         internal static int bestienJagtCount = 0;
-        internal static int lebensbaumEssens = 0;
+
+        internal static int lebensBaumEssensCount = 0;
 
 
         private static void Main()
@@ -48,8 +51,8 @@ namespace EMU
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ShowSetting();
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            //deviceControl.TrackTouchEvents();
-            
+            //deviceControl.TrackTouchEvents();        
+            deviceControl.OfflineErtregeAbholen();
 
             while (true)
             {
@@ -58,54 +61,44 @@ namespace EMU
                     deviceControl.StartNoxPlayer();
                     deviceControl.StartADBConnection();
                     deviceControl.StartApp();
-                    if (deviceControl.IsAppRunning() == true)
+                    if (deviceControl.IsAppRunning() == true && deviceControl.IsNoxPlayerRunning() == true)
                     {                     
                         writeLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]_________________________________");
-                        writeLogs.LogAndConsoleWirite($"Lagerbonus Geschenk: {lagerBonusGeschenkCounter}");
-                        writeLogs.LogAndConsoleWirite($"Lagerbounus Ausdauer: {Program.lagerBonusAausdauerCounter}");
-
-                        writeLogs.LogAndConsoleWirite($"Infaterie Einheiten traniert: {infaterieTruppenTraniertCounter}");
-                        writeLogs.LogAndConsoleWirite($"Latenzträger Einheiten traniert: {latenztregerTruppenTraniertCounter}");
-                        writeLogs.LogAndConsoleWirite($"Sniper Einheiten traniert: {sniperTruppenTraniertCounter}");
-
+                        writeLogs.LogAndConsoleWirite($"Offline Erträge: {offlineErtregeCounter}");
+                        writeLogs.LogAndConsoleWirite($"Lager Geschenk: {lagerBonusGeschenkCounter}");
+                        writeLogs.LogAndConsoleWirite($"Lager Ausdauer: {Program.lagerBonusAausdauerCounter}");
+                        writeLogs.LogAndConsoleWirite($"Infaterie Einheiten: {infaterieTruppenTraniertCounter}");
+                        writeLogs.LogAndConsoleWirite($"Latenzträger Einheiten: {latenztregerTruppenTraniertCounter}");
+                        writeLogs.LogAndConsoleWirite($"Scharfschützen Einheiten: {sniperTruppenTraniertCounter}");
                         writeLogs.LogAndConsoleWirite($"Erkundungsbonus: {erkungBonusCounter}");
                         writeLogs.LogAndConsoleWirite($"Erkundungskämpfe: {erkundungKampfCounter}");
-
                         writeLogs.LogAndConsoleWirite($"Allianz Kisten: {alianzKistenCounter}");
                         writeLogs.LogAndConsoleWirite($"Allianz Hilfe: {alianzHilfeCounter}");
                         writeLogs.LogAndConsoleWirite($"Allinaz Technolgie: {alianzTechnologie}");
-                        writeLogs.LogAndConsoleWirite($"Heilung: {heilenCounter}");
-                        writeLogs.LogAndConsoleWirite($"Helden rekuritiert: {heldenRecurtCount}");
+                        writeLogs.LogAndConsoleWirite($"Allianz Heilung: {heilenCounter}");
+                        writeLogs.LogAndConsoleWirite($"Helden Rekrutierung erweitert: {heldenRekrurtErweitertCount}");
+                        writeLogs.LogAndConsoleWirite($"Helden Rekrutierung episch: {heldenRekrurtEpischCount}");
+                        writeLogs.LogAndConsoleWirite($"Bestien Jagt: {bestienJagtCount}");
+                        writeLogs.LogAndConsoleWirite($"Lebens Baum: {lebensBaumEssensCount}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
-                        
-                        //deviceControl.BackUneversal();
 
-                        guvenourBefehl.EilauftragAbholen();
-                        guvenourBefehl.FestlichkeitenAbholen();
+                        helden.HeldenRekrutieren();
                         deviceControl.StableControl();
 
-                        lebensBaum.EssensVonFreundenAbholen();
-                        deviceControl.StableControl();
-                        lebensBaum.BaumBelohnungAbholen();
-                        deviceControl.StableControl();
-
-                        Jagt.PolarTerrorStarten(5, false);
-                        Jagt.BestienJagtStarten(25, false);
-                        deviceControl.StableControl();
-
-                        helden.HeldenRecurtieren();
-                        deviceControl.StableControl();
-                        
                         truppenHeilen.Heilen();
                         deviceControl.StableControl();
+
+                        //Jagt.PolarTerrorStarten(5, false);
+                        Jagt.BestienJagtStarten(25, false);
+                        deviceControl.StableControl();
+                 
                     
                         deviceControl.OfflineErtregeAbholen();
                         deviceControl.StableControl();
 
-                        lagerOnlineBelohnung.AusdauerAbholen();
-                        deviceControl.StableControl();
-
                         lagerOnlineBelohnung.GeschnekAbholen();
+                        deviceControl.StableControl();
+                        lagerOnlineBelohnung.AusdauerAbholen();
                         deviceControl.StableControl();
 
                         erkundung.Erkundungskampf();
@@ -129,8 +122,16 @@ namespace EMU
                         truppenTraining.TrainiereSniper(10);
                         deviceControl.StableControl();
                         
+                        guvenourBefehl.EilauftragAbholen();
+                        guvenourBefehl.FestlichkeitenAbholen();
+                        deviceControl.StableControl();
 
+                        lebensBaum.EssensVonFreundenAbholen();
+                        deviceControl.StableControl();
+                        lebensBaum.BaumBelohnungAbholen();
+                        deviceControl.StableControl();
                     }
+
                 }
                 catch (Exception)
                 {

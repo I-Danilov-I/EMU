@@ -1,5 +1,5 @@
-﻿namespace EMU.Automations
-{
+﻿namespace EMU
+{ 
     internal class GuvenourBefehl(WriteLogs writeLogs, DeviceControl deviceControl)
     {
 

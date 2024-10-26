@@ -1,4 +1,4 @@
-﻿namespace EMU.Automations
+﻿namespace EMU
 {
     internal class LebensBaum(WriteLogs writeLogs, DeviceControl deviceControl)
     {
@@ -27,7 +27,7 @@
             Thread.Sleep(2000);
             deviceControl.ClickAtTouchPositionWithHexa("0000032f", "000005e4"); // Stadt
 
-            Program.lebensbaumEssens += 1;
+            Program.lebensBaumEssensCount += 1;
             writeLogs.LogAndConsoleWirite("Lebensbaum Essens erfogreich abgeholt! ;)");
             Thread.Sleep(3000);
         }
@@ -75,7 +75,7 @@
             Thread.Sleep(3000);
 
             deviceControl.ClickAtTouchPositionWithHexa("0000032f", "000005e4"); // Stadt
-            Program.lebensbaumEssens += 1;
+            Program.lebensBaumEssensCount += 1;
 
             writeLogs.LogAndConsoleWirite("Essens von Freunden erfogreich abgeholt! ;)");
             Thread.Sleep(3000);
