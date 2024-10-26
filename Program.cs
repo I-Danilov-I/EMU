@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Reflection.Emit;
 
 namespace EMU
 {
@@ -38,6 +37,8 @@ namespace EMU
             WriteLogs writeLogs = new WriteLogs();
             PrintInfo printInfo = new PrintInfo(writeLogs);
             DeviceControl deviceControl = new DeviceControl(writeLogs, printInfo);
+            StableControl stableControl = new StableControl(writeLogs, printInfo, deviceControl);
+
 
             // Automations in Game Klassen
             Erkundung erkundung = new Erkundung(writeLogs, deviceControl);
@@ -51,6 +52,7 @@ namespace EMU
             GuvenourBefehl guvenourBefehl = new GuvenourBefehl(writeLogs, deviceControl);
             VIP vip = new VIP(writeLogs, deviceControl);
 
+
             deviceControl.ShowSetting();
             //deviceControl.TrackTouchEvents();        
 
@@ -58,7 +60,7 @@ namespace EMU
             {
                 try
                 {
-                    deviceControl.StableControl();
+                    stableControl.Control();
                     printInfo.PrintSummary();                    
                     stopwatch.Stop();
                     writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");
@@ -71,62 +73,62 @@ namespace EMU
                     // Stabilität Check
                     deviceControl.BackUneversal();
                     deviceControl.CheckePositionAndGoStadt();
-                    deviceControl.StableControl();
+                    stableControl.Control();
 
                     // Truppen Heilung
                     truppenHeilen.Heilen();
-                    deviceControl.StableControl();
+                    stableControl.Control();
 
                     // Allianz
                     allianz.Hilfe();
-                    deviceControl.StableControl();
+                    stableControl.Control();
                     allianz.Technologie(3);
-                    deviceControl.StableControl();
+                    stableControl.Control();
                     allianz.KistenAbholen();
-                    deviceControl.StableControl();
+                    stableControl.Control();
 
                     // Jagt
-                    Jagt.BestienJagtStarten(25, false);
-                    deviceControl.StableControl();
-                    Jagt.PolarTerrorStarten(5, false);
-                    deviceControl.StableControl();
+                    Jagt.BestienJagtStarten(26, false);
+                    stableControl.Control();
+                    //Jagt.PolarTerrorStarten(5, false);
+                    //deviceControl.StableControl();
 
                     // VIP
                     vip.KistenAbholen();
-                    deviceControl.StableControl();
+                    stableControl.Control();
 
                     // Lager
                     helden.HeldenRekrutieren();
-                    deviceControl.StableControl();
+                    stableControl.Control();
                     lagerOnlineBelohnung.GeschnekAbholen();
-                    deviceControl.StableControl();
+                    stableControl.Control();
                     lagerOnlineBelohnung.AusdauerAbholen();
-                    deviceControl.StableControl();
+                    stableControl.Control();
 
                     // Erkundung
                     erkundung.Erkundungskampf();
-                    deviceControl.StableControl();
+                    stableControl.Control();
                     erkundung.ErkundungAbholen();
-                    deviceControl.StableControl();
+                    stableControl.Control();
 
                     // Truppen Training
                     truppenTraining.TrainiereInfaterie(10);
-                    deviceControl.StableControl();
+                    stableControl.Control();
                     truppenTraining.TrainiereLatenzTreger(10);
-                    deviceControl.StableControl();                   
+                    stableControl.Control();                   
                     truppenTraining.TrainiereSniper(10);
-                    deviceControl.StableControl();
+                    stableControl.Control();
 
                     // Guvenour Befehle
                     guvenourBefehl.EilauftragAbholen();
                     guvenourBefehl.FestlichkeitenAbholen();
-                    deviceControl.StableControl();
+                    stableControl.Control();
 
                     // Lebens Baum
                     lebensBaum.BaumBelohnungAbholen();
-                    deviceControl.StableControl();
+                    stableControl.Control();
                     lebensBaum.EssensVonFreundenAbholen();
-                    deviceControl.StableControl();
+                    stableControl.Control();
 
                     // Stoppen der Zeitmessung und Ausgabe der Dauer
                     roundCount++;

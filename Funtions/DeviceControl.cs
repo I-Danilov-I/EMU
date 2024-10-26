@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using System.Net.NetworkInformation;
-using System.Runtime;
 using Tesseract;
 
 namespace EMU
@@ -9,7 +7,7 @@ namespace EMU
     {
         private readonly string adbPath;
         private readonly string inputDevice;
-        private readonly string packageName;
+        internal readonly string packageName;
         private readonly string screenshotDirectory;
 
         private readonly WriteLogs writeLogs;
@@ -237,38 +235,6 @@ namespace EMU
         }
 
 
-
-        
-
-
-        internal bool IsAppResponsive()
-        {
-            try
-            {
-                // ADB-Befehl, um Informationen über den App-Status zu erhalten
-                string adbCommand = "shell dumpsys activity";
-                string output = ExecuteAdbCommand(adbCommand);
-
-                // Überprüfen, ob der ANR-Status in der Ausgabe enthalten ist
-                if (!string.IsNullOrEmpty(output) && output.Contains("ANR"))
-                {
-                    printInfo.PrintFormatet("App Zustand :", "No Action");
-                    return false;
-                }
-                else
-                {
-                    printInfo.PrintFormatet("App Zustand :", "Responsiv");
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                writeLogs.LogAndConsoleWirite($"Fehler bei der Überprüfung der App-Responsivität: {ex.Message}");
-                return false;
-            }
-        }
-
-
         public void ClickAtTouchPositionWithHexa(string hexX, string hexY)
         {          
             int x = int.Parse(hexX, System.Globalization.NumberStyles.HexNumber);
@@ -305,341 +271,20 @@ namespace EMU
         }
 
 
-        internal bool IsNetworkAvailable()
-        {
-            try
-            {
-                // Überprüft, ob irgendein Netzwerkinterface eine Verbindung hat
-                bool isNetworkAvailable = NetworkInterface.GetIsNetworkAvailable();
-
-                if (isNetworkAvailable)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                printInfo.PrintFormatet("VM Network Status:", ex.Message);
-                return false;
-            }
-        }
-
-
-        internal void StableControl()
-        {
-            writeLogs.LogAndConsoleWirite($"\n\n[Stabilitätskontrolle]");
-            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-
-            // Netwerz am der MAschine
-            if (IsNetworkAvailable() == false)
-            {
-                printInfo.PrintFormatet("VM Network Status:", $"Not Network, reconnection in: {Program.reconnectSleepTime} Min");
-                Thread.Sleep(Program.reconnectSleepTime);
-                throw new Exception();
-            }
-            else 
-            {
-                printInfo.PrintFormatet("VM Network Status:", "Online");
-            }
-
-            // NOX
-            if (IsNoxPlayerRunning() == false)
-            {
-                printInfo.PrintFormatet("Status Nox :", "Not Running");
-                StartNoxPlayer();
-                printInfo.PrintFormatet("Status Nox :", "Running");
-            }
-            else
-            {
-                printInfo.PrintFormatet("Status Nox :", "Running");
-            }
-
-            // ADB
-            if (IsADBConnected() == false)
-            {
-                printInfo.PrintFormatet("Status ADB:", "Not Connected");
-                StartADBConnection();
-                printInfo.PrintFormatet("Status ADB:", "Conneted");
-            }
-            else
-            {
-                printInfo.PrintFormatet("Status ADB:", "Conneted");
-            }
-
-            if (IsNetworkNoxConnected() == false)
-            {
-                KillNoxPlayerProcess();
-                StartNoxPlayer();
-                printInfo.PrintFormatet("Network Status ADB:", "Online");
-            }
-
-            // App
-            if (IsAppRunning() == false)
-            {
-                printInfo.PrintFormatet("Status App :", "Offline");
-                StartApp();
-                printInfo.PrintFormatet("Status App :", "Online");
-            }
-            else
-            {
-                printInfo.PrintFormatet("Status App :", "Online");
-            }
-
-            if (IsAppResponsive() == false)
-            {
-                printInfo.PrintFormatet("Status App :", "Restarting");
-                RestartApp();
-            }
-
-
-            // App Anderes Konto
-            TakeScreenshot();
-            bool checkAnoterDeviceAtviti = CheckTextInScreenshot("Tipps", "Konto");
-            if (checkAnoterDeviceAtviti == true)
-            {
-                printInfo.PrintFormatet("Status Accaunt :", $" Wird verwendet     (Verscuhe in {Program.reconnectSleepTime} Min erneut.)");
-                CloseApp();
-                Thread.Sleep(60 * 1000 * Program.reconnectSleepTime);
-                StartApp();
-                throw new Exception();
-            }
-            else
-            {
-                printInfo.PrintFormatet("Status Accaunt :", $"Frei");
-            }
-            writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
-        }
+       
 
 
 
 
 
-        // [APP]
-        // ##################################################################
-        internal bool IsAppRunning()
-        {
-            string adbCommand = $"shell pidof {packageName}"; // Befehl, um zu überprüfen, ob die App läuft
-            string result = ExecuteAdbCommand(adbCommand);
-
-            // Überprüfen, ob das Ergebnis nicht leer ist
-            if (!string.IsNullOrEmpty(result))
-            {
-                return true; // Wenn ein Ergebnis vorliegt, läuft die App
-            }
-            else
-            {        
-                return false;
-            }
-        }
-
-
-        internal void StartApp()
-        {
-            string adbCommand = $"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1";
-            ExecuteAdbCommand(adbCommand);
-            printInfo.PrintFormatet("Status App :", "Starting");
-            Thread.Sleep(30 * 1000);
-        }
-
-
-        internal void RestartApp()
-        {
-            try
-            {
-                
-                string stopCommand = $"shell am force-stop {packageName}"; // App stoppen
-                ExecuteAdbCommand(stopCommand);
-                Thread.Sleep(2000);
-                string startCommand = $"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1";  // App neu starten
-                ExecuteAdbCommand(startCommand);
-                Thread.Sleep(60 * 1000);
-            }
-            catch (Exception ex)
-            {
-                printInfo.PrintFormatet("Status App :", ex.Message);
-            }
-        }
-
-
-        internal void CloseApp()
-        {
-            if (IsAppRunning() == false)
-            {
-                return;
-            }
-            string adbCommand = $"shell am force-stop {packageName}";  // Befehl zum Schließen der App
-            ExecuteAdbCommand(adbCommand);
-            printInfo.PrintFormatet("Status App :", "Stoping");
-        }
 
 
 
 
-        // [NOX]
-        // ##################################################################
-        internal void StartNoxPlayer()
-        {
-            try
-            {
-                string noxPath = @"C:\Program Files\Nox\bin\Nox.exe"; // Pfad zu Nox
-                ProcessStartInfo startInfo = new ProcessStartInfo
-                {
-                    FileName = noxPath,
-                    Arguments = "-clone:Nox_0", // Verwende dies, um eine spezifische Instanz zu starten (z.B. Nox_0)
-                    UseShellExecute = false,
-                    CreateNoWindow = true
-                };
-
-                Process.Start(startInfo);
-                printInfo.PrintFormatet("Status Nox :", "Starting");
-                Thread.Sleep(30 * 1000);
-                
-            }
-            catch (Exception ex)
-            {
-                printInfo.PrintFormatet("Status Nox :", ex.Message);
-            }
-        }
-
-        internal bool IsNoxPlayerRunning()
-        {
-            try
-            {
-                // Überprüfen, ob ein Prozess mit dem Namen "Nox" läuft.
-                Process[] processes = Process.GetProcessesByName("Nox");
-
-                if (processes.Length > 0)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                printInfo.PrintFormatet("Status Nox :", ex.Message);
-                return false;
-            }
-        }
-
-
-        internal bool IsNetworkNoxConnected()
-        {
-            try
-            {
-                // ADB-Befehl, um die Erreichbarkeit von Google zu überprüfen (als Beispiel)
-                string adbCommand = "shell ping -c 1 www.google.com";
-                string output = ExecuteAdbCommand(adbCommand);
-
-                // Überprüfen, ob die Ausgabe den Erfolg des Pings anzeigt
-                if (!string.IsNullOrEmpty(output) && output.Contains("1 packets transmitted, 1 received"))
-                {
-                    printInfo.PrintFormatet("NOX Network Status :", "Online");
-                    return true;
-                }
-                else
-                {
-                    printInfo.PrintFormatet("NOX Network Status :", "Offline");
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                printInfo.PrintFormatet("NOX Network Status :", ex.Message);
-                return false;
-            }
-        }
-
-
-        internal void KillNoxPlayerProcess()
-        {
-            try
-            {
-                // Finde und beende den NoxPlayer-Prozess
-                foreach (var process in Process.GetProcessesByName("Nox"))
-                {
-                    process.Kill();
-                    printInfo.PrintFormatet("Status Nox :", "Closed");
-                }
-            }
-            catch (Exception ex)
-            {
-                printInfo.PrintFormatet("Status Nox :", ex.Message);
-            }
-        }
-        
 
 
 
-        // [ADB]
-        // ##################################################################
-        internal void StartADBConnection()
-        {
-            try
-            {
-                printInfo.PrintFormatet("Status ADB :", "Connecting");
-                ExecuteAdbCommand("start-server");
-                ExecuteAdbCommand("connect 127.0.0.1");
-                Thread.Sleep(30 * 1000);
-
-            }
-            catch (Exception ex)
-            {
-                printInfo.PrintFormatet($"Status ADB :", ex.Message);
-            }
-        }
-
-        internal bool IsADBConnected()
-        {
-            try
-            {
-                // ADB-Befehl, um verbundene Geräte aufzulisten
-                string adbCommand = "devices";
-                string output = ExecuteAdbCommand(adbCommand);
-
-                // Überprüfe, ob in der ADB-Ausgabe eine NoxPlayer-Verbindung angezeigt wird
-                if (output.Contains("emulator") || output.Contains("127.0.0.1"))
-                {                  
-                    return true;
-                }
-                else
-                {                 
-                    return false;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                printInfo.PrintFormatet("Status ADB:", ex.Message);
-                return false;
-            }
-        }
-
-        internal void DisconnectADB()
-        {
-            try
-            {
-                // ADB-Befehl zum Trennen der Verbindung
-                string adbCommand = "disconnect 127.0.0.1"; // Standard-ADB-Port von Nox
-                ExecuteAdbCommand(adbCommand);
-                printInfo.PrintFormatet($"Status ADB :", $"Disconecting... [Standard-ADB-Port von Nox | {adbCommand} ]");
-            }
-            catch (Exception ex)
-            {
-                printInfo.PrintFormatet($"Status ADB :", $"Disconecting... [Standard-ADB-Port von Nox | {ex.Message} ]");
-            }
-        }
-
-
-
-
-        // [FÜR ETWICKLER]
+        // [FÜR ETWICKLEN]
         // ##################################################################
         public void TrackTouchEvents()
         {
