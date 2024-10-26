@@ -134,6 +134,7 @@ namespace EMU
                     roundCount++;
                     stopwatch.Stop();
                     writeLogs.LogAndConsoleWirite($"\nRundendauer: {stopwatch.Elapsed.TotalMinutes} Minuten, Runde {roundCount}");
+                    stopwatch.Restart();
                     writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
                     
                 }
