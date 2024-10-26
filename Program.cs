@@ -4,7 +4,7 @@ namespace EMU
 {
     internal static class Program
     {
-        internal static int commandDelay = 3000; // Pause in milliseconds between each command.
+        internal static int commandDelay = 1000; // Pause in milliseconds between each command.
         internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
 

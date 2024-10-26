@@ -21,7 +21,7 @@
 
             deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); //7 Einsetzen
             CheckAusdauer();
-            deviceControl.CheckePositionAndGoWelt();
+            deviceControl.CheckePositionAndGoStadt();
             writeLogs.LogAndConsoleWirite("Polar Terror erfogreich gestartet! ;)");
         }
 
@@ -51,7 +51,7 @@
 
             deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb");       
             CheckAusdauer();
-            deviceControl.CheckePositionAndGoWelt();
+            deviceControl.CheckePositionAndGoStadt();
         }
 
 
