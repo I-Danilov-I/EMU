@@ -52,7 +52,6 @@ namespace EMU
             VIP vip = new VIP(writeLogs, deviceControl);
 
             deviceControl.ShowSetting();
-
             //deviceControl.TrackTouchEvents();        
 
             while (true)
@@ -60,7 +59,6 @@ namespace EMU
                 try
                 {
                     deviceControl.StableControl();
-                    // Timer
                     printInfo.PrintSummary();                    
                     stopwatch.Stop();
                     writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");

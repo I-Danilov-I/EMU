@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Net.NetworkInformation;
 using System.Runtime;
 using Tesseract;
 
@@ -237,32 +238,7 @@ namespace EMU
 
 
 
-        internal bool IsNetworkConnected()
-        {
-            try
-            {
-                // ADB-Befehl, um die Erreichbarkeit von Google zu überprüfen (als Beispiel)
-                string adbCommand = "shell ping -c 1 www.google.com";
-                string output = ExecuteAdbCommand(adbCommand);
-
-                // Überprüfen, ob die Ausgabe den Erfolg des Pings anzeigt
-                if (!string.IsNullOrEmpty(output) && output.Contains("1 packets transmitted, 1 received"))
-                {
-                    printInfo.PrintFormatet("Netzwerk :", "Aktiv");
-                    return true;
-                }
-                else
-                {
-                    printInfo.PrintFormatet("Netzwerk :", "Not active");
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                writeLogs.LogAndConsoleWirite($"Fehler bei der Überprüfung der Internetverbindung: {ex.Message}");
-                return false;
-            }
-        }
+        
 
 
         internal bool IsAppResponsive()
@@ -329,41 +305,79 @@ namespace EMU
         }
 
 
+        internal bool IsNetworkAvailable()
+        {
+            try
+            {
+                // Überprüft, ob irgendein Netzwerkinterface eine Verbindung hat
+                bool isNetworkAvailable = NetworkInterface.GetIsNetworkAvailable();
+
+                if (isNetworkAvailable)
+                {
+                    printInfo.PrintFormatet("VM Network Status:", "Connected");
+                    return true;
+                }
+                else
+                {
+                    printInfo.PrintFormatet("VM Network Status:", "Not Connected");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                printInfo.PrintFormatet("VM Network Status:", ex.Message);
+                return false;
+            }
+        }
+
 
         internal void StableControl()
         {
             writeLogs.LogAndConsoleWirite($"\n\n[Stabilitätskontrolle]");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
 
-            // Netzwerk
-            if (IsNetworkConnected() == false)
+            // Netwerz am der MAschine
+            if (IsNetworkAvailable() == false)
             {
+                printInfo.PrintFormatet("Network Status:", $"Not Network, reconnection in: { Program.reconnectSleepTime} Min");
+                Thread.Sleep(Program.reconnectSleepTime);
                 throw new Exception();
             }
 
             // NOX
             if (IsNoxPlayerRunning() == false)
             {
+                printInfo.PrintFormatet("Status Nox :", "Not Running");
                 StartNoxPlayer();
+                printInfo.PrintFormatet("Status Nox :", "Running");
             }
 
             // ADB
             if (IsADBConnected() == false)
             {
+                printInfo.PrintFormatet("Status ADB:", "Not Connected");
                 StartADBConnection();
+                printInfo.PrintFormatet("Status ADB:", "Conneted");
+            }
+
+            if (IsNetworkNoxConnected() == false)
+            {
+                KillNoxPlayerProcess();
+                StartNoxPlayer();
+                printInfo.PrintFormatet("Network Status ADB:", "Online");
             }
 
             // App
             if (IsAppRunning() == false)
             {
+                printInfo.PrintFormatet("Status App :", "Offline");
                 StartApp();
-                throw new Exception();
+                printInfo.PrintFormatet("Status App :", "Online");
             }
 
             if (IsAppResponsive() == false)
             {
                 RestartApp();
-                throw new Exception();
             }
 
 
@@ -372,11 +386,15 @@ namespace EMU
             bool checkAnoterDeviceAtviti = CheckTextInScreenshot("Tipps", "Konto");
             if (checkAnoterDeviceAtviti == true)
             {
-                writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {Program.reconnectSleepTime} Min erneut.");
+                printInfo.PrintFormatet("Status Accaunt :", $" Wird verwendet     (Verscuhe in {Program.reconnectSleepTime} Min erneut.)");
                 CloseApp();
                 Thread.Sleep(60 * 1000 * Program.reconnectSleepTime);
                 StartApp();
                 throw new Exception();
+            }
+            else
+            {
+                printInfo.PrintFormatet("Status Accaunt :", $"Frei");
             }
             writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
         }
@@ -395,12 +413,10 @@ namespace EMU
             // Überprüfen, ob das Ergebnis nicht leer ist
             if (!string.IsNullOrEmpty(result))
             {
-                printInfo.PrintFormatet("Status App :", "ON");
                 return true; // Wenn ein Ergebnis vorliegt, läuft die App
             }
             else
-            {
-                printInfo.PrintFormatet("Status App :", "OFF");
+            {        
                 return false;
             }
         }
@@ -408,15 +424,10 @@ namespace EMU
 
         internal void StartApp()
         {
-            if (IsAppRunning()) 
-            {
-                return;
-            }
-
             string adbCommand = $"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1";
             ExecuteAdbCommand(adbCommand);
-            printInfo.PrintFormatet("Status App :", "Starting...");
-            Thread.Sleep(60 * 1000);
+            printInfo.PrintFormatet("Status App :", "Starting");
+            Thread.Sleep(30 * 1000);
         }
 
 
@@ -424,13 +435,13 @@ namespace EMU
         {
             try
             {
-                printInfo.PrintFormatet("Status App :", "Restarting...");
+                printInfo.PrintFormatet("Status App :", "Restarting");
                 string stopCommand = $"shell am force-stop {packageName}"; // App stoppen
                 ExecuteAdbCommand(stopCommand);
                 Thread.Sleep(2000);
                 string startCommand = $"shell monkey -p {packageName} -c android.intent.category.LAUNCHER 1";  // App neu starten
                 ExecuteAdbCommand(startCommand);
-                printInfo.PrintFormatet($"Status App :", $"Starting...");
+                printInfo.PrintFormatet($"Status App :", $"Starting");
                 Thread.Sleep(60 * 1000);
             }
             catch (Exception ex)
@@ -448,7 +459,7 @@ namespace EMU
             }
             string adbCommand = $"shell am force-stop {packageName}";  // Befehl zum Schließen der App
             ExecuteAdbCommand(adbCommand);
-            printInfo.PrintFormatet("Status App :", "Stoping...");
+            printInfo.PrintFormatet("Status App :", "Stoping");
         }
 
 
@@ -470,8 +481,8 @@ namespace EMU
                 };
 
                 Process.Start(startInfo);
-                printInfo.PrintFormatet("Status Nox :", "Starting...");
-                Thread.Sleep(30000); // Warten, bis Nox vollständig gestartet ist
+                printInfo.PrintFormatet("Status Nox :", "Starting");
+                Thread.Sleep(30 * 1000);
                 
             }
             catch (Exception ex)
@@ -489,12 +500,10 @@ namespace EMU
 
                 if (processes.Length > 0)
                 {
-                    printInfo.PrintFormatet("Status Nox :", "Running");
                     return true;
                 }
                 else
                 {
-                    printInfo.PrintFormatet("Status Nox :", "Not Running");
                     return false;
                 }
             }
@@ -504,6 +513,35 @@ namespace EMU
                 return false;
             }
         }
+
+
+        internal bool IsNetworkNoxConnected()
+        {
+            try
+            {
+                // ADB-Befehl, um die Erreichbarkeit von Google zu überprüfen (als Beispiel)
+                string adbCommand = "shell ping -c 1 www.google.com";
+                string output = ExecuteAdbCommand(adbCommand);
+
+                // Überprüfen, ob die Ausgabe den Erfolg des Pings anzeigt
+                if (!string.IsNullOrEmpty(output) && output.Contains("1 packets transmitted, 1 received"))
+                {
+                    printInfo.PrintFormatet("NOX Network Status :", "Online");
+                    return true;
+                }
+                else
+                {
+                    printInfo.PrintFormatet("NOX Network Status :", "Offline");
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                printInfo.PrintFormatet("NOX Network Status :", ex.Message);
+                return false;
+            }
+        }
+
 
         internal void KillNoxPlayerProcess()
         {
@@ -531,10 +569,11 @@ namespace EMU
         {
             try
             {
+                printInfo.PrintFormatet("Status ADB :", "Connecting");
                 ExecuteAdbCommand("start-server");
-                ExecuteAdbCommand("connect 127.0.0.1"); // Standard-ADB-Port von Nox
-                printInfo.PrintFormatet("Status ADB :", "Connected");
-                
+                ExecuteAdbCommand("connect 127.0.0.1");
+                Thread.Sleep(30 * 1000);
+
             }
             catch (Exception ex)
             {
@@ -552,13 +591,11 @@ namespace EMU
 
                 // Überprüfe, ob in der ADB-Ausgabe eine NoxPlayer-Verbindung angezeigt wird
                 if (output.Contains("emulator") || output.Contains("127.0.0.1"))
-                {
-                    printInfo.PrintFormatet("Status ADB:", "Connected");
+                {                  
                     return true;
                 }
                 else
-                {
-                    printInfo.PrintFormatet("Status ADB:", "Not Connected");
+                {                 
                     return false;
                 }
             }
