@@ -19,8 +19,8 @@ namespace EMU
 
         internal void Control()
         {
-            writeLogs.LogAndConsoleWirite("[Stabilitätskontrolle]");
-            writeLogs.LogAndConsoleWirite("----------------------------------------------------------------");
+            writeLogs.LogAndConsoleWirite("\n\n[Stabilitätskontrolle]");
+            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
 
             CheckNetworkStatus();
             CheckNoxStatus();
@@ -29,7 +29,7 @@ namespace EMU
             CheckAppStatus();
             CheckAccountUsage();
 
-            writeLogs.LogAndConsoleWirite("----------------------------------------------------------------");
+            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
         }
 
         private void LogStatus(string statusType, bool isOk, string details)
@@ -122,7 +122,10 @@ namespace EMU
         {
             deviceControl.TakeScreenshot();
             bool isAccountInUse = deviceControl.CheckTextInScreenshot("Tipps", "Konto");
-            LogStatus("ACCOUNT", isAccountInUse, isAccountInUse ? $"Konto wird verwendet, erneuter Versuch in {Program.reconnectSleepTime} Minuten." : "Konto ist frei und nicht in Verwendung.");
+
+            // Log-Nachricht wird nun in jedem Fall ausgegeben, unabhängig davon, ob das Konto verwendet wird oder nicht.
+            LogStatus("ACCOUNT", !isAccountInUse, isAccountInUse ? $"Konto wird verwendet, erneuter Versuch in {Program.reconnectSleepTime} Minuten." : "Konto ist frei und nicht in Verwendung.");
+
             if (isAccountInUse)
             {
                 CloseApp();
@@ -131,6 +134,7 @@ namespace EMU
                 throw new Exception("Konto derzeit in Verwendung.");
             }
         }
+
 
         // Helper methods to perform various checks and actions
         internal bool IsNetworkAvailable() => NetworkInterface.GetIsNetworkAvailable();
