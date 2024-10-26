@@ -25,32 +25,50 @@ namespace EMU
 
         internal void ShowSetting()
         {
+            int labelWidth = 20; // Breite der Labels, um die Ausrichtung konsistent zu halten.
+
             Console.ForegroundColor = ConsoleColor.Yellow;
             writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            writeLogs.LogAndConsoleWirite($"ADB Path: {adbPath}");
-            writeLogs.LogAndConsoleWirite($"Inpu device: {inputDevice}");
-            Get_Resolution();
-            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
 
-        }
+            // Ausgabe der Einstellungen mit einheitlicher Ausrichtung.
+            PrintSetting("ADB Path: ", adbPath, labelWidth);
+            PrintSetting("Input Device:", inputDevice, labelWidth);
 
-        internal void Get_Resolution()
-        {
+            // Auflösung abrufen.
             string adbCommand = "shell wm size";
             string output = ExecuteAdbCommand(adbCommand);
 
+            // Ausgabe der Auflösung, falls verfügbar.
             if (!string.IsNullOrEmpty(output))
             {
-                writeLogs.LogAndConsoleWirite($"{output.Trim()}");
+                PrintSetting("Resolution: ", output.Trim(), labelWidth);
             }
             else
             {
-                writeLogs.LogAndConsoleWirite("Fehler beim Abrufen der Bildschirmauflösung.");
+                PrintSetting("Resolution", "Fehler beim Abrufen der Bildschirmauflösung", labelWidth);
             }
+
+            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
+            Console.ResetColor();
         }
 
 
+        private void PrintSetting(string label, string value, int labelWidth)
+        {
+            // Label in Gelb und Wert in Grün ausgeben, in einem einzigen Write-Aufruf.
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            string formattedLabel = label.PadRight(labelWidth); // Label wird rechts mit Leerzeichen aufgefüllt.
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            string formattedValue = value;
+
+            // Die Ausgabe erfolgt in einem einzigen Aufruf, sodass die Ausrichtung erhalten bleibt.
+            writeLogs.LogAndConsoleWirite($"{formattedLabel}{formattedValue}");
+
+            // Setzt die Konsolenfarbe zurück.
+            Console.ResetColor();
+        }
 
 
 
