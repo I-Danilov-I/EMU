@@ -24,9 +24,11 @@
 
         private static void Main()
         {
+            // System Klassen
             WriteLogs writeLogs = new WriteLogs();
             DeviceControl deviceControl = new DeviceControl(writeLogs);
             
+            // Automations in Game Klassen
             Erkundung erkundung = new Erkundung(writeLogs, deviceControl);
             TruppenTraining truppenTraining = new TruppenTraining(writeLogs, deviceControl);
             LagerOnlineBelohnung lagerOnlineBelohnung = new LagerOnlineBelohnung(writeLogs, deviceControl);
@@ -38,12 +40,14 @@
             GuvenourBefehl guvenourBefehl = new GuvenourBefehl(writeLogs, deviceControl);
             VIP vip = new VIP(writeLogs, deviceControl);
 
+
             writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ShowSetting();
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             //deviceControl.TrackTouchEvents();        
-            //deviceControl.OfflineErtregeAbholen();
+            deviceControl.OfflineErtregeAbholen();
+
 
             while (true)
             {
