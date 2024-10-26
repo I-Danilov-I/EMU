@@ -14,19 +14,23 @@
             deviceControl.ClickAtTouchPositionWithHexa("000002d4", "000005dd"); // Heilen Button2
 
             deviceControl.TakeScreenshot();
-            if (deviceControl.CheckTextInScreenshot("Keine verletzten Truppen zum Anzeigen.", "Alles ist gut!") == true)
+            if (deviceControl.CheckTextInScreenshot("Keine", "Alles ist gut!") == true)
             {
+                writeLogs.LogAndConsoleWirite("Alle Truppen sind bereits Gesund! ;)");
                 deviceControl.PressButtonBack();
-            };
+            }
+            else
+            {
+                // Hilfe für Truppenheilung Anfordern
+                writeLogs.LogAndConsoleWirite("Hilfe für Truppenheilung anfordern...");
+                deviceControl.ClickAtTouchPositionWithHexa("000001b9", "00000334"); // Gebäude Wählen
+                deviceControl.ClickAtTouchPositionWithHexa("00000262", "0000042a"); // Heilen Button1
+                deviceControl.ClickAtTouchPositionWithHexa("000002d4", "000005dd"); // Hilfe bitton
+                deviceControl.PressButtonBack();
 
-
-            deviceControl.ClickAtTouchPositionWithHexa("000001b9", "00000334"); // 
-            deviceControl.ClickAtTouchPositionWithHexa("00000262", "0000042a"); // Heilen Button1
-            deviceControl.ClickAtTouchPositionWithHexa("000002d4", "000005dd"); // Hilfe bitton
-            deviceControl.PressButtonBack();
-
-            Program.heilenCounter += 1;
-            writeLogs.LogAndConsoleWirite("Truppen Heilung erfogreich gestartet! ;)");
+                Program.heilenCounter += 1;
+                writeLogs.LogAndConsoleWirite("Truppen Heilung erfogreich gestartet! ;)");
+            }
         }
     }
 }

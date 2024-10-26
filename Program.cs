@@ -51,7 +51,7 @@
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ShowSetting();
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            //deviceControl.TrackTouchEvents();        
+            deviceControl.TrackTouchEvents();        
             deviceControl.OfflineErtregeAbholen();
 
             while (true)
@@ -81,33 +81,35 @@
                         writeLogs.LogAndConsoleWirite($"Bestien Jagt: {bestienJagtCount}");
                         writeLogs.LogAndConsoleWirite($"Lebens Baum: {lebensBaumEssensCount}");
                         writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
-                        deviceControl.OfflineErtregeAbholen();
-                        deviceControl.StableControl();
-
-                        helden.HeldenRekrutieren();
-                        deviceControl.StableControl();
-
-                        truppenHeilen.Heilen();
-                        deviceControl.StableControl();
 
                         //Jagt.PolarTerrorStarten(5, false);
                         Jagt.BestienJagtStarten(25, false);
                         deviceControl.StableControl();
 
+                        truppenHeilen.Heilen();
+                        deviceControl.StableControl();
+
+                        helden.HeldenRekrutieren();
+                        deviceControl.StableControl();
+
                         lagerOnlineBelohnung.GeschnekAbholen();
                         deviceControl.StableControl();
+
                         lagerOnlineBelohnung.AusdauerAbholen();
                         deviceControl.StableControl();
 
                         erkundung.Erkundungskampf();
                         deviceControl.StableControl();
+
                         erkundung.ErkundungAbholen();
                         deviceControl.StableControl();
 
                         allianz.KistenAbholen();
                         deviceControl.StableControl();
+
                         allianz.Hilfe();
                         deviceControl.StableControl();
+
                         allianz.Technologie(3);
                         deviceControl.StableControl();
 
@@ -126,13 +128,14 @@
 
                         lebensBaum.EssensVonFreundenAbholen();
                         deviceControl.StableControl();
+
                         lebensBaum.BaumBelohnungAbholen();
                         deviceControl.StableControl();
                     }
                 }
                 catch
                 {
-                    deviceControl.CloseApp();
+                    
                 }
             }
         }

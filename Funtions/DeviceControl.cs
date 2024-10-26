@@ -9,7 +9,6 @@ namespace EMU
         private readonly string inputDevice;
         private readonly string packageName;
         private readonly string screenshotDirectory;
-        private int timeSleepMin;
 
         private readonly WriteLogs writeLogs;
 
@@ -21,7 +20,6 @@ namespace EMU
             inputDevice = "/dev/input/event4";
             packageName = "com.gof.global"; // Paketname des Spiels
             screenshotDirectory = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Screens";
-            timeSleepMin = 1;
         }
 
 
@@ -273,12 +271,9 @@ namespace EMU
 
         internal void StableControl()
         {
-            TakeScreenshot();
-            bool checkAnoterDeviceAtviti = CheckTextInScreenshot("Tipps", "Konto");
-            if (checkAnoterDeviceAtviti == true)
+            writeLogs.LogAndConsoleWirite($"\n[StableControl]------------------------------------------------------------");
+            if (IsNetworkConnected() == false) 
             {
-                writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {timeSleepMin} Min erneut.");             
-                Thread.Sleep(60 * 1000 * timeSleepMin);
                 throw new Exception();
             }
 
@@ -287,15 +282,23 @@ namespace EMU
                 throw new Exception();
             }
 
-            if (IsNetworkConnected() == false) 
-            {
-                throw new Exception();
-            }
-
             if(IsAppResponsive() == false)
             {
                 throw new Exception();
             }
+
+            TakeScreenshot();
+            bool checkAnoterDeviceAtviti = CheckTextInScreenshot("Tipps", "Konto");
+            if (checkAnoterDeviceAtviti == true)
+            {
+                CloseApp();
+                writeLogs.LogAndConsoleWirite($"Akaunt wird von einem anderem Gerät verwendet. Verscuhe in {Program.timeSleepMin} Min erneut.");  
+                Thread.Sleep(60 * 1000 * Program.timeSleepMin);
+                throw new Exception();
+            }
+
+
+            writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
         }
 
 

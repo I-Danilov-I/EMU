@@ -12,6 +12,8 @@
             deviceControl.ClickAtTouchPositionWithHexa("000002fc", "000005f0"); // Alliangeschenke nehmen
             deviceControl.ClickAtTouchPositionWithHexa("0000000fa", "000001f1"); // Beutekiste
             deviceControl.ClickAtTouchPositionWithHexa("000001cb", "000005e7"); // Beutekiste nehmen
+            deviceControl.ClickAtTouchPositionWithHexa("000001c1", "00000100"); // Große Kiste
+            deviceControl.ClickAtTouchPositionWithHexa("000001c1", "00000100"); // Große Kiste zum verlassen klicken
             deviceControl.ClickAtTouchPositionWithHexa("000001cb", "000005e7"); // Verlassen
             deviceControl.PressButtonBack();
             deviceControl.PressButtonBack();
