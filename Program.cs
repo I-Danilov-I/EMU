@@ -1,4 +1,6 @@
-﻿namespace EMU
+﻿using System.Diagnostics;
+
+namespace EMU
 {
     internal static class Program
     {
@@ -27,7 +29,9 @@
             // System Klassen
             WriteLogs writeLogs = new WriteLogs();
             DeviceControl deviceControl = new DeviceControl(writeLogs);
-            
+            Stopwatch stopwatch = new Stopwatch();
+
+
             // Automations in Game Klassen
             Erkundung erkundung = new Erkundung(writeLogs, deviceControl);
             TruppenTraining truppenTraining = new TruppenTraining(writeLogs, deviceControl);
@@ -42,7 +46,7 @@
 
 
             writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
-            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
+            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");     
             deviceControl.ShowSetting();
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             //deviceControl.TrackTouchEvents();        
@@ -53,6 +57,7 @@
             {
                 try
                 {
+                    stopwatch.Restart();
                     deviceControl.StartNoxPlayer();
                     deviceControl.StartADBConnection();
                     deviceControl.StartApp();
@@ -133,6 +138,9 @@
                         lebensBaum.EssensVonFreundenAbholen();
                         deviceControl.StableControl();
                     }
+                    // Stoppen der Zeitmessung und Ausgabe der Dauer
+                    stopwatch.Stop();
+                    writeLogs.LogAndConsoleWirite($"Dauer der Runde: {stopwatch.Elapsed.TotalSeconds} Sekunden");
                 }
                 catch
                 {

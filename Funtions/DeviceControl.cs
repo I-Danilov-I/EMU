@@ -23,6 +23,33 @@ namespace EMU
         }
 
 
+        internal void ShowSetting()
+        {
+            writeLogs.LogAndConsoleWirite($"ADB Path: {adbPath}");
+            writeLogs.LogAndConsoleWirite($"Inpu device: {inputDevice}");
+            Get_Resolution();
+
+        }
+
+        internal void Get_Resolution()
+        {
+            string adbCommand = "shell wm size";
+            string output = ExecuteAdbCommand(adbCommand);
+
+            if (!string.IsNullOrEmpty(output))
+            {
+                writeLogs.LogAndConsoleWirite($"{output.Trim()}");
+            }
+            else
+            {
+                writeLogs.LogAndConsoleWirite("Fehler beim Abrufen der Bildschirmauflösung.");
+            }
+        }
+
+
+
+
+
         internal void ScrollDown(int anzahlScroll)
         {
             int count = 0;
@@ -203,12 +230,6 @@ namespace EMU
             }
         }
 
-
-        internal void ShowSetting()
-        {
-            writeLogs.LogAndConsoleWirite($"ADB Path: {adbPath}");
-            writeLogs.LogAndConsoleWirite($"Inpu device: {inputDevice}");
-        }
 
 
         internal bool IsNetworkConnected()
