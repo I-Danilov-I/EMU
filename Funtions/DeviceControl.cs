@@ -419,6 +419,22 @@ namespace EMU
         }
 
 
+        internal void DisconnectAdb()
+        {
+            try
+            {
+                // ADB-Befehl zum Trennen der Verbindung
+                string adbCommand = "disconnect 127.0.0.1:62001"; // Standard-ADB-Port von Nox
+                ExecuteAdbCommand(adbCommand);
+                writeLogs.LogAndConsoleWirite("ADB-Verbindung zu 127.0.0.1:62001 wurde getrennt.");
+            }
+            catch (Exception ex)
+            {
+                writeLogs.LogAndConsoleWirite($"Fehler beim Trennen der ADB-Verbindung: {ex.Message}");
+            }
+        }
+
+
 
 
         // [FÜR ETWICKLER]

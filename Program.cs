@@ -61,7 +61,7 @@
                     deviceControl.StartNoxPlayer();
                     deviceControl.StartADBConnection();
                     deviceControl.StartApp();
-                    if (deviceControl.IsAppRunning() == true && deviceControl.IsNoxPlayerRunning() == true)
+                    if (deviceControl.IsAppRunning() == true && deviceControl.IsNoxPlayerRunning() == true && deviceControl.IsAdbConnected())
                     {                     
                         writeLogs.LogAndConsoleWirite($"\n\n_________________________[GESAMTÜBERSICHT]_________________________________");
                         writeLogs.LogAndConsoleWirite($"Offline Erträge: {offlineErtregeCounter}");
@@ -130,6 +130,13 @@
                         deviceControl.StableControl();
                         lebensBaum.BaumBelohnungAbholen();
                         deviceControl.StableControl();
+                    }
+                    else
+                    {
+                        writeLogs.LogAndConsoleWirite("Entweder die App oder der NoxPlayer sind nicht aktiv.");
+                        deviceControl.CloseApp();
+                        deviceControl.KillNoxPlayerProcess();
+                        deviceControl.DisconnectAdb();
                     }
 
                 }
