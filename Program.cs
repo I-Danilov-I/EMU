@@ -11,10 +11,11 @@ namespace EMU
         internal static int roundCount = 0;
 
         internal static string adbPath = "C:\\Program Files\\Nox\\bin\\adb.exe";
+        internal static string noxExePath = "C:\\Program Files\\Nox\\bin\\Nox.exe";
         internal static string inputDevice = "/dev/input/event4";
         internal static string packageName = "com.gof.global";
         internal static string screenshotDirectory = Path.Combine(Directory.GetCurrentDirectory().Replace("bin\\Debug\\net8.0\\win-x64", ""), "Screens");
-        internal static string logFileFolderPath = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Logs\\";
+        internal static string logFileFolderPath = Path.Combine(Directory.GetCurrentDirectory().Replace("bin\\Debug\\net8.0\\win-x64", ""), "Logs");
 
         internal static string allianceAutobeitrit = "ON";
 
@@ -71,6 +72,8 @@ namespace EMU
             VIP vip = new VIP(writeLogs, deviceControl);
             Arena arena = new Arena(writeLogs, deviceControl);
 
+
+           
             deviceControl.ShowSetting();
             stableControl.Control();
             stableControl.GetResolution();

@@ -217,7 +217,7 @@ namespace EMU.Funtions
         {
             try
             {
-                Process.Start(Program.adbPath, "-clone:Nox_0") ;
+                Process.Start(Program.noxExePath) ;
  
                 // Warte, bis Nox vollständig gestartet ist
                 while (!IsNoxReady())
@@ -236,8 +236,26 @@ namespace EMU.Funtions
 
         internal void StartADBConnection()
         {
+            // Startet den ADB-Server
             deviceControl.ExecuteAdbCommand("start-server");
+
+            // Versucht, eine Verbindung zu einem spezifischen Gerät herzustellen
+            string deviceIP = "127.0.0.1:5555"; // Beispiel-IP und Port für ein verbundenes Gerät
+            string connectCommand = $"connect {deviceIP}";
+            string output = deviceControl.ExecuteAdbCommand(connectCommand);
+
+            // Überprüft, ob die Verbindung erfolgreich war
+            if (output.Contains("connected to"))
+            {
+                LogStatus("ADB", true, deviceIP);
+
+            }
+            else
+            {
+                LogStatus("ADB", false, output);
+            }
         }
+
 
 
         internal void StartApp()

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using OpenCvSharp;
+using System.Diagnostics;
 using Tesseract;
 
 namespace EMU
@@ -155,7 +156,7 @@ namespace EMU
             {
                 string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png");
 
-                string trainedDataPath = HelperFuntions.CurrenDir("TrainedData", "");
+                string trainedDataPath = Path.Combine(Directory.GetCurrentDirectory().Replace("bin\\Debug\\net8.0\\win-x64", ""), "TrainedData");
 
                 // OCR-Engine initialisieren
                 using (var engine = new TesseractEngine(trainedDataPath, "deu", EngineMode.Default))
