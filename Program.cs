@@ -66,12 +66,8 @@ namespace EMU
 
             deviceControl.ShowSetting();
             stableControl.Control();
-
-            deviceControl.GetResolution();
-            deviceControl.ResetResolution();
-            Thread.Sleep(10000);
-            deviceControl.GetResolution();
-
+            stableControl.GetResolution();
+            
             //deviceControl.TrackTouchEvents();        
 
             while (true)

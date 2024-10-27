@@ -37,6 +37,7 @@ namespace EMU
             printInfo.PrintSetting("Input Device: ", inputDevice);
             printInfo.PrintSetting("Packege Name: ", packageName);
             printInfo.PrintSetting("Scrrenshot Directory: ", screenshotDirectory);
+
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             Console.ResetColor();
         }
