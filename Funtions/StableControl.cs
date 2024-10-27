@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net.NetworkInformation;
 
-namespace EMU
+namespace EMU.Funtions
 {
     internal class StableControl
     {
@@ -15,7 +15,7 @@ namespace EMU
             this.writeLogs = writeLogs;
             this.printInfo = printInfo;
             this.deviceControl = deviceControl;
-          
+
         }
 
 
@@ -264,7 +264,7 @@ namespace EMU
             {
                 process.Kill();
             }
-            Thread.Sleep(10000);          
+            Thread.Sleep(10000);
         }
 
 
@@ -299,7 +299,7 @@ namespace EMU
             else
             {
                 writeLogs.LogAndConsoleWirite("Fehler beim Ändern der Auflösung.");
-            }        
+            }
             RestartNoxPlayer();
         }
 
@@ -311,7 +311,7 @@ namespace EMU
             string output = deviceControl.ExecuteAdbCommand(resetCommand);
             Thread.Sleep(10000);
             RestartNoxPlayer();
-            writeLogs.LogAndConsoleWirite("Auflösung wurde auf Standard zurückgesetzt.");        
+            writeLogs.LogAndConsoleWirite("Auflösung wurde auf Standard zurückgesetzt.");
         }
 
 

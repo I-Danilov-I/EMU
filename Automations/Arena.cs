@@ -1,6 +1,6 @@
-﻿namespace EMU
+﻿namespace EMU.Automations
 {
-    internal class Arena(WriteLogs writeLogs ,DeviceControl deviceControl)
+    internal class Arena(WriteLogs writeLogs, DeviceControl deviceControl)
     {
         public void GoToArena()
         {

@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using EMU.Automations;
+using EMU.Funtions;
 
 namespace EMU
 {
