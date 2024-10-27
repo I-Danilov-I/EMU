@@ -53,6 +53,9 @@ namespace EMU
         }
 
 
+
+
+        // [CHECK] -------------------------------------------------------------------------
         private void CheckNetworkStatus()
         {
             bool isNetworkAvailable = IsNetworkAvailable();
@@ -62,7 +65,6 @@ namespace EMU
                 HandleNetworkError();
             }
         }
-
 
         private void HandleNetworkError()
         {
@@ -141,6 +143,10 @@ namespace EMU
         }
 
 
+
+
+
+        // [CHECK Helpers] ------------------------------------------------------------------
         internal bool IsNetworkAvailable() => NetworkInterface.GetIsNetworkAvailable();
 
 
@@ -195,6 +201,10 @@ namespace EMU
         }
 
 
+
+
+
+        // [REMONTE] ------------------------------------------------------------------
         internal void RestartNoxPlayer()
         {
             KillNoxPlayerProcess(); // Stoppt alle laufenden Nox-Prozesse
