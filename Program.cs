@@ -8,6 +8,9 @@ namespace EMU
         internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
 
+
+        internal static bool allianceAutobeitrit = true;
+
         internal static int offlineEarningsCounter = 0;
         internal static int storageBonusGiftCounter = 0;
         internal static int storageBonusStaminaCounter = 0;
@@ -51,6 +54,7 @@ namespace EMU
             LebensBaum lebensBaum = new LebensBaum(writeLogs, deviceControl);
             GuvenourBefehl guvenourBefehl = new GuvenourBefehl(writeLogs, deviceControl);
             VIP vip = new VIP(writeLogs, deviceControl);
+            Arena arena = new Arena(writeLogs, deviceControl);
 
 
             deviceControl.ShowSetting();
@@ -60,6 +64,11 @@ namespace EMU
             {
                 try
                 {
+
+                    arena.GoToArena();
+
+
+
                     stableControl.Control();
                     printInfo.PrintSummary();                    
                     stopwatch.Stop();
@@ -86,6 +95,8 @@ namespace EMU
                     stableControl.Control();
                     allianz.KistenAbholen();
                     stableControl.Control();
+                    allianz.AutobeitritAktivieren();
+                    stableControl.Control();
 
                     // Jagt
                     Jagt.BestienJagtStarten(26, false);
@@ -93,9 +104,6 @@ namespace EMU
                     //Jagt.PolarTerrorStarten(5, false);
                     //deviceControl.StableControl();
 
-                    // VIP
-                    vip.KistenAbholen();
-                    stableControl.Control();
 
                     // Lager
                     helden.HeldenRekrutieren();
@@ -128,6 +136,10 @@ namespace EMU
                     lebensBaum.BaumBelohnungAbholen();
                     stableControl.Control();
                     lebensBaum.EssensVonFreundenAbholen();
+                    stableControl.Control();
+
+                    // VIP
+                    vip.KistenAbholen();
                     stableControl.Control();
 
                     // Stoppen der Zeitmessung und Ausgabe der Dauer
