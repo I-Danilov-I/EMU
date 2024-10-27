@@ -10,6 +10,11 @@ namespace EMU
         internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
 
+        internal static string adbPath = "C:\\Program Files\\Nox\\bin\\adb.exe";
+        internal static string inputDevice = "/dev/input/event4";
+        internal static string packageName = "com.gof.global";
+        internal static string screenshotDirectory = Path.Combine(Directory.GetCurrentDirectory().Replace("bin\\Debug\\net8.0\\win-x64", ""), "Screens");
+        internal static string logFileFolderPath = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Logs\\";
 
         internal static string allianceAutobeitrit = "ON";
 
@@ -81,21 +86,18 @@ namespace EMU
                 try
                 {          
                     stopwatch.Restart();
-                    deviceControl.BackUneversal();
-                    printInfo.PrintSummary();                    
+                    printInfo.PrintSummary();    
 
-                    // Offline Erträge
+                    // First 
                     deviceControl.OfflineErtregeAbholen();
+                    deviceControl.BackUneversal();
+                    deviceControl.CheckePositionAndGoStadt();
+                    stableControl.Control();
 
                     // Arena Kampf
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     arena.GoToArena();
-                    stableControl.Control();
 
-                    // Stabilität Check
-                    deviceControl.BackUneversal();
-                    deviceControl.CheckePositionAndGoStadt();
-                    stableControl.Control();
 
                     // Truppen Heilung
                     Console.ForegroundColor = ConsoleColor.Cyan;
@@ -183,7 +185,7 @@ namespace EMU
                 }
                 catch
                 {
-                    
+                    Thread.Sleep(1000 * 60);
                 }
             }
         }

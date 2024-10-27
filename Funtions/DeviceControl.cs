@@ -16,13 +16,13 @@ namespace EMU
 
         internal DeviceControl(WriteLogs writeLogs, PrintInfo printInfo)
         {
+
             this.writeLogs = writeLogs;  // Zuweisung der writeLogs-Instanz
             this.printInfo = printInfo;
-
-            adbPath = "C:\\Program Files\\Nox\\bin\\adb.exe";
-            inputDevice = "/dev/input/event4";
-            packageName = "com.gof.global"; // Paketname des Spiels
-            screenshotDirectory = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Screens";
+            adbPath = Program.adbPath;
+            inputDevice = Program.inputDevice;
+            packageName = Program.packageName; // Paketname des Spiels
+            screenshotDirectory = Program.screenshotDirectory;
         }
 
 
@@ -265,17 +265,15 @@ namespace EMU
         // ##################################################################
         public void TrackTouchEvents()
         {
-
-            string logFileFolderPath = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Logs\\";
             string command = $"shell getevent -lt {inputDevice}"; // Verwende getevent ohne -lp für Live-Daten
             writeLogs.LogAndConsoleWirite("Starte die Erfassung von Touch-Ereignissen...");
 
-            if (!Directory.Exists(logFileFolderPath))
+            if (!Directory.Exists(Program.logFileFolderPath))
             {
-                Directory.CreateDirectory(logFileFolderPath);
+                Directory.CreateDirectory(Program.logFileFolderPath);
             }
 
-            string logFilePathTouchEvens = Path.Combine(logFileFolderPath, "TouchEventsLogs.txt");
+            string logFilePathTouchEvens = Path.Combine(Program.logFileFolderPath, "TouchEventsLogs.txt");
 
             try
             {
@@ -313,17 +311,17 @@ namespace EMU
 
         public void ListRunningApps()
         {
-            string logFileFolderPath = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Logs\\";
+            
             string command = "shell ps | grep u0_a";
             writeLogs.LogAndConsoleWirite("Liste der laufenden Apps...");
             string output = ExecuteAdbCommand(command);
 
-            if (!Directory.Exists(logFileFolderPath))
+            if (!Directory.Exists(Program.logFileFolderPath))
             {
-                Directory.CreateDirectory(logFileFolderPath);
+                Directory.CreateDirectory(Program.logFileFolderPath);
             }
 
-            string logFilePathRunningApps = Path.Combine(logFileFolderPath, "RunningAppsLogs.txt");
+            string logFilePathRunningApps = Path.Combine(Program.logFileFolderPath, "RunningAppsLogs.txt");
             using (StreamWriter writer = new StreamWriter(logFilePathRunningApps, true)) // Append mode
             {
                 if (!string.IsNullOrEmpty(output))

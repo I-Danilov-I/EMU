@@ -215,13 +215,22 @@ namespace EMU.Funtions
 
         internal void StartNoxPlayer()
         {
-            Process.Start(@"C:\Program Files\Nox\bin\Nox.exe", "-clone:Nox_0");
-            // Warte, bis Nox vollständig gestartet ist
-            while (!IsNoxReady())
+            try
             {
-                Thread.Sleep(5000); // Überprüfe alle Sekunden
+                Process.Start(Program.adbPath, "-clone:Nox_0") ;
+ 
+                // Warte, bis Nox vollständig gestartet ist
+                while (!IsNoxReady())
+                {
+                    Thread.Sleep(5000); // Überprüfe alle Sekunden
+                }
+                Thread.Sleep(10000);
             }
-            Thread.Sleep(10000);
+            catch (Exception ex) 
+            {
+                LogStatus("NOX", false, ex.Message);
+                Environment.Exit(0);
+            }
         }
 
 
