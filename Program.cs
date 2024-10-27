@@ -9,27 +9,35 @@ namespace EMU
         internal static int roundCount = 0;
 
 
-        internal static bool allianceAutobeitrit = true;
+        internal static string allianceAutobeitrit = "ON";
 
         internal static int offlineEarningsCounter = 0;
+
         internal static int storageBonusGiftCounter = 0;
         internal static int storageBonusStaminaCounter = 0;
+
         internal static int infantryUnitsTrainedCounter = 0;
         internal static int latencyCarrierUnitsTrainedCounter = 0;
         internal static int sniperUnitsTrainedCounter = 0;
         internal static int explorationBonusCounter = 0;
         internal static int explorationBattleCounter = 0;
+
         internal static int allianceHelpCounter = 0;
         internal static int allianceChestsCounter = 0;
         internal static int allianceTechnologyCounter = 0;
+
         internal static int healingCounter = 0;
+
         internal static int advancedHeroRecruitmentCounter = 0;
         internal static int epicHeroRecruitmentCounter = 0;
-        internal static int beastHuntCounter = 0;
-        internal static int lifeTreeEssenceCounter = 0;
-        internal static int vipStatusCounter = 0;
-        internal static int allianceHealingCounter = 0;
 
+        internal static int beastHuntCounter = 0;
+
+        internal static int lifeTreeEssenceCounter = 0;
+
+        internal static int vipStatusCounter = 0;
+
+        internal static int arenaFightsCounter = 0;
 
         private static void Main()
         {
@@ -64,11 +72,6 @@ namespace EMU
             {
                 try
                 {
-
-                    arena.GoToArena();
-
-
-
                     stableControl.Control();
                     printInfo.PrintSummary();                    
                     stopwatch.Stop();
@@ -77,7 +80,12 @@ namespace EMU
                     Console.ResetColor();
                     stopwatch.Restart();
 
-                    deviceControl.OfflineErtregeAbholen(); // Nur beim ersten Start auszuführen.
+                    // Nur beim ersten Start auszuführen.
+                    deviceControl.OfflineErtregeAbholen();
+
+                    // Arena Kampf
+                    arena.GoToArena();
+                    stableControl.Control();
 
                     // Stabilität Check
                     deviceControl.BackUneversal();

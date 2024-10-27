@@ -11,7 +11,7 @@
             deviceControl.ClickAtTouchPositionWithHexa("000001c9", " 000005f3"); // Autobeitrit
 
             deviceControl.ClickAtTouchPositionWithHexa("000000dd", "00000558"); // Stopen
-            if (Program.allianceAutobeitrit == true)
+            if (Program.allianceAutobeitrit == "ON")
             {
                 deviceControl.ClickAtTouchPositionWithHexa("0000026e", "0000054a"); // Aktivieren
                 writeLogs.LogAndConsoleWirite("Allianz autobeitrit reaktiviert! :)");
