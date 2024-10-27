@@ -84,7 +84,6 @@ namespace EMU
 
                     // Offline Erträge
                     deviceControl.OfflineErtregeAbholen();
-                    stableControl.Control();
 
                     // Arena Kampf
                     Console.ForegroundColor = ConsoleColor.Cyan;
