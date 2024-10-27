@@ -100,7 +100,7 @@ namespace EMU
                     // Arena Kampf
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     arena.GoToArena();
-
+                    stableControl.Control();
 
                     // Truppen Heilung
                     Console.ForegroundColor = ConsoleColor.Cyan;
