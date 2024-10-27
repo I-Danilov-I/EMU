@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Net.NetworkInformation;
-using System.Threading;
 
 namespace EMU
 {
@@ -10,15 +9,19 @@ namespace EMU
         private readonly PrintInfo printInfo;
         private readonly DeviceControl deviceControl;
 
+
         public StableControl(WriteLogs writeLogs, PrintInfo printInfo, DeviceControl deviceControl)
         {
             this.writeLogs = writeLogs;
             this.printInfo = printInfo;
             this.deviceControl = deviceControl;
+          
         }
+
 
         internal void Control()
         {
+            Console.ForegroundColor = ConsoleColor.Yellow;
             writeLogs.LogAndConsoleWirite("\n\n[Stabilitätskontrolle]");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
 
@@ -30,7 +33,9 @@ namespace EMU
             CheckAccountUsage();
 
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
+            Console.ResetColor();
         }
+
 
         private void LogStatus(string statusType, bool isOk, string details)
         {
@@ -47,6 +52,7 @@ namespace EMU
             writeLogs.LogAndConsoleWirite(logMessage);
         }
 
+
         private void CheckNetworkStatus()
         {
             bool isNetworkAvailable = IsNetworkAvailable();
@@ -57,12 +63,14 @@ namespace EMU
             }
         }
 
+
         private void HandleNetworkError()
         {
             LogStatus("ERROR", false, $"Das VM-Netzwerk ist offline. Es wird ein erneuter Verbindungsversuch in {Program.reconnectSleepTime} Minuten gestartet.");
             Thread.Sleep(TimeSpan.FromMinutes(Program.reconnectSleepTime));
             throw new Exception("Netzwerk nicht verfügbar.");
         }
+
 
         private void CheckNoxStatus()
         {
@@ -74,6 +82,7 @@ namespace EMU
             }
         }
 
+
         private void CheckADBStatus()
         {
             bool isADBConnected = IsADBConnected();
@@ -83,6 +92,7 @@ namespace EMU
                 StartADBConnection();
             }
         }
+
 
         private void CheckNoxNetworkStatus()
         {
@@ -94,12 +104,6 @@ namespace EMU
             }
         }
 
-        private void RestartNoxPlayer()
-        {
-            KillNoxPlayerProcess(); // Stoppt alle laufenden Nox-Prozesse
-            StartNoxPlayer(); // Startet den Nox Player neu
-            LogStatus("NOX", true, "Nox Player wird neu gestartet.");
-        }
 
         private void CheckAppStatus()
         {
@@ -117,6 +121,7 @@ namespace EMU
                 RestartApp();
             }
         }
+
 
         private void CheckAccountUsage()
         {
@@ -136,20 +141,11 @@ namespace EMU
         }
 
 
-        // Helper methods to perform various checks and actions
         internal bool IsNetworkAvailable() => NetworkInterface.GetIsNetworkAvailable();
+
 
         internal bool IsNoxPlayerRunning() => Process.GetProcessesByName("Nox").Any();
 
-        internal void StartNoxPlayer()
-        {
-            Process.Start(@"C:\Program Files\Nox\bin\Nox.exe", "-clone:Nox_0");
-            // Warte, bis Nox vollständig gestartet ist
-            while (!IsNoxReady())
-            {
-                Thread.Sleep(5000); // Überprüfe alle Sekunden
-            }
-        }
 
         internal bool IsADBConnected()
         {
@@ -157,11 +153,13 @@ namespace EMU
             return output.Contains("device");
         }
 
+
         internal bool IsNetworkNoxConnected()
         {
             string output = deviceControl.ExecuteAdbCommand("shell ping -c 1 www.google.com");
             return output.Contains("1 received");
         }
+
 
         internal bool IsNoxReady()
         {
@@ -169,20 +167,18 @@ namespace EMU
             return output.Contains("stopped");
         }
 
-        internal void StartADBConnection()
-        {
-            deviceControl.ExecuteAdbCommand("start-server");
-        }
 
         internal bool IsAppRunning()
         {
             return !string.IsNullOrEmpty(deviceControl.ExecuteAdbCommand($"shell pidof {deviceControl.packageName}"));
         }
 
+
         internal bool IsAppResponsive()
         {
             return !deviceControl.ExecuteAdbCommand("shell dumpsys activity").Contains("ANR");
         }
+
 
         internal bool IsAppLoaded()
         {
@@ -199,6 +195,31 @@ namespace EMU
         }
 
 
+        internal void RestartNoxPlayer()
+        {
+            KillNoxPlayerProcess(); // Stoppt alle laufenden Nox-Prozesse
+            StartNoxPlayer(); // Startet den Nox Player neu
+            LogStatus("NOX", true, "Nox Player wird neu gestartet.");
+        }
+
+
+        internal void StartNoxPlayer()
+        {
+            Process.Start(@"C:\Program Files\Nox\bin\Nox.exe", "-clone:Nox_0");
+            // Warte, bis Nox vollständig gestartet ist
+            while (!IsNoxReady())
+            {
+                Thread.Sleep(5000); // Überprüfe alle Sekunden
+            }
+            Thread.Sleep(10000);
+        }
+
+
+        internal void StartADBConnection()
+        {
+            deviceControl.ExecuteAdbCommand("start-server");
+        }
+
 
         internal void StartApp()
         {
@@ -207,19 +228,25 @@ namespace EMU
             while (!IsAppLoaded())
             {
                 Thread.Sleep(5000); // Überprüfe alle Sekunden
-            }          
+            }
+            Thread.Sleep(10000);
         }
+
 
         internal void RestartApp()
         {
             deviceControl.ExecuteAdbCommand($"shell am force-stop {deviceControl.packageName}");
+            Thread.Sleep(10000);
             StartApp();
         }
+
 
         internal void CloseApp()
         {
             deviceControl.ExecuteAdbCommand($"shell am force-stop {deviceControl.packageName}");
+            Thread.Sleep(10000);
         }
+
 
         internal void KillNoxPlayerProcess()
         {
@@ -227,7 +254,56 @@ namespace EMU
             {
                 process.Kill();
             }
-            
+            Thread.Sleep(10000);          
         }
+
+
+        internal void GetResolution()
+        {
+            // Auflösung abrufen.
+            string adbCommand = "shell wm size";
+            string output = deviceControl.ExecuteAdbCommand(adbCommand);
+
+            // Ausgabe der Auflösung, falls verfügbar.
+            if (!string.IsNullOrEmpty(output))
+            {
+                printInfo.PrintSetting("Resolution: ", output);
+            }
+            else
+            {
+                printInfo.PrintSetting("Resolution", "Fehler beim Abrufen der Bildschirmauflösung");
+            }
+        }
+
+
+        // Methode zum Ändern der Bildschirmauflösung
+        public void SetResolution(int width, int height)
+        {
+            string resolutionCommand = $"shell wm size {width}x{height}";
+            string output = deviceControl.ExecuteAdbCommand(resolutionCommand);
+            Thread.Sleep(10000);
+            if (!string.IsNullOrEmpty(output))
+            {
+                writeLogs.LogAndConsoleWirite("Auflösung erfolgreich geändert zu: " + width + "x" + height);
+            }
+            else
+            {
+                writeLogs.LogAndConsoleWirite("Fehler beim Ändern der Auflösung.");
+            }        
+            RestartNoxPlayer();
+        }
+
+
+        // Methode zum Zurücksetzen der Auflösung auf die Standardgröße
+        public void ResetResolution()
+        {
+            string resetCommand = "shell wm size reset";
+            string output = deviceControl.ExecuteAdbCommand(resetCommand);
+            Thread.Sleep(10000);
+            RestartNoxPlayer();
+            writeLogs.LogAndConsoleWirite("Auflösung wurde auf Standard zurückgesetzt.");        
+        }
+
+
     }
 }

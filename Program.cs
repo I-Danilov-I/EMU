@@ -64,8 +64,14 @@ namespace EMU
             VIP vip = new VIP(writeLogs, deviceControl);
             Arena arena = new Arena(writeLogs, deviceControl);
 
-
             deviceControl.ShowSetting();
+            stableControl.Control();
+
+            deviceControl.GetResolution();
+            deviceControl.ResetResolution();
+            Thread.Sleep(10000);
+            deviceControl.GetResolution();
+
             //deviceControl.TrackTouchEvents();        
 
             while (true)

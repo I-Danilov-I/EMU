@@ -13,6 +13,7 @@ namespace EMU
         private readonly WriteLogs writeLogs;
         private readonly PrintInfo printInfo;
 
+
         internal DeviceControl(WriteLogs writeLogs, PrintInfo printInfo)
         {
             this.writeLogs = writeLogs;  // Zuweisung der writeLogs-Instanz
@@ -34,21 +35,8 @@ namespace EMU
             // Ausgabe der Einstellungen mit einheitlicher Ausrichtung.
             printInfo.PrintSetting("ADB Path: ", adbPath);
             printInfo.PrintSetting("Input Device: ", inputDevice);
-
-            // Auflösung abrufen.
-            string adbCommand = "shell wm size";
-            string output = ExecuteAdbCommand(adbCommand);
-
-            // Ausgabe der Auflösung, falls verfügbar.
-            if (!string.IsNullOrEmpty(output))
-            {
-                printInfo.PrintSetting("Resolution: ", output.Trim());
-            }
-            else
-            {
-                printInfo.PrintSetting("Resolution", "Fehler beim Abrufen der Bildschirmauflösung");
-            }
-
+            printInfo.PrintSetting("Packege Name: ", packageName);
+            printInfo.PrintSetting("Scrrenshot Directory: ", screenshotDirectory);
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             Console.ResetColor();
         }
@@ -94,8 +82,7 @@ namespace EMU
             ClickAtTouchPositionWithHexa("000001cf", "000003a6"); // Kraft klick
             ClickAtTouchPositionWithHexa("000002f1", "00000540"); // Technologieforschung wälen
             ClickAtTouchPositionWithHexa("0000032f", "000005fd"); // Welt / Stadt
-            Thread.Sleep(4000);
-            
+            Thread.Sleep(4000);     
         }
 
 
@@ -271,18 +258,7 @@ namespace EMU
         }
 
 
-       
-
-
-
-
-
-
-
-
-
-
-
+     
 
         // [FÜR ETWICKLEN]
         // ##################################################################
