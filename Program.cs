@@ -69,20 +69,21 @@ namespace EMU
             stableControl.GetResolution();
             
             //deviceControl.TrackTouchEvents();        
+            stopwatch.Stop();
+            writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");
+            writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
+            Console.ResetColor();
 
             while (true)
             {
                 try
                 {
-                    stableControl.Control();
-                    printInfo.PrintSummary();                    
-                    stopwatch.Stop();
-                    writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");
-                    writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
-                    Console.ResetColor();
                     stopwatch.Restart();
+                    stableControl.Control();
+                    deviceControl.BackUneversal();
+                    printInfo.PrintSummary();                    
 
-                    // Nur beim ersten Start auszuführen.
+                    // Offline Erträge
                     deviceControl.OfflineErtregeAbholen();
 
                     // Arena Kampf
