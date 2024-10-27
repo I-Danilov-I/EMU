@@ -5,7 +5,7 @@
         public void GoToArena()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
-            writeLogs.LogAndConsoleWirite("\n\nArena Kapf:");
+            writeLogs.LogAndConsoleWirite("\n\nArena Kapf");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ClickAtTouchPositionWithHexa("00000084", "0000004d"); // Bonusübersicht
             deviceControl.ClickAtTouchPositionWithHexa("000001bc", "000003a8"); // Kraft

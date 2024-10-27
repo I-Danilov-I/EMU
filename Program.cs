@@ -77,16 +77,17 @@ namespace EMU
             while (true)
             {
                 try
-                {
+                {          
                     stopwatch.Restart();
-                    stableControl.Control();
                     deviceControl.BackUneversal();
                     printInfo.PrintSummary();                    
 
                     // Offline Erträge
                     deviceControl.OfflineErtregeAbholen();
+                    stableControl.Control();
 
                     // Arena Kampf
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     arena.GoToArena();
                     stableControl.Control();
 
@@ -96,20 +97,26 @@ namespace EMU
                     stableControl.Control();
 
                     // Truppen Heilung
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     truppenHeilen.Heilen();
                     stableControl.Control();
 
                     // Allianz
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     allianz.Hilfe();
                     stableControl.Control();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     allianz.Technologie(3);
                     stableControl.Control();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     allianz.KistenAbholen();
                     stableControl.Control();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     allianz.AutobeitritAktivieren();
                     stableControl.Control();
 
                     // Jagt
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     Jagt.BestienJagtStarten(26, false);
                     stableControl.Control();
                     //Jagt.PolarTerrorStarten(5, false);
@@ -117,45 +124,57 @@ namespace EMU
 
 
                     // Lager
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     helden.HeldenRekrutieren();
                     stableControl.Control();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     lagerOnlineBelohnung.GeschnekAbholen();
                     stableControl.Control();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     lagerOnlineBelohnung.AusdauerAbholen();
                     stableControl.Control();
 
                     // Erkundung
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     erkundung.Erkundungskampf();
                     stableControl.Control();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     erkundung.ErkundungAbholen();
                     stableControl.Control();
 
                     // Truppen Training
                     truppenTraining.TrainiereInfaterie(10);
                     stableControl.Control();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     truppenTraining.TrainiereLatenzTreger(10);
-                    stableControl.Control();                   
+                    stableControl.Control();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     truppenTraining.TrainiereSniper(10);
                     stableControl.Control();
 
                     // Guvenour Befehle
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     guvenourBefehl.EilauftragAbholen();
                     guvenourBefehl.FestlichkeitenAbholen();
                     stableControl.Control();
 
                     // Lebens Baum
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     lebensBaum.BaumBelohnungAbholen();
                     stableControl.Control();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     lebensBaum.EssensVonFreundenAbholen();
                     stableControl.Control();
 
                     // VIP
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     vip.KistenAbholen();
                     stableControl.Control();
 
                     // Stoppen der Zeitmessung und Ausgabe der Dauer
                     roundCount++;
                     stopwatch.Stop();
+                    Console.ResetColor();
                     writeLogs.LogAndConsoleWirite($"\nRundendauer: {stopwatch.Elapsed.TotalMinutes} Minuten, Runde {roundCount}");
                     stopwatch.Restart();
                     writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");

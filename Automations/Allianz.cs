@@ -2,8 +2,10 @@
 {
     internal class Allianz(WriteLogs writeLogs, DeviceControl deviceControl)
     {
+
         public void AutobeitritAktivieren()
         {
+            Console.ForegroundColor = ConsoleColor.Cyan;
             writeLogs.LogAndConsoleWirite("\n\nAllianz Autobeitrit re/aktivieren...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ClickAtTouchPositionWithHexa("0000029e", "000005fa"); // Allianz
@@ -22,13 +24,15 @@
                 writeLogs.LogAndConsoleWirite("Allianz autobeitrit angehalten. :)");
 
             }
-            deviceControl.BackUneversal();      
+            deviceControl.BackUneversal();
+            Console.ResetColor();
         }
 
 
 
         public void KistenAbholen()
         {
+            Console.ForegroundColor = ConsoleColor.Cyan;
             writeLogs.LogAndConsoleWirite("\n\nAllianz Kisten werden abgeholt...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ClickAtTouchPositionWithHexa("0000029e", "000005fa"); // Allianz
@@ -46,11 +50,13 @@
             deviceControl.PressButtonBack();
             Program.allianceChestsCounter += 1;
             writeLogs.LogAndConsoleWirite("Allianz Kisten abholung beendet! :)");
+            Console.ResetColor();
         }
 
 
         public void Hilfe()
         {
+            Console.ForegroundColor = ConsoleColor.Cyan;
             writeLogs.LogAndConsoleWirite("\n\nAllianz Hilfe wird ausgeführt...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ClickAtTouchPositionWithHexa("0000029e", "000005fa"); // Allianz
@@ -60,11 +66,13 @@
             deviceControl.PressButtonBack();
             Program.allianceHelpCounter += 1;
             writeLogs.LogAndConsoleWirite("Allianz sagt Danke für deine Hilfe! ;)");
+            Console.ResetColor();
         }
 
 
         public void Technologie(int anzahlBeitrege)
         {
+            Console.ForegroundColor = ConsoleColor.Cyan;
             writeLogs.LogAndConsoleWirite("\n\nAllianz Technologie Beitrag wird ausgeführt...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             deviceControl.ClickAtTouchPositionWithHexa("0000029e", "000005fa"); // Allianz
@@ -84,6 +92,7 @@
             deviceControl.PressButtonBack();
             Program.allianceTechnologyCounter += 1;
             writeLogs.LogAndConsoleWirite("Allianz sagt Danke für dein Beitrag! ;)");
+            Console.ResetColor();
         }
 
 
