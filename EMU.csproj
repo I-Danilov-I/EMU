@@ -14,11 +14,11 @@
 		<PackageReference Include="Tesseract" Version="5.2.0" />
 	</ItemGroup>
 
+	<!-- Kopiert alle Dateien im Projektverzeichnis in das Ausgabeverzeichnis und Veröffentlichungsverzeichnis -->
 	<ItemGroup>
-		<!-- Kopiere alle Dateien und Ordner im Verzeichnis "Resources" -->
-		<None Update="Resources\**\*">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		<None Update="**\*">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+			<CopyToPublishDirectory>Always</CopyToPublishDirectory>
 		</None>
 	</ItemGroup>
 

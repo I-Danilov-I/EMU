@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net.NetworkInformation;
 
-namespace EMU.Funtions
+namespace EMU
 {
     internal class StableControl
     {
@@ -217,21 +217,29 @@ namespace EMU.Funtions
         {
             try
             {
-                Process.Start(Program.noxExePath) ;
- 
+                // Überprüfen, ob der Pfad existiert
+                if (!File.Exists(Program.noxExePath))
+                {
+                    LogStatus("NOX", false, "Der angegebene Pfad zu Nox wurde nicht gefunden: " + Program.noxExePath);
+                    Thread.Sleep(1000 * 60);
+                }
+
+                Process.Start(Program.noxExePath);
+
                 // Warte, bis Nox vollständig gestartet ist
                 while (!IsNoxReady())
                 {
-                    Thread.Sleep(5000); // Überprüfe alle Sekunden
+                    Thread.Sleep(5000); // Überprüfe alle 5 Sekunden
                 }
                 Thread.Sleep(10000);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 LogStatus("NOX", false, ex.Message);
-                Environment.Exit(0);
+                Thread.Sleep(1000 * 60);
             }
         }
+
 
 
         internal void StartADBConnection()

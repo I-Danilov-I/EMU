@@ -1,6 +1,4 @@
 ﻿using System.Diagnostics;
-using EMU.Automations;
-using EMU.Funtions;
 
 namespace EMU
 {
@@ -15,9 +13,9 @@ namespace EMU
         internal static string baseDirectory = AppContext.BaseDirectory;
 
         // Setze die Verzeichnisse relativ zu diesem Basisverzeichnis.
-        internal static string trainedDataDirectory = Path.Combine(baseDirectory, "Resources", "Trained");
-        internal static string screenshotDirectory = Path.Combine(baseDirectory, "Resources", "Screens");
-        internal static string logFileFolderPath = Path.Combine(baseDirectory, "Resources", "Logs");
+        internal static string trainedDataDirectory = Path.Combine(baseDirectory);
+        internal static string screenshotDirectory = Path.Combine(baseDirectory);
+        internal static string logFileFolderPath = Path.Combine(baseDirectory);
         internal static string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png");
 
         internal static string adbPath = "C:\\Program Files\\Nox\\bin\\adb.exe";
