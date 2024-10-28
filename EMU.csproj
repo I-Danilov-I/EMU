@@ -5,14 +5,7 @@
 		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<PublishSingleFile>true</PublishSingleFile>
-		<SelfContained>true</SelfContained>
-		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
-		<Version>1.0.0</Version>
-		<Authors>DaniFaust</Authors>
-		<Company>Dein Unternehmen</Company>
 	</PropertyGroup>
-
 
 	<ItemGroup>
 		<PackageReference Include="OpenCvSharp4" Version="4.10.0.20240616" />
@@ -20,9 +13,9 @@
 		<PackageReference Include="System.Drawing.Common" Version="8.0.10" />
 		<PackageReference Include="Tesseract" Version="5.2.0" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-		<!-- Kopiert alle Dateien und Ordner im Verzeichnis "Resources" -->
+		<!-- Kopiere alle Dateien und Ordner im Verzeichnis "Resources" -->
 		<None Update="Resources\**\*">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

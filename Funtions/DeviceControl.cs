@@ -9,7 +9,6 @@ namespace EMU
         private readonly string adbPath;
         private readonly string inputDevice;
         internal readonly string packageName;
-        private readonly string screenshotDirectory;
 
         private readonly WriteLogs writeLogs;
         private readonly PrintInfo printInfo;
@@ -23,7 +22,88 @@ namespace EMU
             adbPath = Program.adbPath;
             inputDevice = Program.inputDevice;
             packageName = Program.packageName; // Paketname des Spiels
-            screenshotDirectory = Program.screenshotDirectory;
+
+        }
+
+
+        internal void TakeScreenshot()
+        {
+            try
+            {
+                if (!Directory.Exists(Program.screenshotDirectory))
+                {
+                    Directory.CreateDirectory(Program.screenshotDirectory);
+                }
+                string screenshotCommand = "shell screencap -p /sdcard/screenshot.png";  // Screenshot auf dem Emulator erstellen und speichern
+                ExecuteAdbCommand(screenshotCommand);
+                string pullCommand = $"pull /sdcard/screenshot.png {Program.screenshotDirectory}"; // Screenshot vom Emulator auf den PC übertragen
+                ExecuteAdbCommand(pullCommand);
+            }
+            catch (Exception ex)
+            {
+                writeLogs.LogAndConsoleWirite("Fehler beim Erstellen des Screenshots: " + ex.Message);
+            }
+        }
+
+
+        public bool CheckTextInScreenshot(string textToFind, string textToFind2)
+        {
+            try
+            {
+                // Setze die Umgebungsvariable für Tesseract
+                Environment.SetEnvironmentVariable("TESSDATA_PREFIX", Program.trainedDataDirectory);
+
+                if (!File.Exists(Path.Combine(Program.trainedDataDirectory, "deu.traineddata")))
+                {
+                    writeLogs.LogAndConsoleWirite($"[WARNUNG] 'deu.traineddata' nicht gefunden im Verzeichnis: {Program.trainedDataDirectory}");
+                    return false;
+                }
+
+
+                if (!File.Exists(Program.localScreenshotPath))
+                {
+                    writeLogs.LogAndConsoleWirite($"[WARNUNG] Screenshot nicht gefunden unter: {Program.localScreenshotPath}");
+                    return false;
+                }
+
+
+                using (var engine = new TesseractEngine(Program.trainedDataDirectory, "deu", EngineMode.Default))
+                {
+
+                    engine.DefaultPageSegMode = PageSegMode.SingleBlock;
+
+                    using (var img = Pix.LoadFromFile(Program.localScreenshotPath))
+                    {
+
+                        using (var page = engine.Process(img))
+                        {
+                            try
+                            {
+                                string text = page.GetText();
+
+                                if (text.Contains(textToFind) || text.Contains(textToFind2))
+                                {
+                                    return true;
+                                }
+                                else
+                                {
+                                    return false;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                writeLogs.LogAndConsoleWirite($"[FEHLER] Fehler beim Verarbeiten des Screenshots: {ex.Message}");
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                writeLogs.LogAndConsoleWirite($"[FEHLER] Ein Fehler beim Auslesen des Textes aus dem Screenshot ist aufgetreten: {ex.Message}");
+                return false;
+            }
         }
 
 
@@ -101,7 +181,7 @@ namespace EMU
         internal void OfflineErtregeAbholen()
         {
 
-            writeLogs.LogAndConsoleWirite($"\n\nChekce Offline Erträge: ...");
+            writeLogs.LogAndConsoleWirite($"\n\nChekce Offline Erträge");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             TakeScreenshot();
             bool offlineErtrege = CheckTextInScreenshot("Willkommen", "Offline");
@@ -114,71 +194,6 @@ namespace EMU
             else
             {
                 writeLogs.LogAndConsoleWirite($"Keine Offline Erträge.");
-            }
-        }
-
-
-        internal void TakeScreenshot()
-        {
-            try
-            {
-                if (!Directory.Exists(screenshotDirectory))
-                {
-                    Directory.CreateDirectory(screenshotDirectory);
-                }
-
-                string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png"); // Screenshot auf dem Emulator erstellen und auf den PC übertragen
-                string screenshotCommand = "shell screencap -p /sdcard/screenshot.png";  // Screenshot auf dem Emulator erstellen und speichern
-                ExecuteAdbCommand(screenshotCommand);
-                string pullCommand = $"pull /sdcard/screenshot.png {screenshotDirectory}"; // Screenshot vom Emulator auf den PC übertragen
-                ExecuteAdbCommand(pullCommand);
-            }
-            catch (Exception ex)
-            {
-                writeLogs.LogAndConsoleWirite("Fehler beim Erstellen des Screenshots: " + ex.Message);
-            }
-        }
-
-
-        public bool CheckTextInScreenshot(string textToFind, string textToFind2)
-        {
-            try
-            {
-                string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png");
-
-                // OCR-Engine initialisieren
-                using (var engine = new TesseractEngine(Program.trainedDataDirectory, "deu", EngineMode.Default))
-                {
-                    engine.DefaultPageSegMode = PageSegMode.SingleBlock; // Setze den Seitensegmentierungsmodus
-                    using (var img = Pix.LoadFromFile(localScreenshotPath)) // Verwende das verarbeitete Bild
-                    {
-                        using (var page = engine.Process(img))
-                        {
-                            // Extrahiere den erkannten Text
-                            string text = page.GetText();
-                            /*
-                            WriteLogs.LogAndConsoleWirite($"\n[Extrahierter Text]");
-                            WriteLogs.LogAndConsoleWirite($"______________________________________________________________");
-                            WriteLogs.LogAndConsoleWirite(text);
-                            WriteLogs.LogAndConsoleWirite($"______________________________________________________________\n");
-                            */
-                            if (text.Contains(textToFind) || text.Contains(textToFind2))
-                            {
-                                return true;
-                            }
-                            else
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                writeLogs.LogAndConsoleWirite($"Ein Fehler ist aufgetreten: {ex.Message}");
-                return false;
             }
         }
 

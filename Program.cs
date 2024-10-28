@@ -10,9 +10,15 @@ namespace EMU
         internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
 
-        internal static string trainedDataDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Resources\\TrainedData");
-        internal static string screenshotDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Resources\\Screens");
-        internal static string logFileFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Resources\\Logs");
+        // Bestimme das Basisverzeichnis des Programms.
+        // Wenn das Programm in einem veröffentlichten Zustand ausgeführt wird, verwende das Verzeichnis des Executables.
+        internal static string baseDirectory = AppContext.BaseDirectory;
+
+        // Setze die Verzeichnisse relativ zu diesem Basisverzeichnis.
+        internal static string trainedDataDirectory = Path.Combine(baseDirectory, "Resources", "Trained");
+        internal static string screenshotDirectory = Path.Combine(baseDirectory, "Resources", "Screens");
+        internal static string logFileFolderPath = Path.Combine(baseDirectory, "Resources", "Logs");
+        internal static string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png");
 
         internal static string adbPath = "C:\\Program Files\\Nox\\bin\\adb.exe";
         internal static string noxExePath = "C:\\Program Files\\Nox\\bin\\Nox.exe";
@@ -205,12 +211,13 @@ namespace EMU
                 writeLogs.LogAndConsoleWirite("------------------------------------------------------------------------------------------------");
 
                 // Ausgabe der Einstellungen mit einheitlicher Ausrichtung.
+                printInfo.PrintSetting("Program Directory: ", baseDirectory);
                 printInfo.PrintSetting("ADB Path: ", adbPath);
                 printInfo.PrintSetting("Input Device: ", inputDevice);
                 printInfo.PrintSetting("Packege Name: ", packageName);
                 printInfo.PrintSetting("Scrrenshot Directory: ", screenshotDirectory);
                 printInfo.PrintSetting("Logfiles Directory: ", logFileFolderPath);
-                printInfo.PrintSetting("Program Directory: ", "");
+                printInfo.PrintSetting("Trained Data Dir: ", trainedDataDirectory);
                 writeLogs.LogAndConsoleWirite("------------------------------------------------------------------------------------------------");
                 Console.ResetColor();
             }
