@@ -4,7 +4,7 @@ namespace EMU
 {
     internal static class Program
     {
-        internal static int commandDelay = 1000; // Pause in milliseconds between each command.
+        internal static int commandDelay = 0; // Pause in milliseconds between each command.
         internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
 
@@ -78,13 +78,25 @@ namespace EMU
             GuvenourBefehl guvenourBefehl = new GuvenourBefehl(writeLogs, deviceControl);
             VIP vip = new VIP(writeLogs, deviceControl);
             Arena arena = new Arena(writeLogs, deviceControl);
+            Geheimdienst geheimdienst = new Geheimdienst(writeLogs, deviceControl, stableControl);
+            //-----------------------------------------------------------------------------------------------------------
 
+
+
+            // Setze die oberen und unteren Ränder in Pixel
+            int topMargin = 400; // ~2 cm Abstand vom oberen Rand
+            int bottomMargin = 400; // Optional: kein Abstand vom unteren Rand
+            int leftMArgin = 200; // ~2 cm Abstand vom oberen Rand
+            int rigtMargin = 200; // Optional: kein Abstand vom unteren Rand
+            int step = 100; // Schrittweite in Pixeln zwischen den Klickpunkten
+            
+            // Aufruf der Klick-Methode mit diesen Margins
+            deviceControl.ClickAcrossScreenWithMargins(topMargin, bottomMargin, leftMArgin, rigtMargin, step);
+
+            //deviceControl.TrackTouchEvents();
 
             ShowSetting();
             stableControl.Control();
-            stableControl.GetResolution();
-            
-            //deviceControl.TrackTouchEvents();        
             stopwatch.Stop();
             writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");
             writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");

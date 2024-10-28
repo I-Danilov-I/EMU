@@ -302,53 +302,5 @@ namespace EMU
             Thread.Sleep(10000);
         }
 
-
-        internal void GetResolution()
-        {
-            // Auflösung abrufen.
-            string adbCommand = "shell wm size";
-            string output = deviceControl.ExecuteAdbCommand(adbCommand);
-
-            // Ausgabe der Auflösung, falls verfügbar.
-            if (!string.IsNullOrEmpty(output))
-            {
-                printInfo.PrintSetting("Resolution: ", output);
-            }
-            else
-            {
-                printInfo.PrintSetting("Resolution", "Fehler beim Abrufen der Bildschirmauflösung");
-            }
-        }
-
-
-        // Methode zum Ändern der Bildschirmauflösung
-        public void SetResolution(int width, int height)
-        {
-            string resolutionCommand = $"shell wm size {width}x{height}";
-            string output = deviceControl.ExecuteAdbCommand(resolutionCommand);
-            Thread.Sleep(10000);
-            if (!string.IsNullOrEmpty(output))
-            {
-                writeLogs.LogAndConsoleWirite("Auflösung erfolgreich geändert zu: " + width + "x" + height);
-            }
-            else
-            {
-                writeLogs.LogAndConsoleWirite("Fehler beim Ändern der Auflösung.");
-            }
-            RestartNoxPlayer();
-        }
-
-
-        // Methode zum Zurücksetzen der Auflösung auf die Standardgröße
-        public void ResetResolution()
-        {
-            string resetCommand = "shell wm size reset";
-            string output = deviceControl.ExecuteAdbCommand(resetCommand);
-            Thread.Sleep(10000);
-            RestartNoxPlayer();
-            writeLogs.LogAndConsoleWirite("Auflösung wurde auf Standard zurückgesetzt.");
-        }
-
-
     }
 }

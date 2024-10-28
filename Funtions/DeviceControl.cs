@@ -26,6 +26,75 @@ namespace EMU
         }
 
 
+        internal (int width, int height) GetResolution()
+        {
+            // ADB-Befehl zum Abrufen der Auflösung
+            string adbCommand = "shell wm size";
+            string output = ExecuteAdbCommand(adbCommand);
+
+            if (!string.IsNullOrEmpty(output) && output.Contains("Physical size:"))
+            {
+                // Extrahiere die Auflösung (Breite und Höhe)
+                string resolution = output.Split(':')[1].Trim();
+                string[] dimensions = resolution.Split('x');
+                if (dimensions.Length == 2 &&
+                    int.TryParse(dimensions[0], out int width) &&
+                    int.TryParse(dimensions[1], out int height))
+                {
+                    printInfo.PrintSetting("Resolution", $"{width}x{height}");
+                    return (width, height);
+                }
+            }
+
+            // Fehlerfall
+            printInfo.PrintSetting("Resolution", "Fehler beim Abrufen der Bildschirmauflösung");
+            return (0, 0);
+        }
+
+        internal void ClickAcrossScreenWithMargins(int topMargin, int bottomMargin, int leftMargin, int rightMargin, int step, string searchText1, string searchText2)
+        {
+            // Bildschirmauflösung abrufen
+            (int screenWidth, int screenHeight) = GetResolution();
+
+            if (screenWidth == 0 || screenHeight == 0)
+            {
+                writeLogs.LogAndConsoleWirite("Auflösung konnte nicht abgerufen werden. Klickvorgang wird abgebrochen.");
+                return;
+            }
+
+            // Berechnung der Start- und Endbereiche für die X- und Y-Koordinaten
+            int startX = leftMargin; // Startet nach dem linken Rand
+            int endX = screenWidth - rightMargin; // Endet vor dem rechten Rand
+            int startY = topMargin; // Startet nach dem oberen Rand
+            int endY = screenHeight - bottomMargin; // Endet vor dem unteren Rand
+
+            writeLogs.LogAndConsoleWirite("Click/Screen/Search...");
+            // Schleifen, um den definierten Bereich des Bildschirms durchzuklicken
+            for (int x = startX; x <= endX; x += step)  // Schleife über die X-Koordinate
+            {
+                for (int y = startY; y <= endY; y += step) // Schleife über die Y-Koordinate
+                {
+                    ClickAt(x, y);
+                    //Thread.Sleep(100);
+                    TakeScreenshot();
+                    if (CheckTextInScreenshot(searchText1, searchText2) == true)
+                    {
+                        writeLogs.LogAndConsoleWirite("Text Find!");
+                    }
+                }      
+            }
+        }
+
+        // Hilfsmethode, um an einer bestimmten Position zu klicken
+        private void ClickAt(int x, int y)
+        {
+            // ADB-Befehl erstellen, um auf die berechneten Koordinaten zu klicken
+            string adbCommand = $"shell input tap {x} {y}";
+            ExecuteAdbCommand(adbCommand);
+        }
+
+
+
         internal void TakeScreenshot()
         {
             try
@@ -340,49 +409,14 @@ namespace EMU
         }
 
 
-
-
         // [Aktuel nicht verwendet!]
         // ##################################################################
-        internal void ClickAtPositionWithDecimal(string adbPath, int x, int y)
+        /*internal void ClickAtPositionWithDecimal(string adbPath, int x, int y)
         {
             string adbCommand = $"shell input tap {x} {y}";
             ExecuteAdbCommand(adbCommand);
         }
-
-
-        // Methode zum Durchklicken eines quadratischen Bereichs um die Mitte des Bildschirms
-        internal void ClickInQuadraticArea(string adbPath, int width, int height, int offset, int step)
-        {
-            // Berechne die Mitte des Bildschirms
-            int centerX = width / 2;
-            int centerY = height / 2;
-
-            // Berechne die Grenzen des quadratischen Bereichs
-            int leftX = centerX - offset;   // Links von der Mitte
-            int rightX = centerX + offset;  // Rechts von der Mitte
-            int topY = centerY - offset;    // Oben von der Mitte
-            int bottomY = centerY + offset; // Unten von der Mitte
-
-            // Schleifen, um innerhalb des quadratischen Bereichs zu klicken
-            for (int x = leftX; x <= rightX; x += step)  // Schleife über die X-Koordinate
-            {
-                for (int y = topY; y <= bottomY; y += step) // Schleife über die Y-Koordinate
-                {
-                    ClickAt(adbPath, x, y);
-                    Thread.Sleep(100);
-                }
-            }
-        }
-
-        // Hilfsmethode, um an einer bestimmten Position zu klicken
-        private void ClickAt(string adbPath, int x, int y)
-        {
-            // ADB-Befehl erstellen, um auf die berechneten Koordinaten zu klicken
-            string adbCommand = $"shell input tap {x} {y}";
-            ExecuteAdbCommand(adbCommand);
-        }
-
+        */
 
     }
 }
