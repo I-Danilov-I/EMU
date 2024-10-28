@@ -4,15 +4,14 @@ namespace EMU
 {
     internal static class Program
     {
+        // Wenn das Programm in einem veröffentlichten Zustand ausgeführt wird, verwende das Verzeichnis des Executables.
+        internal static string baseDirectory = AppContext.BaseDirectory;
+
         internal static int commandDelay = 1000; // Pause in milliseconds between each command.
         internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
         internal static bool truppenAusgleich = false; // Truppen ausgleichen
-
-
-        // Bestimme das Basisverzeichnis des Programms.
-        // Wenn das Programm in einem veröffentlichten Zustand ausgeführt wird, verwende das Verzeichnis des Executables.
-        internal static string baseDirectory = AppContext.BaseDirectory;
+        internal static string allianceAutobeitrit = "ON";
 
         // Setze die Verzeichnisse relativ zu diesem Basisverzeichnis.
         internal static string trainedDataDirectory = Path.Combine(baseDirectory);
@@ -25,8 +24,6 @@ namespace EMU
         internal static string inputDevice = "/dev/input/event4";
         internal static string packageName = "com.gof.global";
 
-
-        internal static string allianceAutobeitrit = "ON";
 
         internal static int offlineEarningsCounter = 0;
 
@@ -56,6 +53,7 @@ namespace EMU
 
         internal static int arenaFightsCounter = 0;
 
+
         private static void Main()
         {
             Stopwatch stopwatch = new Stopwatch();
@@ -66,7 +64,6 @@ namespace EMU
             PrintInfo printInfo = new PrintInfo(writeLogs);
             DeviceControl deviceControl = new DeviceControl(writeLogs, printInfo);
             StableControl stableControl = new StableControl(writeLogs, printInfo, deviceControl);
-
 
             // Automations in Game Klassen
             Erkundung erkundung = new Erkundung(writeLogs, deviceControl);
@@ -83,30 +80,31 @@ namespace EMU
             Geheimdienst geheimdienst = new Geheimdienst(writeLogs, deviceControl);
             //-----------------------------------------------------------------------------------------------------------
 
+
             //deviceControl.TrackTouchEvents();
 
             ShowSetting();
             stableControl.Control();
-
             stopwatch.Stop();
             writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");
             writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
             Console.ResetColor();
 
-
             while (true)
             {
                 try
-                {          
+                {  
                     stopwatch.Restart();
                     printInfo.PrintSummary();
-
-                    // First 
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    deviceControl.OfflineErtregeAbholen();
-                    deviceControl.BackUneversal();
-                    deviceControl.GoStadt();
-                    stableControl.Control();
+                    if(roundCount < 1)
+                    {
+                        // First 
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        deviceControl.OfflineErtregeAbholen();
+                        deviceControl.BackUneversal();
+                        deviceControl.GoStadt();
+                        stableControl.Control();
+                    }
 
                     // Geheimmission
                     geheimdienst.GoToGeheimdienst();
@@ -210,13 +208,13 @@ namespace EMU
                 }
             }
 
+
             void ShowSetting()
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
                 writeLogs.LogAndConsoleWirite("------------------------------------------------------------------------------------------------");
 
-                // Ausgabe der Einstellungen mit einheitlicher Ausrichtung.
                 printInfo.PrintSetting("Program Directory: ", baseDirectory);
                 printInfo.PrintSetting("ADB Path: ", adbPath);
                 printInfo.PrintSetting("Input Device: ", inputDevice);
@@ -224,6 +222,7 @@ namespace EMU
                 printInfo.PrintSetting("Scrrenshot Directory: ", screenshotDirectory);
                 printInfo.PrintSetting("Logfiles Directory: ", logFileFolderPath);
                 printInfo.PrintSetting("Trained Data Dir: ", trainedDataDirectory);
+
                 writeLogs.LogAndConsoleWirite("------------------------------------------------------------------------------------------------");
                 Console.ResetColor();
             }
