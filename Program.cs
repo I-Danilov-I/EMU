@@ -6,17 +6,19 @@ namespace EMU
 {
     internal static class Program
     {
-
         internal static int commandDelay = 1000; // Pause in milliseconds between each command.
         internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
+
+        internal static string trainedDataDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Resources\\TrainedData");
+        internal static string screenshotDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Resources\\Screens");
+        internal static string logFileFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Resources\\Logs");
 
         internal static string adbPath = "C:\\Program Files\\Nox\\bin\\adb.exe";
         internal static string noxExePath = "C:\\Program Files\\Nox\\bin\\Nox.exe";
         internal static string inputDevice = "/dev/input/event4";
         internal static string packageName = "com.gof.global";
-        internal static string screenshotDirectory = Path.Combine(Directory.GetCurrentDirectory().Replace("bin\\Debug\\net8.0\\win-x64", ""), "Screens");
-        internal static string logFileFolderPath = Path.Combine(Directory.GetCurrentDirectory().Replace("bin\\Debug\\net8.0\\win-x64", ""), "Logs");
+
 
         internal static string allianceAutobeitrit = "ON";
 
@@ -72,10 +74,9 @@ namespace EMU
             GuvenourBefehl guvenourBefehl = new GuvenourBefehl(writeLogs, deviceControl);
             VIP vip = new VIP(writeLogs, deviceControl);
             Arena arena = new Arena(writeLogs, deviceControl);
-           
-            deviceControl.ShowSetting();
 
 
+            ShowSetting();
             stableControl.Control();
             stableControl.GetResolution();
             
@@ -84,6 +85,7 @@ namespace EMU
             writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");
             writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
             Console.ResetColor();
+
 
             while (true)
             {
@@ -96,7 +98,7 @@ namespace EMU
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     deviceControl.OfflineErtregeAbholen();
                     deviceControl.BackUneversal();
-                    deviceControl.CheckePositionAndGoStadt();
+                    deviceControl.GoStadt();
                     stableControl.Control();
 
                     // Arena Kampf
@@ -127,8 +129,9 @@ namespace EMU
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Jagt.BestienJagtStarten(26, false);
                     stableControl.Control();
-                    //Jagt.PolarTerrorStarten(5, false);
-                    //deviceControl.StableControl();
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Jagt.PolarTerrorStarten(5, false);
+                    stableControl.Control();
 
 
                     // Lager
@@ -151,6 +154,7 @@ namespace EMU
                     stableControl.Control();
 
                     // Truppen Training
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     truppenTraining.TrainiereInfaterie(10);
                     stableControl.Control();
                     Console.ForegroundColor = ConsoleColor.Cyan;
@@ -192,6 +196,23 @@ namespace EMU
                 {
                     Thread.Sleep(1000 * 60);
                 }
+            }
+
+            void ShowSetting()
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
+                writeLogs.LogAndConsoleWirite("------------------------------------------------------------------------------------------------");
+
+                // Ausgabe der Einstellungen mit einheitlicher Ausrichtung.
+                printInfo.PrintSetting("ADB Path: ", adbPath);
+                printInfo.PrintSetting("Input Device: ", inputDevice);
+                printInfo.PrintSetting("Packege Name: ", packageName);
+                printInfo.PrintSetting("Scrrenshot Directory: ", screenshotDirectory);
+                printInfo.PrintSetting("Logfiles Directory: ", logFileFolderPath);
+                printInfo.PrintSetting("Program Directory: ", "");
+                writeLogs.LogAndConsoleWirite("------------------------------------------------------------------------------------------------");
+                Console.ResetColor();
             }
         }
 

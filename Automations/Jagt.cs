@@ -6,7 +6,7 @@
         {
             writeLogs.LogAndConsoleWirite("\n\nPolar Terror wird gestartet...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            deviceControl.CheckePositionAndGoWelt();
+            deviceControl.GoWelt();
             deviceControl.ClickAtTouchPositionWithHexa("00000036", "00000443"); // Such icon wählen
             deviceControl.ClickAtTouchPositionWithHexa("00000133", "0000047a"); // Polar Terror Auswahl
             TierLevel(tierLevel); // Bestienlevel Eingabe
@@ -21,7 +21,7 @@
 
             deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); //7 Einsetzen
             CheckAusdauer();
-            deviceControl.CheckePositionAndGoStadt();
+            deviceControl.GoStadt();
             writeLogs.LogAndConsoleWirite("Polar Terror erfogreich gestartet! ;)");
         }
 
@@ -29,7 +29,7 @@
         {
             writeLogs.LogAndConsoleWirite("\n\nBestien Jagt wird gestartet...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            deviceControl.CheckePositionAndGoWelt();
+            deviceControl.GoWelt();
             deviceControl.ClickAtTouchPositionWithHexa("00000036", "00000443"); // Suchicon wählen
             deviceControl.ClickAtTouchPositionWithHexa("00000061", "0000046d"); // Bestien Auswahl
             TierLevel(bestienLevel); // Bestienlevel Eingabe
@@ -51,7 +51,7 @@
 
             deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb");       
             CheckAusdauer();
-            deviceControl.CheckePositionAndGoStadt();
+            deviceControl.GoStadt();
         }
 
 

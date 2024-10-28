@@ -27,23 +27,6 @@ namespace EMU
         }
 
 
-        internal void ShowSetting()
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
-            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-
-            // Ausgabe der Einstellungen mit einheitlicher Ausrichtung.
-            printInfo.PrintSetting("ADB Path: ", adbPath);
-            printInfo.PrintSetting("Input Device: ", inputDevice);
-            printInfo.PrintSetting("Packege Name: ", packageName);
-            printInfo.PrintSetting("Scrrenshot Directory: ", screenshotDirectory);
-            printInfo.PrintSetting("Logfiles Directory: ", writeLogs.);
-            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            Console.ResetColor();
-        }
-
-
         internal void ScrollDown(int anzahlScroll)
         {
             int count = 0;
@@ -78,7 +61,7 @@ namespace EMU
         }
 
 
-        internal void CheckePositionAndGoWelt()
+        internal void GoWelt()
         {
             ClickAtTouchPositionWithHexa("00000081", "0000004f"); // Bonusübersicht klick
             ClickAtTouchPositionWithHexa("000001cf", "000003a6"); // Kraft klick
@@ -88,7 +71,7 @@ namespace EMU
         }
 
 
-        internal void CheckePositionAndGoStadt()
+        internal void GoStadt()
         {
             ClickAtTouchPositionWithHexa("00000081", "0000004f"); // Bonusübersicht klick
             ClickAtTouchPositionWithHexa("000001cf", "000003a6"); // Kraft klick
@@ -118,7 +101,7 @@ namespace EMU
         internal void OfflineErtregeAbholen()
         {
 
-            writeLogs.LogAndConsoleWirite($"Offline Erträge: ...");
+            writeLogs.LogAndConsoleWirite($"\n\nChekce Offline Erträge: ...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             TakeScreenshot();
             bool offlineErtrege = CheckTextInScreenshot("Willkommen", "Offline");
@@ -127,6 +110,10 @@ namespace EMU
                 ClickAtTouchPositionWithHexa("000001bf", "000004d3"); // Bestätigen Button klicken
                 Program.offlineEarningsCounter++;
                 writeLogs.LogAndConsoleWirite($"Offline Erträge wurden abgeholt.");
+            }
+            else
+            {
+                writeLogs.LogAndConsoleWirite($"Keine Offline Erträge.");
             }
         }
 
@@ -159,10 +146,8 @@ namespace EMU
             {
                 string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png");
 
-                string trainedDataPath = Path.Combine(Directory.GetCurrentDirectory().Replace("bin\\Debug\\net8.0\\win-x64", ""), "TrainedData");
-
                 // OCR-Engine initialisieren
-                using (var engine = new TesseractEngine(trainedDataPath, "deu", EngineMode.Default))
+                using (var engine = new TesseractEngine(Program.trainedDataDirectory, "deu", EngineMode.Default))
                 {
                     engine.DefaultPageSegMode = PageSegMode.SingleBlock; // Setze den Seitensegmentierungsmodus
                     using (var img = Pix.LoadFromFile(localScreenshotPath)) // Verwende das verarbeitete Bild

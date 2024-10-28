@@ -2,7 +2,7 @@
 {
     internal class WriteLogs
     {
-        private string logFileFolderPath = "C:\\Users\\Anatolius\\Source\\Repos\\I-Danilov-I\\EMU\\Logs\\";
+        private string logFileFolderPath = Program.logFileFolderPath;
 
         internal void LogAndConsoleWirite(string inputString)
         {

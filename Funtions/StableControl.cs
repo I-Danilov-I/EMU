@@ -23,7 +23,7 @@ namespace EMU.Funtions
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             writeLogs.LogAndConsoleWirite("\n\n[Stabilitätskontrolle]");
-            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
+            writeLogs.LogAndConsoleWirite("-------------------------------------------------------------------------------------------");
 
             CheckNetworkStatus();
             CheckNoxStatus();
@@ -32,7 +32,7 @@ namespace EMU.Funtions
             CheckAppStatus();
             CheckAccountUsage();
 
-            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
+            writeLogs.LogAndConsoleWirite("-------------------------------------------------------------------------------------------");
             Console.ResetColor();
         }
 
