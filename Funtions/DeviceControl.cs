@@ -150,27 +150,20 @@ namespace EMU
                 writeLogs.LogAndConsoleWirite($"[START] Checke Text im Screenshot....");
 
                 // Setze die Umgebungsvariable für Tesseract
-                writeLogs.LogAndConsoleWirite($"Setze TESSDATA_PREFIX auf: {Program.trainedDataDirectory}");
                 Environment.SetEnvironmentVariable("TESSDATA_PREFIX", Program.trainedDataDirectory);
-                writeLogs.LogAndConsoleWirite($"[END] TESSDATA_PREFIX wurde gesetzt.");
 
-                // Überprüfe, ob die 'deu.traineddata' Datei vorhanden ist
-                writeLogs.LogAndConsoleWirite($"[START] Überprüfe 'deu.traineddata' im Verzeichnis: {Program.trainedDataDirectory}");
                 if (!File.Exists(Path.Combine(Program.trainedDataDirectory, "deu.traineddata")))
                 {
                     writeLogs.LogAndConsoleWirite($"[WARNUNG] 'deu.traineddata' nicht gefunden im Verzeichnis: {Program.trainedDataDirectory}");
                     return false;
                 }
-                writeLogs.LogAndConsoleWirite($"[END] 'deu.traineddata' vorhanden.");
+              
 
-                // Überprüfe, ob der Screenshot existiert
-                writeLogs.LogAndConsoleWirite($"[START] Überprüfe Screenshot unter: {Program.localScreenshotPath}");
                 if (!File.Exists(Program.localScreenshotPath))
                 {
                     writeLogs.LogAndConsoleWirite($"[WARNUNG] Screenshot nicht gefunden unter: {Program.localScreenshotPath}");
                     return false;
-                }
-                writeLogs.LogAndConsoleWirite($"[END] Screenshot vorhanden.");
+                }       
 
                 // OCR-Engine initialisieren
                 writeLogs.LogAndConsoleWirite($"[START] Initialisiere Tesseract-OCR-Engine.");
@@ -178,41 +171,23 @@ namespace EMU
                 {
                     writeLogs.LogAndConsoleWirite($"[END] Tesseract-OCR-Engine initialisiert.");
 
-                    // Setze den Seitensegmentierungsmodus
-                    writeLogs.LogAndConsoleWirite($"[START] Setze Seitensegmentierungsmodus auf 'SingleBlock'.");
                     engine.DefaultPageSegMode = PageSegMode.SingleBlock;
-                    writeLogs.LogAndConsoleWirite($"[END] Seitensegmentierungsmodus gesetzt.");
 
-                    // Lese das Bild ein
-                    writeLogs.LogAndConsoleWirite($"[START] Lade Screenshot von: {Program.localScreenshotPath}");
                     using (var img = Pix.LoadFromFile(Program.localScreenshotPath))
                     {
-                        writeLogs.LogAndConsoleWirite($"[END] Screenshot erfolgreich geladen.");
 
-                        // Verarbeite das Bild mit OCR
-                        writeLogs.LogAndConsoleWirite($"[START] Verarbeite Screenshot mit OCR.");
                         using (var page = engine.Process(img))
                         {
                             try
                             {
-                                writeLogs.LogAndConsoleWirite($"[END] OCR-Verarbeitung gestartet.");
-
-                                // Extrahiere den erkannten Text
-                                writeLogs.LogAndConsoleWirite($"[START] Extrahiere Text aus dem Screenshot.");
                                 string text = page.GetText();
-                                writeLogs.LogAndConsoleWirite($"[Extrahierter Text]: {text}");
-                                writeLogs.LogAndConsoleWirite($"[END] Text extrahiert.");
 
-                                // Überprüfe, ob der erkannte Text eine der gesuchten Zeichenfolgen enthält
-                                writeLogs.LogAndConsoleWirite($"[START] Überprüfe, ob der Text die gesuchten Begriffe enthält.");
                                 if (text.Contains(textToFind) || text.Contains(textToFind2))
                                 {
-                                    writeLogs.LogAndConsoleWirite($"[END] Gesuchter Text gefunden.");
                                     return true;
                                 }
                                 else
                                 {
-                                    writeLogs.LogAndConsoleWirite($"[END] Gesuchter Text nicht gefunden.");
                                     return false;
                                 }
                             }
