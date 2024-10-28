@@ -85,7 +85,6 @@ namespace EMU
 
                 // Klick an der zufälligen Position
                 ClickAt(randomX, randomY);
-                Thread.Sleep(100); // Optional: kurze Pause zwischen den Klicks
 
                 // Screenshot aufnehmen und Text überprüfen
                 TakeScreenshot();
@@ -227,8 +226,9 @@ namespace EMU
             ClickAtTouchPositionWithHexa("00000081", "0000004f"); // Bonusübersicht klick
             ClickAtTouchPositionWithHexa("000001cf", "000003a6"); // Kraft klick
             ClickAtTouchPositionWithHexa("000002f1", "00000540"); // Technologieforschung wälen
+            Thread.Sleep(2000);
             ClickAtTouchPositionWithHexa("0000032f", "000005fd"); // Welt / Stadt
-            Thread.Sleep(4000);     
+            Thread.Sleep(2000);     
         }
 
 
