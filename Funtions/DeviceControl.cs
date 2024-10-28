@@ -26,6 +26,87 @@ namespace EMU
         }
 
 
+        internal void TakeScreenshot()
+        {
+            try
+            {
+                if (!Directory.Exists(Program.screenshotDirectory))
+                {
+                    Directory.CreateDirectory(Program.screenshotDirectory);
+                }
+                string screenshotCommand = "shell screencap -p /sdcard/screenshot.png";  // Screenshot auf dem Emulator erstellen und speichern
+                ExecuteAdbCommand(screenshotCommand);
+                string pullCommand = $"pull /sdcard/screenshot.png {Program.screenshotDirectory}"; // Screenshot vom Emulator auf den PC übertragen
+                ExecuteAdbCommand(pullCommand);
+            }
+            catch (Exception ex)
+            {
+                writeLogs.LogAndConsoleWirite("Fehler beim Erstellen des Screenshots: " + ex.Message);
+            }
+        }
+
+
+        public bool CheckTextInScreenshot(string textToFind, string textToFind2)
+        {
+            try
+            {
+                // Setze die Umgebungsvariable für Tesseract
+                Environment.SetEnvironmentVariable("TESSDATA_PREFIX", Program.trainedDataDirectory);
+
+                if (!File.Exists(Path.Combine(Program.trainedDataDirectory, "deu.traineddata")))
+                {
+                    writeLogs.LogAndConsoleWirite($"[WARNUNG] 'deu.traineddata' nicht gefunden im Verzeichnis: {Program.trainedDataDirectory}");
+                    return false;
+                }
+
+
+                if (!File.Exists(Program.localScreenshotPath))
+                {
+                    writeLogs.LogAndConsoleWirite($"[WARNUNG] Screenshot nicht gefunden unter: {Program.localScreenshotPath}");
+                    return false;
+                }
+
+
+                using (var engine = new TesseractEngine(Program.trainedDataDirectory, "deu", EngineMode.Default))
+                {
+
+                    engine.DefaultPageSegMode = PageSegMode.SingleBlock;
+
+                    using (var img = Pix.LoadFromFile(Program.localScreenshotPath))
+                    {
+
+                        using (var page = engine.Process(img))
+                        {
+                            try
+                            {
+                                string text = page.GetText();
+
+                                if (text.Contains(textToFind) || text.Contains(textToFind2))
+                                {
+                                    return true;
+                                }
+                                else
+                                {
+                                    return false;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                writeLogs.LogAndConsoleWirite($"[FEHLER] Fehler beim Verarbeiten des Screenshots: {ex.Message}");
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                writeLogs.LogAndConsoleWirite($"[FEHLER] Ein Fehler beim Auslesen des Textes aus dem Screenshot ist aufgetreten: {ex.Message}");
+                return false;
+            }
+        }
+
+
         internal void ScrollDown(int anzahlScroll)
         {
             int count = 0;
@@ -100,7 +181,7 @@ namespace EMU
         internal void OfflineErtregeAbholen()
         {
 
-            writeLogs.LogAndConsoleWirite($"\n\nChekce Offline Erträge: ...");
+            writeLogs.LogAndConsoleWirite($"\n\nChekce Offline Erträge");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             TakeScreenshot();
             bool offlineErtrege = CheckTextInScreenshot("Willkommen", "Offline");
@@ -115,111 +196,6 @@ namespace EMU
                 writeLogs.LogAndConsoleWirite($"Keine Offline Erträge.");
             }
         }
-
-
-        internal void TakeScreenshot()
-        {
-            try
-            {
-                writeLogs.LogAndConsoleWirite($"Screenshot....");
-                if (!Directory.Exists(Program.screenshotDirectory))
-                {
-                    Directory.CreateDirectory(Program.screenshotDirectory);
-                    writeLogs.LogAndConsoleWirite($"Screenshot-Verzeichnis erstellt: {Program.screenshotDirectory}");
-                }
-                string screenshotCommand = "shell screencap -p /sdcard/screenshot.png";  // Screenshot auf dem Emulator erstellen und speichern
-                ExecuteAdbCommand(screenshotCommand);
-                string pullCommand = $"pull /sdcard/screenshot.png {Program.screenshotDirectory}"; // Screenshot vom Emulator auf den PC übertragen
-                ExecuteAdbCommand(pullCommand);
-                writeLogs.LogAndConsoleWirite($"Screenshot erfolgreich gespeichert unter: {Program.localScreenshotPath}");
-            }
-            catch (Exception ex)
-            {
-                writeLogs.LogAndConsoleWirite("Fehler beim Erstellen des Screenshots: " + ex.Message);
-            }
-        }
-
-
-
-
-
-        public bool CheckTextInScreenshot(string textToFind, string textToFind2)
-        {
-            try
-            {
-                writeLogs.LogAndConsoleWirite($"[START] Checke Text im Screenshot....");
-
-                // Setze die Umgebungsvariable für Tesseract
-                Environment.SetEnvironmentVariable("TESSDATA_PREFIX", Program.trainedDataDirectory);
-
-                if (!File.Exists(Path.Combine(Program.trainedDataDirectory, "deu.traineddata")))
-                {
-                    writeLogs.LogAndConsoleWirite($"[WARNUNG] 'deu.traineddata' nicht gefunden im Verzeichnis: {Program.trainedDataDirectory}");
-                    return false;
-                }
-              
-
-                if (!File.Exists(Program.localScreenshotPath))
-                {
-                    writeLogs.LogAndConsoleWirite($"[WARNUNG] Screenshot nicht gefunden unter: {Program.localScreenshotPath}");
-                    return false;
-                }       
-
-                // OCR-Engine initialisieren
-                writeLogs.LogAndConsoleWirite($"[START] Initialisiere Tesseract-OCR-Engine.");
-                using (var engine = new TesseractEngine(Program.trainedDataDirectory, "deu", EngineMode.Default))
-                {
-                    writeLogs.LogAndConsoleWirite($"[END] Tesseract-OCR-Engine initialisiert.");
-
-                    engine.DefaultPageSegMode = PageSegMode.SingleBlock;
-
-                    using (var img = Pix.LoadFromFile(Program.localScreenshotPath))
-                    {
-
-                        using (var page = engine.Process(img))
-                        {
-                            try
-                            {
-                                string text = page.GetText();
-
-                                if (text.Contains(textToFind) || text.Contains(textToFind2))
-                                {
-                                    return true;
-                                }
-                                else
-                                {
-                                    return false;
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                writeLogs.LogAndConsoleWirite($"[FEHLER] Fehler beim Verarbeiten des Screenshots: {ex.Message}");
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                writeLogs.LogAndConsoleWirite($"[FEHLER] Ein Fehler beim Auslesen des Textes aus dem Screenshot ist aufgetreten: {ex.Message}");
-                if (ex.InnerException != null)
-                {
-                    writeLogs.LogAndConsoleWirite($"[FEHLER] Innerer Fehler: {ex.InnerException.Message}");
-                }
-                return false;
-            }
-            finally
-            {
-                writeLogs.LogAndConsoleWirite($"[ENDE] CheckTextInScreenshot abgeschlossen.");
-            }
-        }
-
-
-
-
-
-
 
 
         internal string ExecuteAdbCommand(string command)
