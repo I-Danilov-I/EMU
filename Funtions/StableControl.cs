@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net.NetworkInformation;
 
-namespace EMU.Funtions
+namespace EMU
 {
     internal class StableControl
     {
@@ -217,21 +217,29 @@ namespace EMU.Funtions
         {
             try
             {
-                Process.Start(Program.noxExePath) ;
- 
+                // Überprüfen, ob der Pfad existiert
+                if (!File.Exists(Program.noxExePath))
+                {
+                    LogStatus("NOX", false, "Der angegebene Pfad zu Nox wurde nicht gefunden: " + Program.noxExePath);
+                    Thread.Sleep(1000 * 60);
+                }
+
+                Process.Start(Program.noxExePath);
+
                 // Warte, bis Nox vollständig gestartet ist
                 while (!IsNoxReady())
                 {
-                    Thread.Sleep(5000); // Überprüfe alle Sekunden
+                    Thread.Sleep(5000); // Überprüfe alle 5 Sekunden
                 }
                 Thread.Sleep(10000);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 LogStatus("NOX", false, ex.Message);
-                Environment.Exit(0);
+                Thread.Sleep(1000 * 60);
             }
         }
+
 
 
         internal void StartADBConnection()
@@ -293,54 +301,6 @@ namespace EMU.Funtions
             }
             Thread.Sleep(10000);
         }
-
-
-        internal void GetResolution()
-        {
-            // Auflösung abrufen.
-            string adbCommand = "shell wm size";
-            string output = deviceControl.ExecuteAdbCommand(adbCommand);
-
-            // Ausgabe der Auflösung, falls verfügbar.
-            if (!string.IsNullOrEmpty(output))
-            {
-                printInfo.PrintSetting("Resolution: ", output);
-            }
-            else
-            {
-                printInfo.PrintSetting("Resolution", "Fehler beim Abrufen der Bildschirmauflösung");
-            }
-        }
-
-
-        // Methode zum Ändern der Bildschirmauflösung
-        public void SetResolution(int width, int height)
-        {
-            string resolutionCommand = $"shell wm size {width}x{height}";
-            string output = deviceControl.ExecuteAdbCommand(resolutionCommand);
-            Thread.Sleep(10000);
-            if (!string.IsNullOrEmpty(output))
-            {
-                writeLogs.LogAndConsoleWirite("Auflösung erfolgreich geändert zu: " + width + "x" + height);
-            }
-            else
-            {
-                writeLogs.LogAndConsoleWirite("Fehler beim Ändern der Auflösung.");
-            }
-            RestartNoxPlayer();
-        }
-
-
-        // Methode zum Zurücksetzen der Auflösung auf die Standardgröße
-        public void ResetResolution()
-        {
-            string resetCommand = "shell wm size reset";
-            string output = deviceControl.ExecuteAdbCommand(resetCommand);
-            Thread.Sleep(10000);
-            RestartNoxPlayer();
-            writeLogs.LogAndConsoleWirite("Auflösung wurde auf Standard zurückgesetzt.");
-        }
-
 
     }
 }

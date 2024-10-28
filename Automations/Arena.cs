@@ -1,4 +1,4 @@
-﻿namespace EMU.Automations
+﻿namespace EMU
 {
     internal class Arena(WriteLogs writeLogs, DeviceControl deviceControl)
     {

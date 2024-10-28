@@ -26,6 +26,91 @@ namespace EMU
         }
 
 
+        internal (int width, int height) GetResolution()
+        {
+            // ADB-Befehl zum Abrufen der Auflösung
+            string adbCommand = "shell wm size";
+            string output = ExecuteAdbCommand(adbCommand);
+
+            if (!string.IsNullOrEmpty(output) && output.Contains("Physical size:"))
+            {
+                // Extrahiere die Auflösung (Breite und Höhe)
+                string resolution = output.Split(':')[1].Trim();
+                string[] dimensions = resolution.Split('x');
+                if (dimensions.Length == 2 &&
+                    int.TryParse(dimensions[0], out int width) &&
+                    int.TryParse(dimensions[1], out int height))
+                {
+                    //printInfo.PrintSetting("Resolution", $"{width}x{height}");
+                    return (width, height);
+                }
+            }
+
+            // Fehlerfall
+            printInfo.PrintSetting("Resolution", "Fehler beim Abrufen der Bildschirmauflösung");
+            return (0, 0);
+        }
+
+
+
+
+        internal bool ClickAcrossScreenRandomly(int topMargin, int bottomMargin, int leftMargin, int rightMargin, string searchText1, string searchText2, int clickCount)
+        {
+            // Bildschirmauflösung abrufen
+            (int screenWidth, int screenHeight) = GetResolution();
+
+            if (screenWidth == 0 || screenHeight == 0)
+            {
+                writeLogs.LogAndConsoleWirite("Auflösung konnte nicht abgerufen werden. Klickvorgang wird abgebrochen.");
+                return false;
+            }
+
+            // Berechnung der Start- und Endbereiche für die X- und Y-Koordinaten
+            int startX = leftMargin;
+            int endX = screenWidth - rightMargin;
+            int startY = topMargin;
+            int endY = screenHeight - bottomMargin;
+
+            //writeLogs.LogAndConsoleWirite("Clicking randomly across the screen...");
+
+            // Initialisierung eines Zufallsgenerators
+            Random random = new Random();
+
+            // Führe die Klicks an zufälligen Positionen durch
+            for (int i = 0; i < clickCount; i++)
+            {
+                // Generiere eine zufällige Position innerhalb des definierten Bereichs
+                int randomX = random.Next(startX, endX);
+                int randomY = random.Next(startY, endY);
+
+                // Klick an der zufälligen Position
+                ClickAt(randomX, randomY);
+                Thread.Sleep(100); // Optional: kurze Pause zwischen den Klicks
+
+                // Screenshot aufnehmen und Text überprüfen
+                TakeScreenshot();
+                if (CheckTextInScreenshot(searchText1, searchText2))
+                {
+                    return true; // Beende die Methode, wenn der Suchtext gefunden wird
+                }
+
+                
+            }
+
+            return false;
+        }
+
+        // Hilfsmethode, um an einer bestimmten Position zu klicken
+        private void ClickAt(int x, int y)
+        {
+            string adbCommand = $"shell input tap {x} {y}";
+            ExecuteAdbCommand(adbCommand);
+        }
+
+
+
+
+
         internal void TakeScreenshot()
         {
             try
@@ -69,18 +154,14 @@ namespace EMU
 
                 using (var engine = new TesseractEngine(Program.trainedDataDirectory, "deu", EngineMode.Default))
                 {
-
                     engine.DefaultPageSegMode = PageSegMode.SingleBlock;
-
                     using (var img = Pix.LoadFromFile(Program.localScreenshotPath))
                     {
-
                         using (var page = engine.Process(img))
                         {
                             try
                             {
                                 string text = page.GetText();
-
                                 if (text.Contains(textToFind) || text.Contains(textToFind2))
                                 {
                                     return true;
@@ -340,49 +421,14 @@ namespace EMU
         }
 
 
-
-
         // [Aktuel nicht verwendet!]
         // ##################################################################
-        internal void ClickAtPositionWithDecimal(string adbPath, int x, int y)
+        /*internal void ClickAtPositionWithDecimal(string adbPath, int x, int y)
         {
             string adbCommand = $"shell input tap {x} {y}";
             ExecuteAdbCommand(adbCommand);
         }
-
-
-        // Methode zum Durchklicken eines quadratischen Bereichs um die Mitte des Bildschirms
-        internal void ClickInQuadraticArea(string adbPath, int width, int height, int offset, int step)
-        {
-            // Berechne die Mitte des Bildschirms
-            int centerX = width / 2;
-            int centerY = height / 2;
-
-            // Berechne die Grenzen des quadratischen Bereichs
-            int leftX = centerX - offset;   // Links von der Mitte
-            int rightX = centerX + offset;  // Rechts von der Mitte
-            int topY = centerY - offset;    // Oben von der Mitte
-            int bottomY = centerY + offset; // Unten von der Mitte
-
-            // Schleifen, um innerhalb des quadratischen Bereichs zu klicken
-            for (int x = leftX; x <= rightX; x += step)  // Schleife über die X-Koordinate
-            {
-                for (int y = topY; y <= bottomY; y += step) // Schleife über die Y-Koordinate
-                {
-                    ClickAt(adbPath, x, y);
-                    Thread.Sleep(100);
-                }
-            }
-        }
-
-        // Hilfsmethode, um an einer bestimmten Position zu klicken
-        private void ClickAt(string adbPath, int x, int y)
-        {
-            // ADB-Befehl erstellen, um auf die berechneten Koordinaten zu klicken
-            string adbCommand = $"shell input tap {x} {y}";
-            ExecuteAdbCommand(adbCommand);
-        }
-
+        */
 
     }
 }

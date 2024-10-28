@@ -2,7 +2,7 @@
 {
     internal class Jagt(WriteLogs writeLogs, DeviceControl deviceControl)
     {
-        internal void PolarTerrorStarten(int tierLevel, bool ausgleichen)
+        internal void PolarTerrorStarten(int tierLevel)
         {
             writeLogs.LogAndConsoleWirite("\n\nPolar Terror wird gestartet...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
@@ -14,18 +14,18 @@
             deviceControl.ClickAtTouchPositionWithHexa("000001c1", "00000261"); // Rally
             deviceControl.ClickAtTouchPositionWithHexa("000001bf", "00000419"); // Rally bestätigen // ZEitauwahl
        
-            if (ausgleichen == true)
+            if (Program.truppenAusgleich == true)
             {
                 deviceControl.ClickAtTouchPositionWithHexa("000000fa", "000005ba"); // Ausgleichen?
             }
 
-            deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); //7 Einsetzen
+            deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); // Einsetzen
             CheckAusdauer();
             deviceControl.GoStadt();
             writeLogs.LogAndConsoleWirite("Polar Terror erfogreich gestartet! ;)");
         }
 
-        internal void BestienJagtStarten(int bestienLevel, bool ausgleichen)
+        internal void BestienJagtStarten(int bestienLevel)
         {
             writeLogs.LogAndConsoleWirite("\n\nBestien Jagt wird gestartet...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
@@ -36,7 +36,7 @@
             deviceControl.ClickAtTouchPositionWithHexa("000001be", "000005eb"); // Suchen Butto
             deviceControl.ClickAtTouchPositionWithHexa("000001c6", "000002ff"); // Angriff
 
-            if (ausgleichen == true)
+            if (Program.truppenAusgleich == true)
             {
                 deviceControl.ClickAtTouchPositionWithHexa("000000fa", "000005ba"); // Ausgleichen?
             }

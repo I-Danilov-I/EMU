@@ -1,23 +1,23 @@
 ﻿using System.Diagnostics;
-using EMU.Automations;
-using EMU.Funtions;
 
 namespace EMU
 {
     internal static class Program
     {
-        internal static int commandDelay = 1000; // Pause in milliseconds between each command.
+        internal static int commandDelay = 0; // Pause in milliseconds between each command.
         internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
+        internal static bool truppenAusgleich = false; // Truppen ausgleichen
+
 
         // Bestimme das Basisverzeichnis des Programms.
         // Wenn das Programm in einem veröffentlichten Zustand ausgeführt wird, verwende das Verzeichnis des Executables.
         internal static string baseDirectory = AppContext.BaseDirectory;
 
         // Setze die Verzeichnisse relativ zu diesem Basisverzeichnis.
-        internal static string trainedDataDirectory = Path.Combine(baseDirectory, "Resources", "Trained");
-        internal static string screenshotDirectory = Path.Combine(baseDirectory, "Resources", "Screens");
-        internal static string logFileFolderPath = Path.Combine(baseDirectory, "Resources", "Logs");
+        internal static string trainedDataDirectory = Path.Combine(baseDirectory);
+        internal static string screenshotDirectory = Path.Combine(baseDirectory);
+        internal static string logFileFolderPath = Path.Combine(baseDirectory);
         internal static string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png");
 
         internal static string adbPath = "C:\\Program Files\\Nox\\bin\\adb.exe";
@@ -80,13 +80,16 @@ namespace EMU
             GuvenourBefehl guvenourBefehl = new GuvenourBefehl(writeLogs, deviceControl);
             VIP vip = new VIP(writeLogs, deviceControl);
             Arena arena = new Arena(writeLogs, deviceControl);
+            Geheimdienst geheimdienst = new Geheimdienst(writeLogs, deviceControl);
+            //-----------------------------------------------------------------------------------------------------------
 
+            //deviceControl.TrackTouchEvents();
 
+            geheimdienst.GoToGeheimdienst();
+            
             ShowSetting();
             stableControl.Control();
-            stableControl.GetResolution();
-            
-            //deviceControl.TrackTouchEvents();        
+
             stopwatch.Stop();
             writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");
             writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
@@ -128,10 +131,10 @@ namespace EMU
 
                     // Jagt
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    Jagt.BestienJagtStarten(26, false);
+                    Jagt.BestienJagtStarten(26);
                     stableControl.Control();
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    Jagt.PolarTerrorStarten(5, false);
+                    Jagt.PolarTerrorStarten(5);
                     stableControl.Control();
 
 
