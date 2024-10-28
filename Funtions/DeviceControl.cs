@@ -51,7 +51,7 @@ namespace EMU
             return (0, 0);
         }
 
-        internal void ClickAcrossScreenWithMargins(int topMargin, int bottomMargin, int leftMargin, int rightMargin, int step, string searchText1, string searchText2)
+        internal bool ClickAcrossScreenWithMargins(int topMargin, int bottomMargin, int leftMargin, int rightMargin, int step, string searchText1, string searchText2)
         {
             // Bildschirmauflösung abrufen
             (int screenWidth, int screenHeight) = GetResolution();
@@ -59,7 +59,7 @@ namespace EMU
             if (screenWidth == 0 || screenHeight == 0)
             {
                 writeLogs.LogAndConsoleWirite("Auflösung konnte nicht abgerufen werden. Klickvorgang wird abgebrochen.");
-                return;
+                return false;
             }
 
             // Berechnung der Start- und Endbereiche für die X- und Y-Koordinaten
@@ -79,10 +79,11 @@ namespace EMU
                     TakeScreenshot();
                     if (CheckTextInScreenshot(searchText1, searchText2) == true)
                     {
-                        writeLogs.LogAndConsoleWirite("Text Find!");
+                        return true;
                     }
                 }      
             }
+            return false;
         }
 
         // Hilfsmethode, um an einer bestimmten Position zu klicken
@@ -138,18 +139,14 @@ namespace EMU
 
                 using (var engine = new TesseractEngine(Program.trainedDataDirectory, "deu", EngineMode.Default))
                 {
-
                     engine.DefaultPageSegMode = PageSegMode.SingleBlock;
-
                     using (var img = Pix.LoadFromFile(Program.localScreenshotPath))
                     {
-
                         using (var page = engine.Process(img))
                         {
                             try
                             {
                                 string text = page.GetText();
-
                                 if (text.Contains(textToFind) || text.Contains(textToFind2))
                                 {
                                     return true;

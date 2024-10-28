@@ -7,6 +7,8 @@ namespace EMU
         internal static int commandDelay = 0; // Pause in milliseconds between each command.
         internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
+        internal static bool truppenAusgleich = false; // Truppen ausgleichen
+
 
         // Bestimme das Basisverzeichnis des Programms.
         // Wenn das Programm in einem veröffentlichten Zustand ausgeführt wird, verwende das Verzeichnis des Executables.
@@ -80,20 +82,13 @@ namespace EMU
             Arena arena = new Arena(writeLogs, deviceControl);
             Geheimdienst geheimdienst = new Geheimdienst(writeLogs, deviceControl, stableControl);
             //-----------------------------------------------------------------------------------------------------------
+            deviceControl.TakeScreenshot();
+            if(deviceControl.CheckTextInScreenshot("nicht", "du")== true)
+            {
 
+            }
 
-
-            // Setze die oberen und unteren Ränder in Pixel
-            int topMargin = 400; // ~2 cm Abstand vom oberen Rand
-            int bottomMargin = 400; // Optional: kein Abstand vom unteren Rand
-            int leftMArgin = 200; // ~2 cm Abstand vom oberen Rand
-            int rigtMargin = 200; // Optional: kein Abstand vom unteren Rand
-            int step = 100; // Schrittweite in Pixeln zwischen den Klickpunkten
-            
-            // Aufruf der Klick-Methode mit diesen Margins
-            deviceControl.ClickAcrossScreenWithMargins(topMargin, bottomMargin, leftMArgin, rigtMargin, step);
-
-            //deviceControl.TrackTouchEvents();
+            deviceControl.TrackTouchEvents();
 
             ShowSetting();
             stableControl.Control();
