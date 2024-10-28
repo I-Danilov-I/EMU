@@ -9,7 +9,6 @@ namespace EMU
         private readonly string adbPath;
         private readonly string inputDevice;
         internal readonly string packageName;
-        private readonly string screenshotDirectory;
 
         private readonly WriteLogs writeLogs;
         private readonly PrintInfo printInfo;
@@ -23,7 +22,7 @@ namespace EMU
             adbPath = Program.adbPath;
             inputDevice = Program.inputDevice;
             packageName = Program.packageName; // Paketname des Spiels
-            screenshotDirectory = Program.screenshotDirectory;
+
         }
 
 
@@ -122,15 +121,16 @@ namespace EMU
         {
             try
             {
-                if (!Directory.Exists(screenshotDirectory))
+                writeLogs.LogAndConsoleWirite($"Screenshot....");
+                if (!Directory.Exists(Program.screenshotDirectory))
                 {
-                    Directory.CreateDirectory(screenshotDirectory);
+                    Directory.CreateDirectory(Program.screenshotDirectory);
                 }
-
                 string screenshotCommand = "shell screencap -p /sdcard/screenshot.png";  // Screenshot auf dem Emulator erstellen und speichern
                 ExecuteAdbCommand(screenshotCommand);
-                string pullCommand = $"pull /sdcard/screenshot.png {screenshotDirectory}"; // Screenshot vom Emulator auf den PC übertragen
+                string pullCommand = $"pull /sdcard/screenshot.png {Program.screenshotDirectory}"; // Screenshot vom Emulator auf den PC übertragen
                 ExecuteAdbCommand(pullCommand);
+                writeLogs.LogAndConsoleWirite($"Screenshot erfolg!");
             }
             catch (Exception ex)
             {
@@ -143,12 +143,15 @@ namespace EMU
         {
             try
             {
-
+                writeLogs.LogAndConsoleWirite($"Checke TExt im Screenshot....");
                 // OCR-Engine initialisieren
-                using (var engine = new TesseractEngine(Program.trainedDataDirectory, "deu", EngineMode.Default))
+                Environment.SetEnvironmentVariable("TESSDATA_PREFIX", Program.trainedDataDirectory);
+
+                using (var engine = new TesseractEngine(@"C:\Users\Anatolius\Desktop\A\Resources\Trained", "deu", EngineMode.Default))
+
                 {
                     engine.DefaultPageSegMode = PageSegMode.SingleBlock; // Setze den Seitensegmentierungsmodus
-                    using (var img = Pix.LoadFromFile(Program.localScreenshotPat)) // Verwende das verarbeitete Bild
+                    using (var img = Pix.LoadFromFile(Program.localScreenshotPath)) // Verwende das verarbeitete Bild
                     {
                         using (var page = engine.Process(img))
                         {
@@ -175,9 +178,15 @@ namespace EMU
             }
             catch (Exception ex)
             {
-                writeLogs.LogAndConsoleWirite($"Ein Fehler ist aufgetreten: {ex.Message}");
+                writeLogs.LogAndConsoleWirite($"Ein Fehler bei Ausles des Textes aus dem Screnshot aufgetreten: {ex.Message}");
+                if (ex.InnerException != null)
+                {
+                    writeLogs.LogAndConsoleWirite($"Innerer Fehler: {ex.InnerException.Message}");
+                }
+                Thread.Sleep(10000);
                 return false;
             }
+
         }
 
 
