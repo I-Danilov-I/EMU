@@ -53,6 +53,8 @@ namespace EMU
         }
 
 
+
+
         // [ VM ] ###################################################################################
         private void CheckNetworkStatus()
         {
@@ -72,6 +74,7 @@ namespace EMU
             Thread.Sleep(TimeSpan.FromMinutes(Program.reconnectSleepTime));
             throw new Exception("Netzwerk nicht verfügbar.");
         }
+
 
 
 
@@ -151,6 +154,7 @@ namespace EMU
                 StartADBConnection();
             }
         }
+
 
 
 
