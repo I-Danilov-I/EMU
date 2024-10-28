@@ -13,6 +13,7 @@ namespace EMU
         internal static string trainedDataDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Resources\\TrainedData");
         internal static string screenshotDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Resources\\Screens");
         internal static string logFileFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "Resources\\Logs");
+        internal static string localScreenshotPat = Path.Combine(Directory.GetCurrentDirectory(), "Resources\\Screens\\screenshot.png");
 
         internal static string adbPath = "C:\\Program Files\\Nox\\bin\\adb.exe";
         internal static string noxExePath = "C:\\Program Files\\Nox\\bin\\Nox.exe";

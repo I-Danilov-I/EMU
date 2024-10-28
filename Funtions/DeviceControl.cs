@@ -127,7 +127,6 @@ namespace EMU
                     Directory.CreateDirectory(screenshotDirectory);
                 }
 
-                string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png"); // Screenshot auf dem Emulator erstellen und auf den PC übertragen
                 string screenshotCommand = "shell screencap -p /sdcard/screenshot.png";  // Screenshot auf dem Emulator erstellen und speichern
                 ExecuteAdbCommand(screenshotCommand);
                 string pullCommand = $"pull /sdcard/screenshot.png {screenshotDirectory}"; // Screenshot vom Emulator auf den PC übertragen
@@ -144,13 +143,12 @@ namespace EMU
         {
             try
             {
-                string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png");
 
                 // OCR-Engine initialisieren
                 using (var engine = new TesseractEngine(Program.trainedDataDirectory, "deu", EngineMode.Default))
                 {
                     engine.DefaultPageSegMode = PageSegMode.SingleBlock; // Setze den Seitensegmentierungsmodus
-                    using (var img = Pix.LoadFromFile(localScreenshotPath)) // Verwende das verarbeitete Bild
+                    using (var img = Pix.LoadFromFile(Program.localScreenshotPat)) // Verwende das verarbeitete Bild
                     {
                         using (var page = engine.Process(img))
                         {
