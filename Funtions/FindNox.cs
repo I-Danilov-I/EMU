@@ -1,4 +1,4 @@
-﻿namespace EMU
+﻿namespace EMU.Funtions
 {
     public class NoxPlayerFinder
     {
@@ -21,7 +21,7 @@
                 else
                 {
                     Console.WriteLine("NoxPlayer nicht gefunden.");
-                    
+
                 }
             }
             return null!; // Kein Pfad gefunden
