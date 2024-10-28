@@ -38,7 +38,7 @@ namespace EMU
             printInfo.PrintSetting("Input Device: ", inputDevice);
             printInfo.PrintSetting("Packege Name: ", packageName);
             printInfo.PrintSetting("Scrrenshot Directory: ", screenshotDirectory);
-
+            printInfo.PrintSetting("Logfiles Directory: ", writeLogs.);
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             Console.ResetColor();
         }
@@ -117,6 +117,9 @@ namespace EMU
 
         internal void OfflineErtregeAbholen()
         {
+
+            writeLogs.LogAndConsoleWirite($"Offline Erträge: ...");
+            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
             TakeScreenshot();
             bool offlineErtrege = CheckTextInScreenshot("Willkommen", "Offline");
             if (offlineErtrege == true)

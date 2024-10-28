@@ -6,6 +6,7 @@ namespace EMU
 {
     internal static class Program
     {
+
         internal static int commandDelay = 1000; // Pause in milliseconds between each command.
         internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
@@ -71,10 +72,10 @@ namespace EMU
             GuvenourBefehl guvenourBefehl = new GuvenourBefehl(writeLogs, deviceControl);
             VIP vip = new VIP(writeLogs, deviceControl);
             Arena arena = new Arena(writeLogs, deviceControl);
-
-
            
             deviceControl.ShowSetting();
+
+
             stableControl.Control();
             stableControl.GetResolution();
             
@@ -89,9 +90,10 @@ namespace EMU
                 try
                 {          
                     stopwatch.Restart();
-                    printInfo.PrintSummary();    
+                    printInfo.PrintSummary();
 
                     // First 
+                    Console.ForegroundColor = ConsoleColor.Cyan;
                     deviceControl.OfflineErtregeAbholen();
                     deviceControl.BackUneversal();
                     deviceControl.CheckePositionAndGoStadt();
