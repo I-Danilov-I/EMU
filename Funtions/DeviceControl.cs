@@ -125,12 +125,13 @@ namespace EMU
                 if (!Directory.Exists(Program.screenshotDirectory))
                 {
                     Directory.CreateDirectory(Program.screenshotDirectory);
+                    writeLogs.LogAndConsoleWirite($"Screenshot-Verzeichnis erstellt: {Program.screenshotDirectory}");
                 }
                 string screenshotCommand = "shell screencap -p /sdcard/screenshot.png";  // Screenshot auf dem Emulator erstellen und speichern
                 ExecuteAdbCommand(screenshotCommand);
                 string pullCommand = $"pull /sdcard/screenshot.png {Program.screenshotDirectory}"; // Screenshot vom Emulator auf den PC übertragen
                 ExecuteAdbCommand(pullCommand);
-                writeLogs.LogAndConsoleWirite($"Screenshot erfolg!");
+                writeLogs.LogAndConsoleWirite($"Screenshot erfolgreich gespeichert unter: {Program.localScreenshotPath}");
             }
             catch (Exception ex)
             {
@@ -139,55 +140,111 @@ namespace EMU
         }
 
 
+
+
+
         public bool CheckTextInScreenshot(string textToFind, string textToFind2)
         {
             try
             {
-                writeLogs.LogAndConsoleWirite($"Checke TExt im Screenshot....");
-                // OCR-Engine initialisieren
+                writeLogs.LogAndConsoleWirite($"[START] Checke Text im Screenshot....");
+
+                // Setze die Umgebungsvariable für Tesseract
+                writeLogs.LogAndConsoleWirite($"Setze TESSDATA_PREFIX auf: {Program.trainedDataDirectory}");
                 Environment.SetEnvironmentVariable("TESSDATA_PREFIX", Program.trainedDataDirectory);
+                writeLogs.LogAndConsoleWirite($"[END] TESSDATA_PREFIX wurde gesetzt.");
 
-                using (var engine = new TesseractEngine(@"C:\Users\Anatolius\Desktop\A\Resources\Trained", "deu", EngineMode.Default))
-
+                // Überprüfe, ob die 'deu.traineddata' Datei vorhanden ist
+                writeLogs.LogAndConsoleWirite($"[START] Überprüfe 'deu.traineddata' im Verzeichnis: {Program.trainedDataDirectory}");
+                if (!File.Exists(Path.Combine(Program.trainedDataDirectory, "deu.traineddata")))
                 {
-                    engine.DefaultPageSegMode = PageSegMode.SingleBlock; // Setze den Seitensegmentierungsmodus
-                    using (var img = Pix.LoadFromFile(Program.localScreenshotPath)) // Verwende das verarbeitete Bild
+                    writeLogs.LogAndConsoleWirite($"[WARNUNG] 'deu.traineddata' nicht gefunden im Verzeichnis: {Program.trainedDataDirectory}");
+                    return false;
+                }
+                writeLogs.LogAndConsoleWirite($"[END] 'deu.traineddata' vorhanden.");
+
+                // Überprüfe, ob der Screenshot existiert
+                writeLogs.LogAndConsoleWirite($"[START] Überprüfe Screenshot unter: {Program.localScreenshotPath}");
+                if (!File.Exists(Program.localScreenshotPath))
+                {
+                    writeLogs.LogAndConsoleWirite($"[WARNUNG] Screenshot nicht gefunden unter: {Program.localScreenshotPath}");
+                    return false;
+                }
+                writeLogs.LogAndConsoleWirite($"[END] Screenshot vorhanden.");
+
+                // OCR-Engine initialisieren
+                writeLogs.LogAndConsoleWirite($"[START] Initialisiere Tesseract-OCR-Engine.");
+                using (var engine = new TesseractEngine(Program.trainedDataDirectory, "deu", EngineMode.Default))
+                {
+                    writeLogs.LogAndConsoleWirite($"[END] Tesseract-OCR-Engine initialisiert.");
+
+                    // Setze den Seitensegmentierungsmodus
+                    writeLogs.LogAndConsoleWirite($"[START] Setze Seitensegmentierungsmodus auf 'SingleBlock'.");
+                    engine.DefaultPageSegMode = PageSegMode.SingleBlock;
+                    writeLogs.LogAndConsoleWirite($"[END] Seitensegmentierungsmodus gesetzt.");
+
+                    // Lese das Bild ein
+                    writeLogs.LogAndConsoleWirite($"[START] Lade Screenshot von: {Program.localScreenshotPath}");
+                    using (var img = Pix.LoadFromFile(Program.localScreenshotPath))
                     {
+                        writeLogs.LogAndConsoleWirite($"[END] Screenshot erfolgreich geladen.");
+
+                        // Verarbeite das Bild mit OCR
+                        writeLogs.LogAndConsoleWirite($"[START] Verarbeite Screenshot mit OCR.");
                         using (var page = engine.Process(img))
                         {
-                            // Extrahiere den erkannten Text
-                            string text = page.GetText();
-                            /*
-                            WriteLogs.LogAndConsoleWirite($"\n[Extrahierter Text]");
-                            WriteLogs.LogAndConsoleWirite($"______________________________________________________________");
-                            WriteLogs.LogAndConsoleWirite(text);
-                            WriteLogs.LogAndConsoleWirite($"______________________________________________________________\n");
-                            */
-                            if (text.Contains(textToFind) || text.Contains(textToFind2))
+                            try
                             {
-                                return true;
+                                writeLogs.LogAndConsoleWirite($"[END] OCR-Verarbeitung gestartet.");
+
+                                // Extrahiere den erkannten Text
+                                writeLogs.LogAndConsoleWirite($"[START] Extrahiere Text aus dem Screenshot.");
+                                string text = page.GetText();
+                                writeLogs.LogAndConsoleWirite($"[Extrahierter Text]: {text}");
+                                writeLogs.LogAndConsoleWirite($"[END] Text extrahiert.");
+
+                                // Überprüfe, ob der erkannte Text eine der gesuchten Zeichenfolgen enthält
+                                writeLogs.LogAndConsoleWirite($"[START] Überprüfe, ob der Text die gesuchten Begriffe enthält.");
+                                if (text.Contains(textToFind) || text.Contains(textToFind2))
+                                {
+                                    writeLogs.LogAndConsoleWirite($"[END] Gesuchter Text gefunden.");
+                                    return true;
+                                }
+                                else
+                                {
+                                    writeLogs.LogAndConsoleWirite($"[END] Gesuchter Text nicht gefunden.");
+                                    return false;
+                                }
                             }
-                            else
+                            catch (Exception ex)
                             {
+                                writeLogs.LogAndConsoleWirite($"[FEHLER] Fehler beim Verarbeiten des Screenshots: {ex.Message}");
                                 return false;
                             }
                         }
                     }
                 }
-
             }
             catch (Exception ex)
             {
-                writeLogs.LogAndConsoleWirite($"Ein Fehler bei Ausles des Textes aus dem Screnshot aufgetreten: {ex.Message}");
+                writeLogs.LogAndConsoleWirite($"[FEHLER] Ein Fehler beim Auslesen des Textes aus dem Screenshot ist aufgetreten: {ex.Message}");
                 if (ex.InnerException != null)
                 {
-                    writeLogs.LogAndConsoleWirite($"Innerer Fehler: {ex.InnerException.Message}");
+                    writeLogs.LogAndConsoleWirite($"[FEHLER] Innerer Fehler: {ex.InnerException.Message}");
                 }
-                Thread.Sleep(10000);
                 return false;
             }
-
+            finally
+            {
+                writeLogs.LogAndConsoleWirite($"[ENDE] CheckTextInScreenshot abgeschlossen.");
+            }
         }
+
+
+
+
+
+
 
 
         internal string ExecuteAdbCommand(string command)
