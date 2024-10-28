@@ -23,7 +23,7 @@ namespace EMU.Funtions
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             writeLogs.LogAndConsoleWirite("\n\n[Stabilitätskontrolle]");
-            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
+            writeLogs.LogAndConsoleWirite("-------------------------------------------------------------------------------------------");
 
             CheckNetworkStatus();
             CheckNoxStatus();
@@ -32,7 +32,7 @@ namespace EMU.Funtions
             CheckAppStatus();
             CheckAccountUsage();
 
-            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
+            writeLogs.LogAndConsoleWirite("-------------------------------------------------------------------------------------------");
             Console.ResetColor();
         }
 
@@ -215,20 +215,47 @@ namespace EMU.Funtions
 
         internal void StartNoxPlayer()
         {
-            Process.Start(@"C:\Program Files\Nox\bin\Nox.exe", "-clone:Nox_0");
-            // Warte, bis Nox vollständig gestartet ist
-            while (!IsNoxReady())
+            try
             {
-                Thread.Sleep(5000); // Überprüfe alle Sekunden
+                Process.Start(Program.noxExePath) ;
+ 
+                // Warte, bis Nox vollständig gestartet ist
+                while (!IsNoxReady())
+                {
+                    Thread.Sleep(5000); // Überprüfe alle Sekunden
+                }
+                Thread.Sleep(10000);
             }
-            Thread.Sleep(10000);
+            catch (Exception ex) 
+            {
+                LogStatus("NOX", false, ex.Message);
+                Environment.Exit(0);
+            }
         }
 
 
         internal void StartADBConnection()
         {
+            // Startet den ADB-Server
             deviceControl.ExecuteAdbCommand("start-server");
+
+            // Versucht, eine Verbindung zu einem spezifischen Gerät herzustellen
+            string deviceIP = "127.0.0.1:5555"; // Beispiel-IP und Port für ein verbundenes Gerät
+            string connectCommand = $"connect {deviceIP}";
+            string output = deviceControl.ExecuteAdbCommand(connectCommand);
+
+            // Überprüft, ob die Verbindung erfolgreich war
+            if (output.Contains("connected to"))
+            {
+                LogStatus("ADB", true, deviceIP);
+
+            }
+            else
+            {
+                LogStatus("ADB", false, output);
+            }
         }
+
 
 
         internal void StartApp()

@@ -7,7 +7,7 @@
         {
             writeLogs.LogAndConsoleWirite("\n\nGuvenour Befehl wird veröffetlicht...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            deviceControl.CheckePositionAndGoStadt();
+            deviceControl.GoStadt();
             deviceControl.ClickAtTouchPositionWithHexa("00000346", "000004a9"); // Open
             deviceControl.ClickAtTouchPositionWithHexa("0000026e", "000001a2"); // Eilauftrag
             deviceControl.ClickAtTouchPositionWithHexa("000001e3", "0000047a"); // Erlassen
@@ -21,7 +21,7 @@
         {
             writeLogs.LogAndConsoleWirite("\n\nGuvenour Befehl wird veröffetlicht...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            deviceControl.CheckePositionAndGoStadt();
+            deviceControl.GoStadt();
             deviceControl.ClickAtTouchPositionWithHexa("00000346", "000004a9"); // Open
             deviceControl.ClickAtTouchPositionWithHexa("00000276", "000004c4"); // Fetlichkeiten
             deviceControl.ClickAtTouchPositionWithHexa("000001e3", "0000047a"); // Erlassen

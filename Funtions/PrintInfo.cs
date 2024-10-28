@@ -28,7 +28,7 @@
 
         internal void PrintSetting(string label, string value)
         {
-            int labelWidth = 20; // Breite der Labels, um die Ausrichtung konsistent zu halten.
+            int labelWidth = 30; // Breite der Labels, um die Ausrichtung konsistent zu halten.
 
             // Label in Gelb und Wert in Grün ausgeben, in einem einzigen Write-Aufruf.
             Console.ForegroundColor = ConsoleColor.Yellow;

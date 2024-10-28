@@ -22,6 +22,7 @@
             deviceControl.ClickAtTouchPositionWithHexa("00000287", "000005d6"); // Kampf
             Thread.Sleep(45 * 1000);
             deviceControl.BackUneversal();
+            Program.arenaFightsCounter++;
             writeLogs.LogAndConsoleWirite("Arena Kapf: OK");
             Console.ResetColor();
         }
