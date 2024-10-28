@@ -101,11 +101,6 @@ namespace EMU
                     deviceControl.GoStadt();
                     stableControl.Control();
 
-                    // Arena Kampf
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    arena.GoToArena();
-                    stableControl.Control();
-
                     // Truppen Heilung
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     truppenHeilen.Heilen();
@@ -162,6 +157,11 @@ namespace EMU
                     stableControl.Control();
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     truppenTraining.TrainiereSniper(10);
+                    stableControl.Control();
+
+                    // Arena Kampf (Optimeirungbedarf)
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    arena.GoToArena();
                     stableControl.Control();
 
                     // Guvenour Befehle

@@ -9,7 +9,7 @@
 		<SelfContained>true</SelfContained>
 		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<Version>1.0.0</Version>
-		<Authors>DanyFaust</Authors>
+		<Authors>DaniFaust</Authors>
 		<Company>Dein Unternehmen</Company>
 	</PropertyGroup>
 
@@ -28,10 +28,5 @@
 			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 		</None>
 	</ItemGroup>
-	
-	<ItemGroup>
-	  <Folder Include="Resources\Screens\" />
-	</ItemGroup>
-	
 
 </Project>
