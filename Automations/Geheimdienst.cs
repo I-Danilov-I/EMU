@@ -8,7 +8,7 @@
             Console.ForegroundColor = ConsoleColor.Cyan;
             writeLogs.LogAndConsoleWirite("\n\nGeheimdiesnt...");
             writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
-            
+            deviceControl.BackUneversal();
             deviceControl.GoWelt();
             deviceControl.ClickAtTouchPositionWithHexa("00000340", "00000437"); // Geheimmission Icon 
                                                                                 
@@ -16,7 +16,7 @@
             int bottomMargin = 400; // Optional: kein Abstand vom unteren Rand
             int leftMArgin = 200; // ~2 cm Abstand vom oberen Rand
             int rigtMargin = 200; // Optional: kein Abstand vom unteren Rand
-            int clickCounter = 100; // Schrittweite in Pixeln zwischen den Klickpunkten
+            int clickCounter = 50; // 
 
             // Aufruf der Klick-Methode mit diesen Margins
             bool geheimMissionFind = deviceControl.ClickAcrossScreenRandomly(topMargin, bottomMargin, leftMArgin, rigtMargin,  "Belohnungen", "Ansehen", clickCounter);
@@ -47,21 +47,18 @@
             else { }
         }
 
-        private void CheckAusdauer()
+        private bool CheckAusdauer()
         {
             writeLogs.LogAndConsoleWirite("Checke ob genug Ausdauer vorhaden ist...");
             deviceControl.TakeScreenshot();
             bool reichenResursen = deviceControl.CheckTextInScreenshot("Ausdauer", "Ausdauer"); // Suche nach Text im Screenshot
             if (reichenResursen)
             {
-                writeLogs.LogAndConsoleWirite("Resoursen reichen nicht aus :(");
-                deviceControl.PressButtonBack();
-                deviceControl.PressButtonBack();
-                writeLogs.LogAndConsoleWirite("Mission nicht gestartet. :)");
-                return;
+                writeLogs.LogAndConsoleWirite("Resoursen reichen nicht aus :(, Mission nicht gestartet.");
+                return false;
             }
-            
             writeLogs.LogAndConsoleWirite("Es ist genug Ausdauer da!");
+            return true;      
         }
 
     }

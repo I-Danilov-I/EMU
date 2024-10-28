@@ -4,7 +4,7 @@ namespace EMU
 {
     internal static class Program
     {
-        internal static int commandDelay = 0; // Pause in milliseconds between each command.
+        internal static int commandDelay = 1000; // Pause in milliseconds between each command.
         internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
         internal static bool truppenAusgleich = false; // Truppen ausgleichen
@@ -85,8 +85,6 @@ namespace EMU
 
             //deviceControl.TrackTouchEvents();
 
-            geheimdienst.GoToGeheimdienst();
-            
             ShowSetting();
             stableControl.Control();
 
@@ -108,6 +106,10 @@ namespace EMU
                     deviceControl.OfflineErtregeAbholen();
                     deviceControl.BackUneversal();
                     deviceControl.GoStadt();
+                    stableControl.Control();
+
+                    // Geheimmission
+                    geheimdienst.GoToGeheimdienst();
                     stableControl.Control();
 
                     // Truppen Heilung
@@ -201,8 +203,9 @@ namespace EMU
                     writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
                     
                 }
-                catch
+                catch( Exception ex )
                 {
+                    writeLogs.LogAndConsoleWirite($"{ex.Message}");
                     Thread.Sleep(1000 * 60);
                 }
             }
