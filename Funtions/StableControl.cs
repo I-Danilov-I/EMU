@@ -53,9 +53,7 @@ namespace EMU
         }
 
 
-
-
-        // [CHECK] -------------------------------------------------------------------------
+        // [ VM ] ###################################################################################
         private void CheckNetworkStatus()
         {
             bool isNetworkAvailable = IsNetworkAvailable();
@@ -66,6 +64,8 @@ namespace EMU
             }
         }
 
+        internal bool IsNetworkAvailable() => NetworkInterface.GetIsNetworkAvailable();
+
         private void HandleNetworkError()
         {
             LogStatus("ERROR", false, $"Das VM-Netzwerk ist offline. Es wird ein erneuter Verbindungsversuch in {Program.reconnectSleepTime} Minuten gestartet.");
@@ -74,57 +74,8 @@ namespace EMU
         }
 
 
-        private void CheckNoxStatus()
-        {
-            bool isNoxRunning = IsNoxPlayerRunning();
-            LogStatus("NOX", isNoxRunning, isNoxRunning ? "Nox Player ist aktiv und läuft." : "Nox Player läuft nicht, wird gestartet.");
-            if (!isNoxRunning)
-            {
-                StartNoxPlayer();
-            }
-        }
 
-
-        private void CheckADBStatus()
-        {
-            bool isADBConnected = IsADBConnected();
-            LogStatus("ADB", isADBConnected, isADBConnected ? "ADB Verbindung ist etabliert." : "ADB Verbindung ist nicht etabliert, Verbindung wird hergestellt.");
-            if (!isADBConnected)
-            {
-                StartADBConnection();
-            }
-        }
-
-
-        private void CheckNoxNetworkStatus()
-        {
-            bool isNetworkNoxConnected = IsNetworkNoxConnected();
-            LogStatus("NOX NETWORK", isNetworkNoxConnected, isNetworkNoxConnected ? "Nox Netzwerkverbindung ist aktiv." : "Nox Netzwerkverbindung ist inaktiv, Neustart von Nox.");
-            if (!isNetworkNoxConnected)
-            {
-                RestartNoxPlayer();
-            }
-        }
-
-
-        private void CheckAppStatus()
-        {
-            bool isAppRunning = IsAppRunning();
-            LogStatus("APP", isAppRunning, isAppRunning ? "Die Anwendung ist online und funktionsfähig." : "Die Anwendung läuft nicht, wird gestartet.");
-            if (!isAppRunning)
-            {
-                StartApp();
-            }
-
-            bool isAppResponsive = IsAppResponsive();
-            LogStatus("APP RESPONSE", isAppResponsive, isAppResponsive ? "Die Anwendung reagiert ordnungsgemäß." : "Die Anwendung reagiert nicht, wird neu gestartet.");
-            if (!isAppResponsive)
-            {
-                RestartApp();
-            }
-        }
-
-
+        // [ GAME ] ###################################################################################
         private void CheckAccountUsage()
         {
             deviceControl.TakeScreenshot();
@@ -191,10 +142,15 @@ namespace EMU
             return output.Contains("device");
         }
 
-        internal bool IsNetworkAvailable() => NetworkInterface.GetIsNetworkAvailable();
-
-        internal bool IsNoxPlayerRunning() => Process.GetProcessesByName("Nox").Any();
-
+        private void CheckADBStatus()
+        {
+            bool isADBConnected = IsADBConnected();
+            LogStatus("ADB", isADBConnected, isADBConnected ? "ADB Verbindung ist etabliert." : "ADB Verbindung ist nicht etabliert, Verbindung wird hergestellt.");
+            if (!isADBConnected)
+            {
+                StartADBConnection();
+            }
+        }
 
 
 
@@ -255,6 +211,28 @@ namespace EMU
             return output.Contains("1 received");
         }
 
+        private void CheckNoxStatus()
+        {
+            bool isNoxRunning = IsNoxPlayerRunning();
+            LogStatus("NOX", isNoxRunning, isNoxRunning ? "Nox Player ist aktiv und läuft." : "Nox Player läuft nicht, wird gestartet.");
+            if (!isNoxRunning)
+            {
+                StartNoxPlayer();
+            }
+        }
+
+        internal bool IsNoxPlayerRunning() => Process.GetProcessesByName("Nox").Any();
+
+        private void CheckNoxNetworkStatus()
+        {
+            bool isNetworkNoxConnected = IsNetworkNoxConnected();
+            LogStatus("NOX NETWORK", isNetworkNoxConnected, isNetworkNoxConnected ? "Nox Netzwerkverbindung ist aktiv." : "Nox Netzwerkverbindung ist inaktiv, Neustart von Nox.");
+            if (!isNetworkNoxConnected)
+            {
+                RestartNoxPlayer();
+            }
+        }
+
 
 
 
@@ -305,6 +283,23 @@ namespace EMU
 
             // Nur als geladen betrachten, wenn beide Bedingungen erfüllt sind
             return isAppInFocus && isLoadingElementGone;
+        }
+
+        private void CheckAppStatus()
+        {
+            bool isAppRunning = IsAppRunning();
+            LogStatus("APP", isAppRunning, isAppRunning ? "Die Anwendung ist online und funktionsfähig." : "Die Anwendung läuft nicht, wird gestartet.");
+            if (!isAppRunning)
+            {
+                StartApp();
+            }
+
+            bool isAppResponsive = IsAppResponsive();
+            LogStatus("APP RESPONSE", isAppResponsive, isAppResponsive ? "Die Anwendung reagiert ordnungsgemäß." : "Die Anwendung reagiert nicht, wird neu gestartet.");
+            if (!isAppResponsive)
+            {
+                RestartApp();
+            }
         }
 
 
