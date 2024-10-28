@@ -145,13 +145,45 @@ namespace EMU
 
 
 
+        // [ ADB ] ###################################################################################
+        internal void StartADBConnection()
+        {
+            // Startet den ADB-Server
+            deviceControl.ExecuteAdbCommand("start-server");
 
-        // [CHECK Helpers] ------------------------------------------------------------------
-        internal bool IsNetworkAvailable() => NetworkInterface.GetIsNetworkAvailable();
+            // Versucht, eine Verbindung zu einem spezifischen Gerät herzustellen
+            string deviceIP = "127.0.0.1:5555"; // Beispiel-IP und Port für ein verbundenes Gerät
+            string connectCommand = $"connect {deviceIP}";
+            string output = deviceControl.ExecuteAdbCommand(connectCommand);
 
+            // Überprüft, ob die Verbindung erfolgreich war
+            if (output.Contains("connected to"))
+            {
+                LogStatus("ADB", true, deviceIP);
 
-        internal bool IsNoxPlayerRunning() => Process.GetProcessesByName("Nox").Any();
+            }
+            else
+            {
+                LogStatus("ADB", false, output);
+            }
+        }
 
+        private void DisconnectADB(string deviceIP)
+        {
+            // ADB-Befehl zum gezielten Trennen des Geräts
+            string adbCommand = $"disconnect {deviceIP}";
+            string output = deviceControl.ExecuteAdbCommand(adbCommand);
+
+            // Log-Nachricht, um den Status zu bestätigen
+            if (output.Contains("disconnected"))
+            {
+                LogStatus("ADB", true, $"Erfolgreich getrennt von {deviceIP}");
+            }
+            else
+            {
+                LogStatus("ADB", false, $"Trennen fehlgeschlagen: {output}");
+            }
+        }
 
         internal bool IsADBConnected()
         {
@@ -159,60 +191,14 @@ namespace EMU
             return output.Contains("device");
         }
 
+        internal bool IsNetworkAvailable() => NetworkInterface.GetIsNetworkAvailable();
 
-        internal bool IsNetworkNoxConnected()
-        {
-            string output = deviceControl.ExecuteAdbCommand("shell ping -c 1 www.google.com");
-            return output.Contains("1 received");
-        }
-
-
-        internal bool IsNoxReady()
-        {
-            string output = deviceControl.ExecuteAdbCommand("shell getprop init.svc.bootanim");
-            return output.Contains("stopped");
-        }
-
-
-        internal bool IsAppRunning()
-        {
-            return !string.IsNullOrEmpty(deviceControl.ExecuteAdbCommand($"shell pidof {deviceControl.packageName}"));
-        }
-
-
-        internal bool IsAppResponsive()
-        {
-            return !deviceControl.ExecuteAdbCommand("shell dumpsys activity").Contains("ANR");
-        }
-
-
-        internal bool IsAppLoaded()
-        {
-            // Erste Überprüfung: Ist die App im Vordergrund?
-            string focusOutput = deviceControl.ExecuteAdbCommand("shell dumpsys window windows | grep mCurrentFocus");
-            bool isAppInFocus = focusOutput.Contains(deviceControl.packageName);
-
-            // Zweite Überprüfung: Sind alle Ladeelemente verschwunden?
-            string uiOutput = deviceControl.ExecuteAdbCommand("shell dumpsys window windows | grep -E 'LadeElementId'");
-            bool isLoadingElementGone = !uiOutput.Contains("LadeElementId");
-
-            // Nur als geladen betrachten, wenn beide Bedingungen erfüllt sind
-            return isAppInFocus && isLoadingElementGone;
-        }
+        internal bool IsNoxPlayerRunning() => Process.GetProcessesByName("Nox").Any();
 
 
 
 
-
-        // [REMONTE] ------------------------------------------------------------------
-        internal void RestartNoxPlayer()
-        {
-            KillNoxPlayerProcess(); // Stoppt alle laufenden Nox-Prozesse
-            StartNoxPlayer(); // Startet den Nox Player neu
-            LogStatus("NOX", true, "Nox Player wird neu gestartet.");
-        }
-
-
+        // [ NOX ] ###################################################################################
         internal void StartNoxPlayer()
         {
             try
@@ -240,32 +226,39 @@ namespace EMU
             }
         }
 
-
-
-        internal void StartADBConnection()
+        internal void KillNoxPlayerProcess()
         {
-            // Startet den ADB-Server
-            deviceControl.ExecuteAdbCommand("start-server");
-
-            // Versucht, eine Verbindung zu einem spezifischen Gerät herzustellen
-            string deviceIP = "127.0.0.1:5555"; // Beispiel-IP und Port für ein verbundenes Gerät
-            string connectCommand = $"connect {deviceIP}";
-            string output = deviceControl.ExecuteAdbCommand(connectCommand);
-
-            // Überprüft, ob die Verbindung erfolgreich war
-            if (output.Contains("connected to"))
+            foreach (var process in Process.GetProcessesByName("Nox"))
             {
-                LogStatus("ADB", true, deviceIP);
+                process.Kill();
+            }
+            Thread.Sleep(10000);
+        }
 
-            }
-            else
-            {
-                LogStatus("ADB", false, output);
-            }
+        internal void RestartNoxPlayer()
+        {
+            KillNoxPlayerProcess(); // Stoppt alle laufenden Nox-Prozesse
+            StartNoxPlayer(); // Startet den Nox Player neu
+            LogStatus("NOX", true, "Nox Player wird neu gestartet.");
+        }
+
+        internal bool IsNoxReady()
+        {
+            string output = deviceControl.ExecuteAdbCommand("shell getprop init.svc.bootanim");
+            return output.Contains("stopped");
+        }
+
+
+        internal bool IsNetworkNoxConnected()
+        {
+            string output = deviceControl.ExecuteAdbCommand("shell ping -c 1 www.google.com");
+            return output.Contains("1 received");
         }
 
 
 
+
+        // [ APP ] ###################################################################################
         internal void StartApp()
         {
             deviceControl.ExecuteAdbCommand($"shell monkey -p {deviceControl.packageName} -c android.intent.category.LAUNCHER 1");
@@ -277,6 +270,11 @@ namespace EMU
             Thread.Sleep(10000);
         }
 
+        internal void CloseApp()
+        {
+            deviceControl.ExecuteAdbCommand($"shell am force-stop {deviceControl.packageName}");
+            Thread.Sleep(10000);
+        }
 
         internal void RestartApp()
         {
@@ -285,22 +283,30 @@ namespace EMU
             StartApp();
         }
 
-
-        internal void CloseApp()
+        internal bool IsAppRunning()
         {
-            deviceControl.ExecuteAdbCommand($"shell am force-stop {deviceControl.packageName}");
-            Thread.Sleep(10000);
+            return !string.IsNullOrEmpty(deviceControl.ExecuteAdbCommand($"shell pidof {deviceControl.packageName}"));
         }
 
-
-        internal void KillNoxPlayerProcess()
+        internal bool IsAppResponsive()
         {
-            foreach (var process in Process.GetProcessesByName("Nox"))
-            {
-                process.Kill();
-            }
-            Thread.Sleep(10000);
+            return !deviceControl.ExecuteAdbCommand("shell dumpsys activity").Contains("ANR");
         }
+
+        internal bool IsAppLoaded()
+        {
+            // Erste Überprüfung: Ist die App im Vordergrund?
+            string focusOutput = deviceControl.ExecuteAdbCommand("shell dumpsys window windows | grep mCurrentFocus");
+            bool isAppInFocus = focusOutput.Contains(deviceControl.packageName);
+
+            // Zweite Überprüfung: Sind alle Ladeelemente verschwunden?
+            string uiOutput = deviceControl.ExecuteAdbCommand("shell dumpsys window windows | grep -E 'LadeElementId'");
+            bool isLoadingElementGone = !uiOutput.Contains("LadeElementId");
+
+            // Nur als geladen betrachten, wenn beide Bedingungen erfüllt sind
+            return isAppInFocus && isLoadingElementGone;
+        }
+
 
     }
 }
