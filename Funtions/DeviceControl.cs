@@ -51,7 +51,10 @@ namespace EMU
             return (0, 0);
         }
 
-        internal bool ClickAcrossScreenWithMargins(int topMargin, int bottomMargin, int leftMargin, int rightMargin, int step, string searchText1, string searchText2)
+
+
+
+        internal bool ClickAcrossScreenRandomly(int topMargin, int bottomMargin, int leftMargin, int rightMargin, string searchText1, string searchText2, int clickCount)
         {
             // Bildschirmauflösung abrufen
             (int screenWidth, int screenHeight) = GetResolution();
@@ -63,36 +66,48 @@ namespace EMU
             }
 
             // Berechnung der Start- und Endbereiche für die X- und Y-Koordinaten
-            int startX = leftMargin; // Startet nach dem linken Rand
-            int endX = screenWidth - rightMargin; // Endet vor dem rechten Rand
-            int startY = topMargin; // Startet nach dem oberen Rand
-            int endY = screenHeight - bottomMargin; // Endet vor dem unteren Rand
+            int startX = leftMargin;
+            int endX = screenWidth - rightMargin;
+            int startY = topMargin;
+            int endY = screenHeight - bottomMargin;
 
-            writeLogs.LogAndConsoleWirite("Click/Screen/Search...");
-            // Schleifen, um den definierten Bereich des Bildschirms durchzuklicken
-            for (int x = startX; x <= endX; x += step)  // Schleife über die X-Koordinate
+            writeLogs.LogAndConsoleWirite("Clicking randomly across the screen...");
+
+            // Initialisierung eines Zufallsgenerators
+            Random random = new Random();
+
+            // Führe die Klicks an zufälligen Positionen durch
+            for (int i = 0; i < clickCount; i++)
             {
-                for (int y = startY; y <= endY; y += step) // Schleife über die Y-Koordinate
+                // Generiere eine zufällige Position innerhalb des definierten Bereichs
+                int randomX = random.Next(startX, endX);
+                int randomY = random.Next(startY, endY);
+
+                // Klick an der zufälligen Position
+                ClickAt(randomX, randomY);
+                //Thread.Sleep(50); // Optional: kurze Pause zwischen den Klicks
+
+                // Screenshot aufnehmen und Text überprüfen
+                TakeScreenshot();
+                if (CheckTextInScreenshot(searchText1, searchText2))
                 {
-                    ClickAt(x, y);
-                    //Thread.Sleep(100);
-                    TakeScreenshot();
-                    if (CheckTextInScreenshot(searchText1, searchText2) == true)
-                    {
-                        return true;
-                    }
-                }      
+                    return true; // Beende die Methode, wenn der Suchtext gefunden wird
+                }
+
+                
             }
+
             return false;
         }
 
         // Hilfsmethode, um an einer bestimmten Position zu klicken
         private void ClickAt(int x, int y)
         {
-            // ADB-Befehl erstellen, um auf die berechneten Koordinaten zu klicken
             string adbCommand = $"shell input tap {x} {y}";
             ExecuteAdbCommand(adbCommand);
         }
+
+
 
 
 

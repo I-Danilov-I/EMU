@@ -80,14 +80,20 @@ namespace EMU
             GuvenourBefehl guvenourBefehl = new GuvenourBefehl(writeLogs, deviceControl);
             VIP vip = new VIP(writeLogs, deviceControl);
             Arena arena = new Arena(writeLogs, deviceControl);
-            Geheimdienst geheimdienst = new Geheimdienst(writeLogs, deviceControl, stableControl);
+            Geheimdienst geheimdienst = new Geheimdienst(writeLogs, deviceControl);
             //-----------------------------------------------------------------------------------------------------------
-            deviceControl.TakeScreenshot();
-            if(deviceControl.CheckTextInScreenshot("nicht", "du")== true)
-            {
-
-            }
-
+            int topMargin = 400; // ~2 cm Abstand vom oberen Rand
+            int bottomMargin = 400; // Optional: kein Abstand vom unteren Rand
+            int leftMArgin = 200; // ~2 cm Abstand vom oberen Rand
+            int rigtMargin = 200; // Optional: kein Abstand vom unteren Rand
+            int steps = 100; // Schrittweite in Pixeln zwischen den Klickpunkten
+            bool geheimMissionFind = deviceControl.ClickAcrossScreenRandomly(topMargin, bottomMargin, leftMArgin, rigtMargin, "Belohnungen", "Ansehen", steps);
+            
+            
+            
+            
+            
+            
             deviceControl.TrackTouchEvents();
 
             ShowSetting();
@@ -133,10 +139,10 @@ namespace EMU
 
                     // Jagt
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    Jagt.BestienJagtStarten(26, false);
+                    Jagt.BestienJagtStarten(26);
                     stableControl.Control();
                     Console.ForegroundColor = ConsoleColor.Cyan;
-                    Jagt.PolarTerrorStarten(5, false);
+                    Jagt.PolarTerrorStarten(5);
                     stableControl.Control();
 
 

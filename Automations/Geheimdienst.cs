@@ -1,6 +1,6 @@
 ﻿namespace EMU
 {
-    internal class Geheimdienst(WriteLogs writeLogs, DeviceControl deviceControl, StableControl stableControl)
+    internal class Geheimdienst(WriteLogs writeLogs, DeviceControl deviceControl)
     {
 
         public void GoToGeheimdienst()
@@ -16,10 +16,10 @@
             int bottomMargin = 400; // Optional: kein Abstand vom unteren Rand
             int leftMArgin = 200; // ~2 cm Abstand vom oberen Rand
             int rigtMargin = 200; // Optional: kein Abstand vom unteren Rand
-            int step = 100; // Schrittweite in Pixeln zwischen den Klickpunkten
+            int clickCounter = 100; // Schrittweite in Pixeln zwischen den Klickpunkten
 
             // Aufruf der Klick-Methode mit diesen Margins
-            bool geheimMissionFind = deviceControl.ClickAcrossScreenWithMargins(topMargin, bottomMargin, leftMArgin, rigtMargin, step, "Belohnungen", "Ansehen");
+            bool geheimMissionFind = deviceControl.ClickAcrossScreenRandomly(topMargin, bottomMargin, leftMArgin, rigtMargin,  "Belohnungen", "Ansehen", clickCounter);
             if (geheimMissionFind == true)
             {
                 deviceControl.ClickAtTouchPositionWithHexa("000001cd", "00000435"); // Ansehen
