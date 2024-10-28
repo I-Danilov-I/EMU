@@ -41,7 +41,7 @@ namespace EMU
                     int.TryParse(dimensions[0], out int width) &&
                     int.TryParse(dimensions[1], out int height))
                 {
-                    printInfo.PrintSetting("Resolution", $"{width}x{height}");
+                    //printInfo.PrintSetting("Resolution", $"{width}x{height}");
                     return (width, height);
                 }
             }
@@ -71,7 +71,7 @@ namespace EMU
             int startY = topMargin;
             int endY = screenHeight - bottomMargin;
 
-            writeLogs.LogAndConsoleWirite("Clicking randomly across the screen...");
+            //writeLogs.LogAndConsoleWirite("Clicking randomly across the screen...");
 
             // Initialisierung eines Zufallsgenerators
             Random random = new Random();
@@ -85,7 +85,7 @@ namespace EMU
 
                 // Klick an der zufälligen Position
                 ClickAt(randomX, randomY);
-                //Thread.Sleep(50); // Optional: kurze Pause zwischen den Klicks
+                Thread.Sleep(100); // Optional: kurze Pause zwischen den Klicks
 
                 // Screenshot aufnehmen und Text überprüfen
                 TakeScreenshot();

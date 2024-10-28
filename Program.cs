@@ -82,22 +82,14 @@ namespace EMU
             Arena arena = new Arena(writeLogs, deviceControl);
             Geheimdienst geheimdienst = new Geheimdienst(writeLogs, deviceControl);
             //-----------------------------------------------------------------------------------------------------------
-            int topMargin = 400; // ~2 cm Abstand vom oberen Rand
-            int bottomMargin = 400; // Optional: kein Abstand vom unteren Rand
-            int leftMArgin = 200; // ~2 cm Abstand vom oberen Rand
-            int rigtMargin = 200; // Optional: kein Abstand vom unteren Rand
-            int steps = 100; // Schrittweite in Pixeln zwischen den Klickpunkten
-            bool geheimMissionFind = deviceControl.ClickAcrossScreenRandomly(topMargin, bottomMargin, leftMArgin, rigtMargin, "Belohnungen", "Ansehen", steps);
-            
-            
-            
-            
-            
-            
-            deviceControl.TrackTouchEvents();
 
+            //deviceControl.TrackTouchEvents();
+
+            geheimdienst.GoToGeheimdienst();
+            
             ShowSetting();
             stableControl.Control();
+
             stopwatch.Stop();
             writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");
             writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");

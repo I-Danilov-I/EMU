@@ -41,7 +41,7 @@
                 deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); // Einsetzen
                 CheckAusdauer();
                 deviceControl.GoStadt();
-                writeLogs.LogAndConsoleWirite("Geheimdienst Misson erfogreich gestartet! ;)");
+                writeLogs.LogAndConsoleWirite("Operation: Geheimdienst Misson Succes!");
 
             }
             else { }
