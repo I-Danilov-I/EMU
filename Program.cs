@@ -8,7 +8,7 @@ namespace EMU
         internal static string baseDirectory = AppContext.BaseDirectory;
 
         internal static int commandDelay = 500; // Pause in milliseconds between each command.
-        internal static int reconnectSleepTime = 20; // Sleep time in milliseconds after reconnecting.
+        internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
         internal static bool truppenAusgleich = false; // Truppen ausgleichen
         
@@ -79,9 +79,7 @@ namespace EMU
             //Begleiter begleiter = new Begleiter(writeLogs, deviceControl);
             //-----------------------------------------------------------------------------------------------------------
             //deviceControl.TrackTouchEvents();       
-            // Geheimmission
-            geheimdienst.StartProcess();
-            stableControl.Control();
+
             logging.ShowSetting();
             stableControl.Control();
             stopwatch.Stop();
@@ -124,8 +122,8 @@ namespace EMU
                     stableControl.Control();
 
                     // Jagt
-                    Jagt.PolarTerrorStarten(polarTerrorLevel);
-                    stableControl.Control();
+                    //Jagt.PolarTerrorStarten(polarTerrorLevel);
+                    //stableControl.Control();
                     Jagt.BestienJagtStarten(bestienJagtLevel);
                     stableControl.Control();
 
