@@ -22,27 +22,40 @@ namespace EMU
                     if (CheckTruppenKraft() == true)
                     {
                         deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); // Einsetzen
-                        if (CheckAusdauer() == false)
-                        {
-                            deviceControl.BackUneversal();
-                            deviceControl.GoStadt();                     
-                            logging.PrintFormatet("Jagt", "Completed");
+                        if (CheckAusdauer() == true)
+                        {                   
                             Program.geheimdienstCounter++;
-                            return;
+                            logging.PrintFormatet("Jagt", "Completed");
+                          
                         }
                     }
-
-                    deviceControl.BackUneversal();
-                    deviceControl.GoStadt();
                 }
                 else 
                 {
-                    Erkundungskampf();
+                    if (CheckAusdauer() == true)
+                    {
+                        Erkundungskampf();
+                        Program.geheimdienstCounter++;
+             
+                    }
+             
                 }
             }
-
             deviceControl.BackUneversal();
+            deviceControl.GoStadt();
 
+        }
+
+
+        public void Erkundungskampf()
+        {
+            logging.PrintFormatet("Kampf", "...");
+            deviceControl.ClickAtTouchPositionWithHexa("000000d8", "000005e2"); // Schneller Einsatz
+            deviceControl.ClickAtTouchPositionWithHexa("00000296", "000005da"); // Kampf
+            deviceControl.ClickAtTouchPositionWithHexa("0000033c", "0000042a"); // Aktiviere  Speed 2x
+            deviceControl.ClickAtTouchPositionWithHexa("00000335", "000004ab"); // Aktiviere Auto Attack
+            Thread.Sleep(45 * 1000);
+            logging.PrintFormatet("Kampf", "Completed");
         }
 
 
@@ -76,7 +89,7 @@ namespace EMU
             deviceControl.ClickAtTouchPositionWithHexa("000001ca", "00000472"); // Ansehen
             Thread.Sleep(4000);
             deviceControl.ClickAtTouchPositionWithHexa("000001bc", "00000311"); // Agreifen / Erkunden
-            Thread.Sleep(1000);
+            Thread.Sleep(2000);
             logging.PrintFormatet("Start Mission", "Completed");
         }
 
@@ -112,7 +125,7 @@ namespace EMU
         {
             logging.PrintFormatet("Ausdauer", "...");
             deviceControl.TakeScreenshot();
-            bool reichenResursen = deviceControl.CheckTextInScreenshot("Ausdauer", "Ausdauer"); // Suche nach Text im Screenshot
+            bool reichenResursen = deviceControl.CheckTextInScreenshot("Ausdauer", "Gouverneur"); // Suche nach Text im Screenshot
             if (reichenResursen)
             {
                 logging.PrintFormatet("Ausdauer", "Nicht ausreichend");
@@ -120,20 +133,6 @@ namespace EMU
             }
             logging.PrintFormatet("Ausdauer", "OK");
             return true;      
-        }
-
-        public void Erkundungskampf()
-        {
-            logging.PrintFormatet("Kampf", "...");
-            deviceControl.ClickAtTouchPositionWithHexa("00000054", "000005f3"); // Erkundung
-            deviceControl.ClickAtTouchPositionWithHexa("000001c1", "000005b7"); // Erkunden (Kampf)
-            deviceControl.ClickAtTouchPositionWithHexa("000000d8", "000005e2"); // Schneller Einsatz
-            deviceControl.ClickAtTouchPositionWithHexa("00000296", "000005da"); // Kampf
-            deviceControl.ClickAtTouchPositionWithHexa("0000033c", "0000042a"); // Aktiviere  Speed 2x
-            deviceControl.ClickAtTouchPositionWithHexa("00000335", "000004ab"); // Aktiviere Auto Attack
-            Thread.Sleep(45 * 1000);
-            Program.geheimdienstCounter++;
-            logging.PrintFormatet("Kampf", "Completed");
         }
 
 

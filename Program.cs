@@ -79,7 +79,9 @@ namespace EMU
             //Begleiter begleiter = new Begleiter(writeLogs, deviceControl);
             //-----------------------------------------------------------------------------------------------------------
             //deviceControl.TrackTouchEvents();       
-
+            // Geheimmission
+            geheimdienst.StartProcess();
+            stableControl.Control();
             logging.ShowSetting();
             stableControl.Control();
             stopwatch.Stop();
