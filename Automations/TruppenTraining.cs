@@ -51,10 +51,6 @@
                 writeLogs.LogAndConsoleWirite("Truppen Training erfogreich gestartet! ;)");
                 deviceControl.PressButtonBack();
             }
-            else
-            {
-                throw new Exception("Truppen Training wurde nicht gestartet.");
-            }
         }
 
 

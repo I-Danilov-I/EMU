@@ -11,6 +11,7 @@
             deviceControl.ClickAtTouchPositionWithHexa("00000133", "0000047a"); // Polar Terror Auswahl
             TierLevel(tierLevel); // Bestienlevel Eingabe
             deviceControl.ClickAtTouchPositionWithHexa("000001be", "000005eb"); // Suche
+            Thread.Sleep(1000);
             deviceControl.ClickAtTouchPositionWithHexa("000001c1", "00000261"); // Rally
             deviceControl.ClickAtTouchPositionWithHexa("000001bf", "00000419"); // Rally bestätigen // ZEitauwahl
        
@@ -20,9 +21,11 @@
             }
 
             deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); // Einsetzen
-            CheckAusdauer();
-            deviceControl.GoStadt();
-            writeLogs.LogAndConsoleWirite("Polar Terror erfogreich gestartet! ;)");
+            if (CheckAusdauer())
+            {
+                deviceControl.GoStadt();
+                writeLogs.LogAndConsoleWirite("Polar Terror erfogreich gestartet! ;)");
+            }
         }
 
         internal void BestienJagtStarten(int bestienLevel)
@@ -34,6 +37,7 @@
             deviceControl.ClickAtTouchPositionWithHexa("00000061", "0000046d"); // Bestien Auswahl
             TierLevel(bestienLevel); // Bestienlevel Eingabe
             deviceControl.ClickAtTouchPositionWithHexa("000001be", "000005eb"); // Suchen Butto
+            Thread.Sleep(2000);
             deviceControl.ClickAtTouchPositionWithHexa("000001c6", "000002ff"); // Angriff
 
             if (Program.truppenAusgleich == true)
@@ -55,22 +59,20 @@
         }
 
 
-        private void CheckAusdauer()
+        private bool CheckAusdauer()
         {
-            writeLogs.LogAndConsoleWirite("Checke ob genug Ausdauer vorhaden ist...");
             deviceControl.TakeScreenshot();
-            bool reichenResursen = deviceControl.CheckTextInScreenshot("Ausdauer", "Ausdauer"); // Suche nach Text im Screenshot
+            bool reichenResursen = deviceControl.CheckTextInScreenshot("Ausdauer", "Gouverneur"); // Suche nach Text im Screenshot
             if (reichenResursen)
             {
                 writeLogs.LogAndConsoleWirite("Resoursen reichen nicht aus :(");
                 deviceControl.PressButtonBack();
                 deviceControl.PressButtonBack();
-                writeLogs.LogAndConsoleWirite("Jagt nicht gestartet. :)");
-                return;
+                return false;
             }
             Program.beastHuntCounter++;
-            writeLogs.LogAndConsoleWirite("Es ist genug Aadauer da!");
             writeLogs.LogAndConsoleWirite("Bestien Jagt erfogreich gestartet! ;)");
+            return true;
         }
 
 

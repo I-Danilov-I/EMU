@@ -75,7 +75,8 @@ namespace EMU
             //Begleiter begleiter = new Begleiter(writeLogs, deviceControl);
             //-----------------------------------------------------------------------------------------------------------
             //deviceControl.TrackTouchEvents();       
-            
+            Jagt.PolarTerrorStarten(6);
+            Jagt.BestienJagtStarten(26);
             logging.ShowSetting();
             stableControl.Control();
             stopwatch.Stop();
