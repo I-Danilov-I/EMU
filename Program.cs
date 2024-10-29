@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics;
-using EMU.Automations;
 
 namespace EMU
 {
@@ -14,7 +13,6 @@ namespace EMU
         internal static bool truppenAusgleich = false; // Truppen ausgleichen
         internal static string allianceAutobeitrit = "ON";
 
-        // Setze die Verzeichnisse relativ zu diesem Basisverzeichnis.
         internal static string trainedDataDirectory = Path.Combine(baseDirectory);
         internal static string screenshotDirectory = Path.Combine(baseDirectory, "Screens");
         internal static string logFileFolderPath = Path.Combine(baseDirectory);
@@ -25,9 +23,7 @@ namespace EMU
         internal static string inputDevice = "/dev/input/event4";
         internal static string packageName = "com.gof.global";
 
-
         internal static int offlineEarningsCounter = 0;
-
         internal static int storageBonusGiftCounter = 0;
         internal static int storageBonusStaminaCounter = 0;
 
@@ -42,16 +38,12 @@ namespace EMU
         internal static int allianceTechnologyCounter = 0;
 
         internal static int healingCounter = 0;
-
         internal static int advancedHeroRecruitmentCounter = 0;
         internal static int epicHeroRecruitmentCounter = 0;
 
         internal static int beastHuntCounter = 0;
-
         internal static int lifeTreeEssenceCounter = 0;
-
         internal static int vipStatusCounter = 0;
-
         internal static int arenaFightsCounter = 0;
 
 
@@ -60,13 +52,11 @@ namespace EMU
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Restart();
 
-            // System Klassen
             Logging writeLogs = new Logging();
             Logging logging = new Logging();
             DeviceControl deviceControl = new DeviceControl(logging);
             StableControl stableControl = new StableControl(logging, deviceControl);
 
-            // Automations in Game Klassen
             Erkundung erkundung = new Erkundung(writeLogs, deviceControl);
             TruppenTraining truppenTraining = new TruppenTraining(writeLogs, deviceControl);
             LagerOnlineBelohnung lagerOnlineBelohnung = new LagerOnlineBelohnung(writeLogs, deviceControl);
@@ -79,16 +69,12 @@ namespace EMU
             VIP vip = new VIP(writeLogs, deviceControl);
             Arena arena = new Arena(writeLogs, deviceControl);
             Geheimdienst geheimdienst = new Geheimdienst(writeLogs, deviceControl);
-            Begleiter begleiter = new Begleiter(writeLogs, deviceControl);
+            //Begleiter begleiter = new Begleiter(writeLogs, deviceControl);
             //-----------------------------------------------------------------------------------------------------------
-            // Aufruf der Klick-Methode mit diesen Margins
 
-            //deviceControl.TrackTouchEvents();
-
-            //begleiter.GoToBegleiter(); IN ARBET!!!
-           
 
             /*
+            deviceControl.TrackTouchEvents();       
             logging.ShowSetting();
             stableControl.Control();
             stopwatch.Stop();
@@ -101,8 +87,8 @@ namespace EMU
                 try
                 {
                     geheimdienst.StartProcess();
+
                     /*
-                     * 
                        stopwatch.Restart();
                        logging.PrintSummary();
                        if(roundCount < 1)

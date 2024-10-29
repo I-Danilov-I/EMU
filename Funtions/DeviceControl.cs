@@ -1,7 +1,6 @@
 ﻿using OpenCvSharp;
 using System.Diagnostics;
 using Tesseract;
-
 namespace EMU
 {
     internal class DeviceControl
@@ -22,6 +21,35 @@ namespace EMU
             inputDevice = Program.inputDevice;
             packageName = Program.packageName; // Paketname des Spiels
 
+        }
+
+
+        internal string ExecuteAdbCommand(string command)
+        {
+            try
+            {
+                Process process = new Process();
+                process.StartInfo.FileName = adbPath;
+                process.StartInfo.Arguments = command;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.CreateNoWindow = true;
+
+                process.Start();
+
+                string output = process.StandardOutput.ReadToEnd();
+                string errorOutput = process.StandardError.ReadToEnd();
+
+                process.WaitForExit();
+                Thread.Sleep(Program.commandDelay);
+                return output;
+            }
+            catch (Exception ex)
+            {
+                logging.LogAndConsoleWirite(ex.Message);
+                return "";
+            }
         }
 
 
@@ -53,6 +81,74 @@ namespace EMU
 
 
 
+        // [TEXT ERKENNUNG] ##################################################################
+        internal void TakeScreenshot()
+        {
+            try
+            {
+                Directory.CreateDirectory(Program.screenshotDirectory);
+
+                ExecuteAdbCommand("shell screencap -p /sdcard/screenshot.png");  // Screenshot auf Emulator
+                ExecuteAdbCommand($"pull /sdcard/screenshot.png {Program.screenshotDirectory}"); // Screenshot auf PC
+            }
+            catch (Exception ex)
+            {
+                logging.LogAndConsoleWirite($"Fehler beim Erstellen des Screenshots: {ex.Message}");
+            }
+        }
+
+        public static string ProcessImageAndExtractText(string imagePath, string trainedDataDirectory, string language = "deu")
+        {
+            try
+            {
+                // Bildverarbeitung
+                Mat img = Cv2.ImRead(imagePath);
+                Cv2.Resize(img, img, new Size(img.Width * 2, img.Height * 2));
+                Cv2.CvtColor(img, img, ColorConversionCodes.BGR2GRAY);
+                Cv2.AdaptiveThreshold(img, img, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.Binary, 15, 10);
+                Cv2.MorphologyEx(img, img, MorphTypes.Open, Cv2.GetStructuringElement(MorphShapes.Rect, new Size(1, 1)));
+
+                string tempPath = Path.Combine(Program.screenshotDirectory, "processed_image.png");
+                Cv2.ImWrite(tempPath, img);
+
+                // OCR mit Tesseract
+                using var engine = new TesseractEngine(trainedDataDirectory, language, EngineMode.Default);
+                using var pix = Pix.LoadFromFile(tempPath);
+                using var page = engine.Process(pix);
+                return page.GetText();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Fehler bei der Bildverarbeitung oder Textextraktion: {ex.Message}");
+            }
+        }
+
+        public bool CheckTextInScreenshot(string textToFind, string textToFind2)
+        {
+            try
+            {
+                Environment.SetEnvironmentVariable("TESSDATA_PREFIX", Program.trainedDataDirectory);
+
+                if (!File.Exists(Program.localScreenshotPath))
+                {
+                    logging.LogAndConsoleWirite($"[WARNUNG] Screenshot nicht gefunden: {Program.localScreenshotPath}");
+                    return false;
+                }
+
+                string text = ProcessImageAndExtractText(Program.localScreenshotPath, Program.trainedDataDirectory);
+                return text.Contains(textToFind) || text.Contains(textToFind2);
+            }
+            catch (Exception ex)
+            {
+                logging.LogAndConsoleWirite($"[FEHLER] Fehler beim Auslesen des Screenshots: {ex.Message}");
+                return false;
+            }
+        }
+
+
+
+
+        // [BEDIENUNG] ##################################################################
         internal bool ClickAcrossScreenRandomly(int topMargin, int bottomMargin, int leftMargin, int rightMargin, string searchText1, string searchText2, int clickCount)
         {
             // Bildschirmauflösung abrufen
@@ -70,9 +166,6 @@ namespace EMU
             int startY = topMargin;
             int endY = screenHeight - bottomMargin;
 
-            //writeLogs.LogAndConsoleWirite("Clicking randomly across the screen...");
-
-            // Initialisierung eines Zufallsgenerators
             Random random = new Random();
 
             // Führe die Klicks an zufälligen Positionen durch
@@ -82,14 +175,11 @@ namespace EMU
                 int randomX = random.Next(startX, endX);
                 int randomY = random.Next(startY, endY);
 
-                // Klick an der zufälligen Position
                 ClickAt(randomX, randomY);
-
-                // Screenshot aufnehmen und Text überprüfen
                 TakeScreenshot();
                 if (CheckTextInScreenshot(searchText1, searchText2) == true)
                 {
-                   return true;
+                    return true;
                 }
                 else { }
             }
@@ -97,104 +187,11 @@ namespace EMU
             return false;
         }
 
-        // Hilfsmethode, um an einer bestimmten Position zu klicken
         private void ClickAt(int x, int y)
         {
             string adbCommand = $"shell input tap {x} {y}";
             ExecuteAdbCommand(adbCommand);
         }
-
-
-
-
-
-        internal void TakeScreenshot()
-        {
-            try
-            {
-                if (!Directory.Exists(Program.screenshotDirectory))
-                {
-                    Directory.CreateDirectory(Program.screenshotDirectory);
-                }
-                string screenshotCommand = "shell screencap -p /sdcard/screenshot.png";  // Screenshot auf dem Emulator erstellen und speichern
-                ExecuteAdbCommand(screenshotCommand);
-                string pullCommand = $"pull /sdcard/screenshot.png {Program.screenshotDirectory}"; // Screenshot vom Emulator auf den PC übertragen
-                ExecuteAdbCommand(pullCommand);
-            }
-            catch (Exception ex)
-            {
-                logging.LogAndConsoleWirite("Fehler beim Erstellen des Screenshots: " + ex.Message);
-            }
-        }
-
-
-        // Hilfsmethode zur Verbesserung des Bildes
-        public static string ProcessImageAndExtractText(string imagePath, string trainedDataDirectory, string language = "deu")
-        {
-            try
-            {
-                // Lade das Bild
-                Mat img = Cv2.ImRead(imagePath);
-                Cv2.Resize(img, img, new Size(img.Width * 2, img.Height * 2));
-                Cv2.CvtColor(img, img, ColorConversionCodes.BGR2GRAY);
-                Cv2.AdaptiveThreshold(img, img, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.Binary, 15, 10);
-                Mat kernel = Cv2.GetStructuringElement(MorphShapes.Rect, new Size(1, 1));
-                Cv2.MorphologyEx(img, img, MorphTypes.Open, kernel);
-
-                // Speichere das bearbeitete Bild temporär
-                string tempPath = Path.Combine(Program.screenshotDirectory, "processed_image.png");
-                Cv2.ImWrite(tempPath, img);
-
-                // OCR mit Tesseract durchführen
-                using (var engine = new TesseractEngine(trainedDataDirectory, language, EngineMode.Default))
-                {
-                    using (var pix = Pix.LoadFromFile(tempPath))
-                    using (var page = engine.Process(pix))
-                    {
-                        return page.GetText();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Fehler bei der Bildverarbeitung oder Textextraktion: {ex.Message}");
-            }
-        }
-
-
-
-        public bool CheckTextInScreenshot(string textToFind, string textToFind2)
-        {
-            try
-            {
-                Environment.SetEnvironmentVariable("TESSDATA_PREFIX", Program.trainedDataDirectory);
-
-                if (!File.Exists(Program.localScreenshotPath))
-                {
-                    logging.LogAndConsoleWirite($"[WARNUNG] Screenshot nicht gefunden unter: {Program.localScreenshotPath}");
-                    return false;
-                }
-
-                // Bild vorbereiten und Text extrahieren
-                string text = ProcessImageAndExtractText(Program.localScreenshotPath, Program.trainedDataDirectory);
-
-                // Text überprüfen
-                if (text.Contains(textToFind) || text.Contains(textToFind2))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (Exception ex)
-            {
-                logging.LogAndConsoleWirite($"[FEHLER] Ein Fehler beim Auslesen des Textes aus dem Screenshot ist aufgetreten: {ex.Message}");
-                return false;
-            }
-        }
-
 
 
         internal void ScrollDown(int anzahlScroll)
@@ -290,35 +287,6 @@ namespace EMU
             else
             {
                 logging.LogAndConsoleWirite($"Keine Offline Erträge.");
-            }
-        }
-
-
-        internal string ExecuteAdbCommand(string command)
-        {
-            try
-            {
-                Process process = new Process();
-                process.StartInfo.FileName = adbPath;
-                process.StartInfo.Arguments = command;
-                process.StartInfo.RedirectStandardOutput = true;
-                process.StartInfo.RedirectStandardError = true;
-                process.StartInfo.UseShellExecute = false;
-                process.StartInfo.CreateNoWindow = true;
-
-                process.Start();
-
-                string output = process.StandardOutput.ReadToEnd();
-                string errorOutput = process.StandardError.ReadToEnd();
-
-                process.WaitForExit();
-                Thread.Sleep(Program.commandDelay);
-                return output;
-            }
-            catch (Exception ex)
-            {
-                logging.LogAndConsoleWirite(ex.Message);
-                return "";
             }
         }
 
