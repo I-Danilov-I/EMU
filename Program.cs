@@ -12,7 +12,7 @@ namespace EMU
         internal static int roundCount = 0;
         internal static bool truppenAusgleich = false; // Truppen ausgleichen
         
-        internal static string allianceAutobeitrit = "ON";
+        internal static bool allianceAutobeitrit = false;
         internal static int polarTerrorLevel = 6;
         internal static int bestienJagtLevel = 26;
 
@@ -107,9 +107,6 @@ namespace EMU
                     truppenHeilen.Heilen();
                     stableControl.Control();
 
-                    // Geheimmission
-                    geheimdienst.StartProcess();
-                    stableControl.Control();
 
                     // Allianz
                     allianz.Hilfe();
@@ -168,6 +165,9 @@ namespace EMU
                     vip.KistenAbholen();
                     stableControl.Control();
 
+                    // Geheimmission
+                    geheimdienst.StartProcess();
+                    stableControl.Control();
 
                     // Stoppen der Zeitmessung und Ausgabe der Dauer
                     roundCount++;
