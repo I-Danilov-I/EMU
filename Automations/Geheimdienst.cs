@@ -89,7 +89,7 @@ namespace EMU
             deviceControl.ClickAtTouchPositionWithHexa("000001ca", "00000472"); // Ansehen
             Thread.Sleep(4000);
             deviceControl.ClickAtTouchPositionWithHexa("000001bc", "00000311"); // Agreifen / Erkunden
-            Thread.Sleep(2000);
+            Thread.Sleep(5000);
             logging.PrintFormatet("Start Mission", "Completed");
         }
 

@@ -105,8 +105,8 @@ namespace EMU
                 Mat img = Cv2.ImRead(imagePath);
                 //Cv2.Resize(img, img, new Size(img.Width * 2, img.Height * 2));
                 Cv2.CvtColor(img, img, ColorConversionCodes.BGR2GRAY);
-                Cv2.AdaptiveThreshold(img, img, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.Binary, 15, 10);
-                Cv2.MorphologyEx(img, img, MorphTypes.Open, Cv2.GetStructuringElement(MorphShapes.Rect, new Size(1, 1)));
+                //Cv2.AdaptiveThreshold(img, img, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.Binary, 15, 10);
+                //Cv2.MorphologyEx(img, img, MorphTypes.Open, Cv2.GetStructuringElement(MorphShapes.Rect, new Size(1, 1)));
 
                 string tempPath = Path.Combine(Program.screenshotDirectory, "processed_image.png");
                 Cv2.ImWrite(tempPath, img);
@@ -178,7 +178,9 @@ namespace EMU
                 int randomY = random.Next(startY, endY);
 
                 ClickAt(randomX, randomY);
+                Thread.Sleep(1000);
                 TakeScreenshot();
+                Thread.Sleep(1000);
                 if (CheckTextInScreenshot(searchText1, searchText2) == true)
                 {
                     return true;
