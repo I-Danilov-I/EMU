@@ -1,6 +1,6 @@
 ﻿namespace EMU
 {
-    internal class VIP(WriteLogs writeLogs, DeviceControl deviceControl)
+    internal class VIP(Logging writeLogs, DeviceControl deviceControl)
     {
         public void KistenAbholen()
         {

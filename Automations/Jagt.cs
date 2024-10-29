@@ -1,6 +1,6 @@
 ﻿namespace EMU
 {
-    internal class Jagt(WriteLogs writeLogs, DeviceControl deviceControl)
+    internal class Jagt(Logging writeLogs, DeviceControl deviceControl)
     {
         internal void PolarTerrorStarten(int tierLevel)
         {

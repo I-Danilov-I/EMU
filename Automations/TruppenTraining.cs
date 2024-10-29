@@ -1,6 +1,6 @@
 ﻿namespace EMU
 {
-    internal class TruppenTraining(WriteLogs writeLogs, DeviceControl deviceControl)
+    internal class TruppenTraining(Logging writeLogs, DeviceControl deviceControl)
     {
 
         private void TruppenAnzahl(int truppenAnzahl)

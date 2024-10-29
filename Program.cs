@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using EMU.Automations;
 
 namespace EMU
 {
@@ -7,7 +8,7 @@ namespace EMU
         // Wenn das Programm in einem veröffentlichten Zustand ausgeführt wird, verwende das Verzeichnis des Executables.
         internal static string baseDirectory = AppContext.BaseDirectory;
 
-        internal static int commandDelay = 1000; // Pause in milliseconds between each command.
+        internal static int commandDelay = 100; // Pause in milliseconds between each command.
         internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
         internal static bool truppenAusgleich = false; // Truppen ausgleichen
@@ -15,7 +16,7 @@ namespace EMU
 
         // Setze die Verzeichnisse relativ zu diesem Basisverzeichnis.
         internal static string trainedDataDirectory = Path.Combine(baseDirectory);
-        internal static string screenshotDirectory = Path.Combine(baseDirectory);
+        internal static string screenshotDirectory = Path.Combine(baseDirectory, "Screens");
         internal static string logFileFolderPath = Path.Combine(baseDirectory);
         internal static string localScreenshotPath = Path.Combine(screenshotDirectory, "screenshot.png");
 
@@ -60,10 +61,10 @@ namespace EMU
             stopwatch.Restart();
 
             // System Klassen
-            WriteLogs writeLogs = new WriteLogs();
-            PrintInfo printInfo = new PrintInfo(writeLogs);
-            DeviceControl deviceControl = new DeviceControl(writeLogs, printInfo);
-            StableControl stableControl = new StableControl(writeLogs, printInfo, deviceControl);
+            Logging writeLogs = new Logging();
+            Logging logging = new Logging();
+            DeviceControl deviceControl = new DeviceControl(logging);
+            StableControl stableControl = new StableControl(logging, deviceControl);
 
             // Automations in Game Klassen
             Erkundung erkundung = new Erkundung(writeLogs, deviceControl);
@@ -78,128 +79,136 @@ namespace EMU
             VIP vip = new VIP(writeLogs, deviceControl);
             Arena arena = new Arena(writeLogs, deviceControl);
             Geheimdienst geheimdienst = new Geheimdienst(writeLogs, deviceControl);
+            Begleiter begleiter = new Begleiter(writeLogs, deviceControl);
             //-----------------------------------------------------------------------------------------------------------
-
+            // Aufruf der Klick-Methode mit diesen Margins
 
             //deviceControl.TrackTouchEvents();
 
-            ShowSetting();
+            //begleiter.GoToBegleiter(); IN ARBET!!!
+           
+
+            /*
+            logging.ShowSetting();
             stableControl.Control();
             stopwatch.Stop();
             writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");
             writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
             Console.ResetColor();
-
+            */
             while (true)
             {
                 try
-                {  
-                    stopwatch.Restart();
-                    printInfo.PrintSummary();
-                    if(roundCount < 1)
-                    {
-                        // First 
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        deviceControl.OfflineErtregeAbholen();
-                        deviceControl.BackUneversal();
-                        deviceControl.GoStadt();
-                        stableControl.Control();
-                    }
+                {
+                    geheimdienst.StartProcess();
+                    /*
+                     * 
+                       stopwatch.Restart();
+                       logging.PrintSummary();
+                       if(roundCount < 1)
+                       {
+                           // First 
+                           Console.ForegroundColor = ConsoleColor.Cyan;
+                           deviceControl.OfflineErtregeAbholen();
+                           deviceControl.BackUneversal();
+                           deviceControl.GoStadt();
+                           stableControl.Control();
+                       }
 
-                    // Geheimmission
-                    geheimdienst.GoToGeheimdienst();
-                    stableControl.Control();
+                       // Geheimmission
+                       geheimdienst.GoToGeheimdienst();
+                       stableControl.Control();
 
-                    // Truppen Heilung
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    truppenHeilen.Heilen();
-                    stableControl.Control();
+                       // Truppen Heilung
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       truppenHeilen.Heilen();
+                       stableControl.Control();
 
-                    // Allianz
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    allianz.Hilfe();
-                    stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    allianz.Technologie(3);
-                    stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    allianz.KistenAbholen();
-                    stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    allianz.AutobeitritAktivieren();
-                    stableControl.Control();
+                       // Allianz
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       allianz.Hilfe();
+                       stableControl.Control();
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       allianz.Technologie(3);
+                       stableControl.Control();
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       allianz.KistenAbholen();
+                       stableControl.Control();
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       allianz.AutobeitritAktivieren();
+                       stableControl.Control();
 
-                    // Jagt
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Jagt.BestienJagtStarten(26);
-                    stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Jagt.PolarTerrorStarten(5);
-                    stableControl.Control();
+                       // Jagt
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       Jagt.BestienJagtStarten(26);
+                       stableControl.Control();
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       Jagt.PolarTerrorStarten(5);
+                       stableControl.Control();
 
 
-                    // Lager
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    helden.HeldenRekrutieren();
-                    stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    lagerOnlineBelohnung.GeschnekAbholen();
-                    stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    lagerOnlineBelohnung.AusdauerAbholen();
-                    stableControl.Control();
+                       // Lager
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       helden.HeldenRekrutieren();
+                       stableControl.Control();
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       lagerOnlineBelohnung.GeschnekAbholen();
+                       stableControl.Control();
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       lagerOnlineBelohnung.AusdauerAbholen();
+                       stableControl.Control();
 
-                    // Erkundung
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    erkundung.Erkundungskampf();
-                    stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    erkundung.ErkundungAbholen();
-                    stableControl.Control();
+                       // Erkundung
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       erkundung.Erkundungskampf();
+                       stableControl.Control();
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       erkundung.ErkundungAbholen();
+                       stableControl.Control();
 
-                    // Truppen Training
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    truppenTraining.TrainiereInfaterie(10);
-                    stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    truppenTraining.TrainiereLatenzTreger(10);
-                    stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    truppenTraining.TrainiereSniper(10);
-                    stableControl.Control();
+                       // Truppen Training
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       truppenTraining.TrainiereInfaterie(10);
+                       stableControl.Control();
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       truppenTraining.TrainiereLatenzTreger(10);
+                       stableControl.Control();
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       truppenTraining.TrainiereSniper(10);
+                       stableControl.Control();
 
-                    // Arena Kampf (Optimeirungbedarf)
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    arena.GoToArena();
-                    stableControl.Control();
+                       // Arena Kampf (Optimeirungbedarf)
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       arena.GoToArena();
+                       stableControl.Control();
 
-                    // Guvenour Befehle
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    guvenourBefehl.EilauftragAbholen();
-                    guvenourBefehl.FestlichkeitenAbholen();
-                    stableControl.Control();
+                       // Guvenour Befehle
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       guvenourBefehl.EilauftragAbholen();
+                       guvenourBefehl.FestlichkeitenAbholen();
+                       stableControl.Control();
 
-                    // Lebens Baum
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    lebensBaum.BaumBelohnungAbholen();
-                    stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    lebensBaum.EssensVonFreundenAbholen();
-                    stableControl.Control();
+                       // Lebens Baum
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       lebensBaum.BaumBelohnungAbholen();
+                       stableControl.Control();
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       lebensBaum.EssensVonFreundenAbholen();
+                       stableControl.Control();
 
-                    // VIP
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    vip.KistenAbholen();
-                    stableControl.Control();
+                       // VIP
+                       Console.ForegroundColor = ConsoleColor.Cyan;
+                       vip.KistenAbholen();
+                       stableControl.Control();
 
-                    // Stoppen der Zeitmessung und Ausgabe der Dauer
-                    roundCount++;
-                    stopwatch.Stop();
-                    Console.ResetColor();
-                    writeLogs.LogAndConsoleWirite($"\nRundendauer: {stopwatch.Elapsed.TotalMinutes} Minuten, Runde {roundCount}");
-                    stopwatch.Restart();
-                    writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
-                    
+                       // Stoppen der Zeitmessung und Ausgabe der Dauer
+                       roundCount++;
+                       stopwatch.Stop();
+                       Console.ResetColor();
+                       writeLogs.LogAndConsoleWirite($"\nRundendauer: {stopwatch.Elapsed.TotalMinutes} Minuten, Runde {roundCount}");
+                       stopwatch.Restart();
+                       writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
+                       */
                 }
                 catch( Exception ex )
                 {
@@ -209,25 +218,7 @@ namespace EMU
             }
 
 
-            void ShowSetting()
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                writeLogs.LogAndConsoleWirite("\n[PROGRAMM START]");
-                writeLogs.LogAndConsoleWirite("------------------------------------------------------------------------------------------------");
 
-                printInfo.PrintSetting("Program Directory: ", baseDirectory);
-                printInfo.PrintSetting("ADB Path: ", adbPath);
-                printInfo.PrintSetting("Input Device: ", inputDevice);
-                printInfo.PrintSetting("Packege Name: ", packageName);
-                printInfo.PrintSetting("Scrrenshot Directory: ", screenshotDirectory);
-                printInfo.PrintSetting("Logfiles Directory: ", logFileFolderPath);
-                printInfo.PrintSetting("Trained Data Dir: ", trainedDataDirectory);
-
-                writeLogs.LogAndConsoleWirite("------------------------------------------------------------------------------------------------");
-                Console.ResetColor();
-            }
         }
-
-
     }
 }

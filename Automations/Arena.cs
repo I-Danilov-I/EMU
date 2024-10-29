@@ -1,6 +1,6 @@
 ﻿namespace EMU
 {
-    internal class Arena(WriteLogs writeLogs, DeviceControl deviceControl)
+    internal class Arena(Logging writeLogs, DeviceControl deviceControl)
     {
         public void GoToArena()
         {

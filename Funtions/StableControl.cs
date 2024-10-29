@@ -5,15 +5,13 @@ namespace EMU
 {
     internal class StableControl
     {
-        private readonly WriteLogs writeLogs;
-        private readonly PrintInfo printInfo;
+        private readonly Logging logging;
         private readonly DeviceControl deviceControl;
 
 
-        public StableControl(WriteLogs writeLogs, PrintInfo printInfo, DeviceControl deviceControl)
+        public StableControl(Logging logging, DeviceControl deviceControl)
         {
-            this.writeLogs = writeLogs;
-            this.printInfo = printInfo;
+            this.logging = logging;
             this.deviceControl = deviceControl;
 
         }
@@ -22,8 +20,8 @@ namespace EMU
         internal void Control()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
-            writeLogs.LogAndConsoleWirite("\n\n[Stabilitätskontrolle]");
-            writeLogs.LogAndConsoleWirite("-------------------------------------------------------------------------------------------");
+            logging.LogAndConsoleWirite("\n\n[Stabilitätskontrolle]");
+            logging.LogAndConsoleWirite("-------------------------------------------------------------------------------------------");
 
             CheckNetworkStatus();
             CheckNoxStatus();
@@ -32,7 +30,7 @@ namespace EMU
             CheckAppStatus();
             CheckAccountUsage();
 
-            writeLogs.LogAndConsoleWirite("-------------------------------------------------------------------------------------------");
+            logging.LogAndConsoleWirite("-------------------------------------------------------------------------------------------");
             Console.ResetColor();
         }
 
@@ -49,7 +47,7 @@ namespace EMU
             string formattedDetails = details.PadRight(detailsWidth);
 
             string logMessage = $"{formattedType} | {formattedStatus} | {formattedDetails}";
-            writeLogs.LogAndConsoleWirite(logMessage);
+            logging.LogAndConsoleWirite(logMessage);
         }
 
 

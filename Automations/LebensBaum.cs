@@ -1,6 +1,6 @@
 ﻿namespace EMU
 {
-    internal class LebensBaum(WriteLogs writeLogs, DeviceControl deviceControl)
+    internal class LebensBaum(Logging writeLogs, DeviceControl deviceControl)
     {
         public void GoToBaum()
         {

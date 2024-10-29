@@ -1,6 +1,6 @@
 ﻿namespace EMU
 {
-    internal class Allianz(WriteLogs writeLogs, DeviceControl deviceControl)
+    internal class Allianz(Logging writeLogs, DeviceControl deviceControl)
     {
 
         public void AutobeitritAktivieren()

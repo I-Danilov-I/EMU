@@ -1,65 +1,93 @@
 ﻿namespace EMU
 {
-    internal class Geheimdienst(WriteLogs writeLogs, DeviceControl deviceControl)
+    internal class Geheimdienst(Logging logging, DeviceControl deviceControl)
     {
-
-        public void GoToGeheimdienst()
+        internal void StartProcess()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
-            writeLogs.LogAndConsoleWirite("\n\nGeheimdiesnt...");
-            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
+            logging.PrintFormatet("| GEHEIMDIENST", "   |");
+            logging.LogAndConsoleWirite("---------------------------------------------------------------------------");
+
+            GoToMisson();
+            FindMission();
+
+        }
+
+        private void GoToMisson()
+        {
+            logging.PrintFormatetInSameLine("Go To Misson", "...");
             deviceControl.BackUneversal();
             deviceControl.GoWelt();
             deviceControl.ClickAtTouchPositionWithHexa("00000340", "00000437"); // Geheimmission Icon 
-                                                                                
-            int topMargin = 400; // ~2 cm Abstand vom oberen Rand
-            int bottomMargin = 400; // Optional: kein Abstand vom unteren Rand
-            int leftMArgin = 200; // ~2 cm Abstand vom oberen Rand
-            int rigtMargin = 200; // Optional: kein Abstand vom unteren Rand
-            int clickCounter = 50; // 
+            logging.PrintFormatetInSameLine("Go To Misson", "Completed");
+            Thread.Sleep(1000);
+        }                                                                               
 
-            // Aufruf der Klick-Methode mit diesen Margins
-            bool geheimMissionFind = deviceControl.ClickAcrossScreenRandomly(topMargin, bottomMargin, leftMArgin, rigtMargin,  "Belohnungen", "Ansehen", clickCounter);
-            if (geheimMissionFind == true)
+        private bool FindMission()
+        {
+            logging.PrintFormatet("Find Mission", "...");
+            if (deviceControl.ClickAcrossScreenRandomly(400, 400, 200, 200, "Belohnungen", "Mission", 50)) 
             {
-                deviceControl.ClickAtTouchPositionWithHexa("000001cd", "00000435"); // Ansehen
-                deviceControl.ClickAtTouchPositionWithHexa("000001bc", "00000311"); // Agreifen
-                
-                deviceControl.TakeScreenshot();
-                if (deviceControl.CheckTextInScreenshot("nicht", "du") == true)
+                logging.PrintFormatetInSameLine("Find Misson", "Completed");
+                return true; 
+            }
+            logging.PrintFormatetInSameLine("Find Misson", "Failed");
+            return false;
+        }
+
+        private void StartMisson()
+        {
+            logging.PrintFormatet("Start Mission", "...");
+            deviceControl.ClickAtTouchPositionWithHexa("000001cd", "00000435"); // Ansehen
+            Thread.Sleep(1000);
+            deviceControl.ClickAtTouchPositionWithHexa("000001bc", "00000311"); // Agreifen
+            if (Program.truppenAusgleich == true) { deviceControl.ClickAtTouchPositionWithHexa("000000fa", "000005ba"); } // Option: Augleich der Truppen vor dem Einsatz
+
+            if (CheckTruppenKraft() == true)
+            {
+                deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); // Einsetzen
+                if (CheckAusdauer() == false)
                 {
-                    writeLogs.LogAndConsoleWirite("Diese Mission hat kein Guten ausgang ich führe sie nicht aus ;)");
-                    deviceControl.PressButtonBack();
+                    deviceControl.BackUneversal();
+                    deviceControl.GoStadt();
+                    logging.PrintFormatetInSameLine("Ausdauer", "Keine Ausdauer");
                     return;
                 }
-
-                if (Program.truppenAusgleich == true)
+                else 
                 {
-                    deviceControl.ClickAtTouchPositionWithHexa("000000fa", "000005ba"); // Ausgleichen?
+                    logging.PrintFormatetInSameLine("Ausdauer", "OK");
                 }
-
-                deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); // Einsetzen
-                CheckAusdauer();
-                deviceControl.GoStadt();
-                writeLogs.LogAndConsoleWirite("Operation: Geheimdienst Misson Succes!");
-
             }
-            else { }
+            deviceControl.BackUneversal();
+            deviceControl.GoStadt();
+        }
+
+        internal bool CheckTruppenKraft()
+        {
+            deviceControl.TakeScreenshot();
+            if (deviceControl.CheckTextInScreenshot("nicht", "du") == true)
+            {
+                logging.PrintFormatet("Truppen Kraft", "Nicht ausreichen");
+                deviceControl.PressButtonBack();
+                return false;
+            }
+            logging.PrintFormatet("Truppen Kraft", "OK");
+            return true;
         }
 
         private bool CheckAusdauer()
         {
-            writeLogs.LogAndConsoleWirite("Checke ob genug Ausdauer vorhaden ist...");
             deviceControl.TakeScreenshot();
             bool reichenResursen = deviceControl.CheckTextInScreenshot("Ausdauer", "Ausdauer"); // Suche nach Text im Screenshot
             if (reichenResursen)
             {
-                writeLogs.LogAndConsoleWirite("Resoursen reichen nicht aus :(, Mission nicht gestartet.");
+                logging.PrintFormatet("Ausdauer", "Nicht ausreichend");
                 return false;
             }
-            writeLogs.LogAndConsoleWirite("Es ist genug Ausdauer da!");
+            logging.PrintFormatet("Ausdauer", "OK");
             return true;      
         }
+
 
     }
 }

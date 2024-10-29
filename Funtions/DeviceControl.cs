@@ -10,15 +10,14 @@ namespace EMU
         private readonly string inputDevice;
         internal readonly string packageName;
 
-        private readonly WriteLogs writeLogs;
-        private readonly PrintInfo printInfo;
+        private readonly Logging logging;
 
 
-        internal DeviceControl(WriteLogs writeLogs, PrintInfo printInfo)
+        internal DeviceControl(Logging logging)
         {
 
-            this.writeLogs = writeLogs;  // Zuweisung der writeLogs-Instanz
-            this.printInfo = printInfo;
+            this.logging = logging;  // Zuweisung der writeLogs-Instanz
+
             adbPath = Program.adbPath;
             inputDevice = Program.inputDevice;
             packageName = Program.packageName; // Paketname des Spiels
@@ -47,7 +46,7 @@ namespace EMU
             }
 
             // Fehlerfall
-            printInfo.PrintSetting("Resolution", "Fehler beim Abrufen der Bildschirmauflösung");
+            logging.LogAndConsoleWirite("Resolution Fehler beim Abrufen der Bildschirmauflösung.");
             return (0, 0);
         }
 
@@ -61,7 +60,7 @@ namespace EMU
 
             if (screenWidth == 0 || screenHeight == 0)
             {
-                writeLogs.LogAndConsoleWirite("Auflösung konnte nicht abgerufen werden. Klickvorgang wird abgebrochen.");
+                logging.LogAndConsoleWirite("Auflösung konnte nicht abgerufen werden. Klickvorgang wird abgebrochen.");
                 return false;
             }
 
@@ -88,12 +87,11 @@ namespace EMU
 
                 // Screenshot aufnehmen und Text überprüfen
                 TakeScreenshot();
-                if (CheckTextInScreenshot(searchText1, searchText2))
+                if (CheckTextInScreenshot(searchText1, searchText2) == true)
                 {
-                    return true; // Beende die Methode, wenn der Suchtext gefunden wird
+                   return true;
                 }
-
-                
+                else { }
             }
 
             return false;
@@ -125,66 +123,78 @@ namespace EMU
             }
             catch (Exception ex)
             {
-                writeLogs.LogAndConsoleWirite("Fehler beim Erstellen des Screenshots: " + ex.Message);
+                logging.LogAndConsoleWirite("Fehler beim Erstellen des Screenshots: " + ex.Message);
             }
         }
+
+
+        // Hilfsmethode zur Verbesserung des Bildes
+        public static string ProcessImageAndExtractText(string imagePath, string trainedDataDirectory, string language = "deu")
+        {
+            try
+            {
+                // Lade das Bild
+                Mat img = Cv2.ImRead(imagePath);
+                Cv2.Resize(img, img, new Size(img.Width * 2, img.Height * 2));
+                Cv2.CvtColor(img, img, ColorConversionCodes.BGR2GRAY);
+                Cv2.AdaptiveThreshold(img, img, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.Binary, 15, 10);
+                Mat kernel = Cv2.GetStructuringElement(MorphShapes.Rect, new Size(1, 1));
+                Cv2.MorphologyEx(img, img, MorphTypes.Open, kernel);
+
+                // Speichere das bearbeitete Bild temporär
+                string tempPath = Path.Combine(Program.screenshotDirectory, "processed_image.png");
+                Cv2.ImWrite(tempPath, img);
+
+                // OCR mit Tesseract durchführen
+                using (var engine = new TesseractEngine(trainedDataDirectory, language, EngineMode.Default))
+                {
+                    using (var pix = Pix.LoadFromFile(tempPath))
+                    using (var page = engine.Process(pix))
+                    {
+                        return page.GetText();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Fehler bei der Bildverarbeitung oder Textextraktion: {ex.Message}");
+            }
+        }
+
 
 
         public bool CheckTextInScreenshot(string textToFind, string textToFind2)
         {
             try
             {
-                // Setze die Umgebungsvariable für Tesseract
                 Environment.SetEnvironmentVariable("TESSDATA_PREFIX", Program.trainedDataDirectory);
-
-                if (!File.Exists(Path.Combine(Program.trainedDataDirectory, "deu.traineddata")))
-                {
-                    writeLogs.LogAndConsoleWirite($"[WARNUNG] 'deu.traineddata' nicht gefunden im Verzeichnis: {Program.trainedDataDirectory}");
-                    return false;
-                }
-
 
                 if (!File.Exists(Program.localScreenshotPath))
                 {
-                    writeLogs.LogAndConsoleWirite($"[WARNUNG] Screenshot nicht gefunden unter: {Program.localScreenshotPath}");
+                    logging.LogAndConsoleWirite($"[WARNUNG] Screenshot nicht gefunden unter: {Program.localScreenshotPath}");
                     return false;
                 }
 
+                // Bild vorbereiten und Text extrahieren
+                string text = ProcessImageAndExtractText(Program.localScreenshotPath, Program.trainedDataDirectory);
 
-                using (var engine = new TesseractEngine(Program.trainedDataDirectory, "deu", EngineMode.Default))
+                // Text überprüfen
+                if (text.Contains(textToFind) || text.Contains(textToFind2))
                 {
-                    engine.DefaultPageSegMode = PageSegMode.SingleBlock;
-                    using (var img = Pix.LoadFromFile(Program.localScreenshotPath))
-                    {
-                        using (var page = engine.Process(img))
-                        {
-                            try
-                            {
-                                string text = page.GetText();
-                                if (text.Contains(textToFind) || text.Contains(textToFind2))
-                                {
-                                    return true;
-                                }
-                                else
-                                {
-                                    return false;
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                writeLogs.LogAndConsoleWirite($"[FEHLER] Fehler beim Verarbeiten des Screenshots: {ex.Message}");
-                                return false;
-                            }
-                        }
-                    }
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
             }
             catch (Exception ex)
             {
-                writeLogs.LogAndConsoleWirite($"[FEHLER] Ein Fehler beim Auslesen des Textes aus dem Screenshot ist aufgetreten: {ex.Message}");
+                logging.LogAndConsoleWirite($"[FEHLER] Ein Fehler beim Auslesen des Textes aus dem Screenshot ist aufgetreten: {ex.Message}");
                 return false;
             }
         }
+
 
 
         internal void ScrollDown(int anzahlScroll)
@@ -204,12 +214,13 @@ namespace EMU
                 string adbCommand = $"shell input swipe {startX} {startY} {endX} {endY} {duration}";
                 ExecuteAdbCommand(adbCommand);
             }
-            writeLogs.LogAndConsoleWirite($"Scrollen nach unten wurde {anzahlScroll} ausgeführt.");
+            logging.LogAndConsoleWirite($"Scrollen nach unten wurde {anzahlScroll} ausgeführt.");
         }
 
 
         internal void BackUneversal()
         {
+            PressButtonBack();
             PressButtonBack();
             PressButtonBack();
             PressButtonBack();
@@ -224,18 +235,22 @@ namespace EMU
         internal void GoWelt()
         {
             ClickAtTouchPositionWithHexa("00000081", "0000004f"); // Bonusübersicht klick
+            Thread.Sleep(1000);
             ClickAtTouchPositionWithHexa("000001cf", "000003a6"); // Kraft klick
+            Thread.Sleep(1000);
             ClickAtTouchPositionWithHexa("000002f1", "00000540"); // Technologieforschung wälen
-            Thread.Sleep(2000);
+            Thread.Sleep(4000);
             ClickAtTouchPositionWithHexa("0000032f", "000005fd"); // Welt / Stadt
-            Thread.Sleep(2000);     
+            Thread.Sleep(4000);     
         }
 
 
         internal void GoStadt()
         {
             ClickAtTouchPositionWithHexa("00000081", "0000004f"); // Bonusübersicht klick
+            Thread.Sleep(1000);
             ClickAtTouchPositionWithHexa("000001cf", "000003a6"); // Kraft klick
+            Thread.Sleep(1000);
             ClickAtTouchPositionWithHexa("000002f1", "00000540"); // Technologieforschung wälen
             Thread.Sleep(4000);
         }
@@ -262,19 +277,19 @@ namespace EMU
         internal void OfflineErtregeAbholen()
         {
 
-            writeLogs.LogAndConsoleWirite($"\n\nChekce Offline Erträge");
-            writeLogs.LogAndConsoleWirite("---------------------------------------------------------------------------");
+            logging.LogAndConsoleWirite($"\n\nChekce Offline Erträge");
+            logging.LogAndConsoleWirite("---------------------------------------------------------------------------");
             TakeScreenshot();
             bool offlineErtrege = CheckTextInScreenshot("Willkommen", "Offline");
             if (offlineErtrege == true)
             {
                 ClickAtTouchPositionWithHexa("000001bf", "000004d3"); // Bestätigen Button klicken
                 Program.offlineEarningsCounter++;
-                writeLogs.LogAndConsoleWirite($"Offline Erträge wurden abgeholt.");
+                logging.LogAndConsoleWirite($"Offline Erträge wurden abgeholt.");
             }
             else
             {
-                writeLogs.LogAndConsoleWirite($"Keine Offline Erträge.");
+                logging.LogAndConsoleWirite($"Keine Offline Erträge.");
             }
         }
 
@@ -302,7 +317,7 @@ namespace EMU
             }
             catch (Exception ex)
             {
-                writeLogs.LogAndConsoleWirite(ex.Message);
+                logging.LogAndConsoleWirite(ex.Message);
                 return "";
             }
         }
@@ -351,7 +366,7 @@ namespace EMU
         public void TrackTouchEvents()
         {
             string command = $"shell getevent -lt {inputDevice}"; // Verwende getevent ohne -lp für Live-Daten
-            writeLogs.LogAndConsoleWirite("Starte die Erfassung von Touch-Ereignissen...");
+            logging.LogAndConsoleWirite("Starte die Erfassung von Touch-Ereignissen...");
 
             if (!Directory.Exists(Program.logFileFolderPath))
             {
@@ -376,7 +391,7 @@ namespace EMU
                         if (!string.IsNullOrEmpty(args.Data))
                         {
                             writer.WriteLine(args.Data);
-                            writeLogs.LogAndConsoleWirite(args.Data);
+                            logging.LogAndConsoleWirite(args.Data);
                         }
                     };
 
@@ -385,11 +400,11 @@ namespace EMU
                     process.WaitForExit();
                 }
 
-                writeLogs.LogAndConsoleWirite($"Touch-Ereignisse wurden in {logFilePathTouchEvens} gespeichert.");
+                logging.LogAndConsoleWirite($"Touch-Ereignisse wurden in {logFilePathTouchEvens} gespeichert.");
             }
             catch (Exception ex)
             {
-                writeLogs.LogAndConsoleWirite($"Fehler bei der Erfassung der Touch-Ereignisse: {ex.Message}");
+                logging.LogAndConsoleWirite($"Fehler bei der Erfassung der Touch-Ereignisse: {ex.Message}");
             }
         }
 
@@ -398,7 +413,7 @@ namespace EMU
         {
             
             string command = "shell ps | grep u0_a";
-            writeLogs.LogAndConsoleWirite("Liste der laufenden Apps...");
+            logging.LogAndConsoleWirite("Liste der laufenden Apps...");
             string output = ExecuteAdbCommand(command);
 
             if (!Directory.Exists(Program.logFileFolderPath))
@@ -421,14 +436,6 @@ namespace EMU
         }
 
 
-        // [Aktuel nicht verwendet!]
-        // ##################################################################
-        /*internal void ClickAtPositionWithDecimal(string adbPath, int x, int y)
-        {
-            string adbCommand = $"shell input tap {x} {y}";
-            ExecuteAdbCommand(adbCommand);
-        }
-        */
 
     }
 }

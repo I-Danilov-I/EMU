@@ -1,6 +1,6 @@
 ﻿namespace EMU
 {
-    internal class LagerOnlineBelohnung(WriteLogs writeLogs, DeviceControl deviceControl)
+    internal class LagerOnlineBelohnung(Logging writeLogs, DeviceControl deviceControl)
     {
 
         internal void GeschnekAbholen()

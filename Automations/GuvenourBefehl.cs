@@ -1,6 +1,6 @@
 ﻿namespace EMU
 { 
-    internal class GuvenourBefehl(WriteLogs writeLogs, DeviceControl deviceControl)
+    internal class GuvenourBefehl(Logging writeLogs, DeviceControl deviceControl)
     {
 
         public void EilauftragAbholen()
