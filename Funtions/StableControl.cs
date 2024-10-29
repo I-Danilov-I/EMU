@@ -22,7 +22,7 @@ namespace EMU
             Console.ForegroundColor = ConsoleColor.Yellow;
             logging.LogAndConsoleWirite("\n\n[Stabilitätskontrolle]");
             logging.LogAndConsoleWirite("-------------------------------------------------------------------------------------------");
-
+            deviceControl.BackUneversal();
             CheckNetworkStatus();
             CheckNoxStatus();
             CheckADBStatus();
@@ -32,6 +32,7 @@ namespace EMU
 
             logging.LogAndConsoleWirite("-------------------------------------------------------------------------------------------");
             Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Cyan;
         }
 
 
