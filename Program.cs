@@ -71,10 +71,10 @@ namespace EMU
             Geheimdienst geheimdienst = new Geheimdienst(writeLogs, deviceControl);
             //Begleiter begleiter = new Begleiter(writeLogs, deviceControl);
             //-----------------------------------------------------------------------------------------------------------
+            //deviceControl.TrackTouchEvents();       
 
 
             /*
-            deviceControl.TrackTouchEvents();       
             logging.ShowSetting();
             stableControl.Control();
             stopwatch.Stop();

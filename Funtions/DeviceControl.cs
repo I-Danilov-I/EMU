@@ -113,6 +113,8 @@ namespace EMU
 
                 // OCR mit Tesseract
                 using var engine = new TesseractEngine(trainedDataDirectory, language, EngineMode.Default);
+                engine.SetVariable("debug_file", "NUL");        // Unterdrückt die Debug-Ausgabe von Tesseract
+                engine.DefaultPageSegMode = PageSegMode.Auto;
                 using var pix = Pix.LoadFromFile(tempPath);
                 using var page = engine.Process(pix);
                 return page.GetText();

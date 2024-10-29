@@ -1,7 +1,10 @@
-﻿namespace EMU
+﻿using EMU;
+
+namespace EMU
 {
     internal class Geheimdienst(Logging logging, DeviceControl deviceControl)
     {
+
         internal void StartProcess()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -9,9 +12,38 @@
             logging.LogAndConsoleWirite("---------------------------------------------------------------------------");
 
             GoToMisson();
-            FindMission();
+            if (FindMission())
+            {
+                StartMisson();
+                if (CheckErkundungOrFight()) // True == Jagt
+                {
+                    if (Program.truppenAusgleich == true) { deviceControl.ClickAtTouchPositionWithHexa("000000fa", "000005ba"); } // Option: Augleich der Truppen vor dem Einsatz
+
+                    if (CheckTruppenKraft() == true)
+                    {
+                        deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); // Einsetzen
+                        if (CheckAusdauer() == false)
+                        {
+                            deviceControl.BackUneversal();
+                            deviceControl.GoStadt();
+                            logging.PrintFormatetInSameLine("Jagt", "Completed");
+                            return;
+                        }
+                    }
+
+                    deviceControl.BackUneversal();
+                    deviceControl.GoStadt();
+                }
+                else 
+                {
+                    Erkundungskampf();
+                }
+            }
+
+            deviceControl.BackUneversal();
 
         }
+
 
         private void GoToMisson()
         {
@@ -23,10 +55,11 @@
             Thread.Sleep(1000);
         }                                                                               
 
+
         private bool FindMission()
         {
-            logging.PrintFormatet("Find Mission", "...");
-            if (deviceControl.ClickAcrossScreenRandomly(400, 400, 200, 200, "Belohnungen", "Mission", 50)) 
+            logging.PrintFormatetInSameLine("Find Mission", "...");
+            if (deviceControl.ClickAcrossScreenRandomly(400, 400, 150, 150, "Belohnungen", "Mission", 50)) 
             {
                 logging.PrintFormatetInSameLine("Find Misson", "Completed");
                 return true; 
@@ -35,57 +68,70 @@
             return false;
         }
 
-        private void StartMisson()
-        {
-            logging.PrintFormatet("Start Mission", "...");
-            deviceControl.ClickAtTouchPositionWithHexa("000001cd", "00000435"); // Ansehen
-            Thread.Sleep(1000);
-            deviceControl.ClickAtTouchPositionWithHexa("000001bc", "00000311"); // Agreifen
-            if (Program.truppenAusgleich == true) { deviceControl.ClickAtTouchPositionWithHexa("000000fa", "000005ba"); } // Option: Augleich der Truppen vor dem Einsatz
 
-            if (CheckTruppenKraft() == true)
+        internal void StartMisson()
+        {
+            logging.PrintFormatetInSameLine("Start Mission", "...");
+            deviceControl.ClickAtTouchPositionWithHexa("000001ca", "00000472"); // Ansehen
+            Thread.Sleep(4000);
+            deviceControl.ClickAtTouchPositionWithHexa("000001bc", "00000311"); // Agreifen / Erkunden
+            Thread.Sleep(1000);
+            logging.PrintFormatetInSameLine("Start Misson", "Completed");
+        }
+
+        internal bool CheckErkundungOrFight()
+        {
+            logging.PrintFormatetInSameLine("Missons Art", "...");
+            deviceControl.TakeScreenshot();
+            if(deviceControl.CheckTextInScreenshot("Oberste", "Oberster"))
             {
-                deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); // Einsetzen
-                if (CheckAusdauer() == false)
-                {
-                    deviceControl.BackUneversal();
-                    deviceControl.GoStadt();
-                    logging.PrintFormatetInSameLine("Ausdauer", "Keine Ausdauer");
-                    return;
-                }
-                else 
-                {
-                    logging.PrintFormatetInSameLine("Ausdauer", "OK");
-                }
+                logging.PrintFormatetInSameLine("Missons Art", "Jagt");
+              
+                return true;
             }
-            deviceControl.BackUneversal();
-            deviceControl.GoStadt();
+            logging.PrintFormatetInSameLine("Missons Art", "Kampf");
+            return false;
         }
 
         internal bool CheckTruppenKraft()
         {
+            logging.PrintFormatetInSameLine("Truppen Kraft", "...");
             deviceControl.TakeScreenshot();
             if (deviceControl.CheckTextInScreenshot("nicht", "du") == true)
             {
-                logging.PrintFormatet("Truppen Kraft", "Nicht ausreichen");
+                logging.PrintFormatetInSameLine("Truppen Kraft", "Nicht ausreichen");
                 deviceControl.PressButtonBack();
                 return false;
             }
-            logging.PrintFormatet("Truppen Kraft", "OK");
+            logging.PrintFormatetInSameLine("Truppen Kraft", "OK");
             return true;
         }
 
         private bool CheckAusdauer()
         {
+            logging.PrintFormatetInSameLine("Ausdaueer", "...");
             deviceControl.TakeScreenshot();
             bool reichenResursen = deviceControl.CheckTextInScreenshot("Ausdauer", "Ausdauer"); // Suche nach Text im Screenshot
             if (reichenResursen)
             {
-                logging.PrintFormatet("Ausdauer", "Nicht ausreichend");
+                logging.PrintFormatetInSameLine("Ausdauer", "Nicht ausreichend");
                 return false;
             }
-            logging.PrintFormatet("Ausdauer", "OK");
+            logging.PrintFormatetInSameLine("Ausdauer", "OK");
             return true;      
+        }
+
+        public void Erkundungskampf()
+        {
+            logging.PrintFormatetInSameLine("Kampf", "...");
+            deviceControl.ClickAtTouchPositionWithHexa("00000054", "000005f3"); // Erkundung
+            deviceControl.ClickAtTouchPositionWithHexa("000001c1", "000005b7"); // Erkunden (Kampf)
+            deviceControl.ClickAtTouchPositionWithHexa("000000d8", "000005e2"); // Schneller Einsatz
+            deviceControl.ClickAtTouchPositionWithHexa("00000296", "000005da"); // Kampf
+            deviceControl.ClickAtTouchPositionWithHexa("0000033c", "0000042a"); // Aktiviere  Speed 2x
+            deviceControl.ClickAtTouchPositionWithHexa("00000335", "000004ab"); // Aktiviere Auto Attack
+            Thread.Sleep(45 * 1000);
+            logging.PrintFormatetInSameLine("Kampf", "Completed");
         }
 
 
