@@ -7,8 +7,8 @@ namespace EMU
         // Wenn das Programm in einem veröffentlichten Zustand ausgeführt wird, verwende das Verzeichnis des Executables.
         internal static string baseDirectory = AppContext.BaseDirectory;
 
-        internal static int commandDelay = 100; // Pause in milliseconds between each command.
-        internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
+        internal static int commandDelay = 500; // Pause in milliseconds between each command.
+        internal static int reconnectSleepTime = 20; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
         internal static bool truppenAusgleich = false; // Truppen ausgleichen
         internal static string allianceAutobeitrit = "ON";
@@ -98,9 +98,6 @@ namespace EMU
                            stableControl.Control();
                        }
 
-                        // Geheimmission
-                        geheimdienst.StartProcess();
-                        stableControl.Control();
 
                        // Truppen Heilung
                        Console.ForegroundColor = ConsoleColor.Cyan;
@@ -183,6 +180,10 @@ namespace EMU
                        Console.ForegroundColor = ConsoleColor.Cyan;
                        vip.KistenAbholen();
                        stableControl.Control();
+
+                        // Geheimmission
+                        geheimdienst.StartProcess();
+                        stableControl.Control();
 
                        // Stoppen der Zeitmessung und Ausgabe der Dauer
                        roundCount++;
