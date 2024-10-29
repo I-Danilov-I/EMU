@@ -74,21 +74,18 @@ namespace EMU
             //deviceControl.TrackTouchEvents();       
 
 
-            /*
+            
             logging.ShowSetting();
             stableControl.Control();
             stopwatch.Stop();
             writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");
             writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
             Console.ResetColor();
-            */
+            
             while (true)
             {
                 try
                 {
-                    geheimdienst.StartProcess();
-
-                    /*
                        stopwatch.Restart();
                        logging.PrintSummary();
                        if(roundCount < 1)
@@ -101,9 +98,9 @@ namespace EMU
                            stableControl.Control();
                        }
 
-                       // Geheimmission
-                       geheimdienst.GoToGeheimdienst();
-                       stableControl.Control();
+                        // Geheimmission
+                        geheimdienst.StartProcess();
+                        stableControl.Control();
 
                        // Truppen Heilung
                        Console.ForegroundColor = ConsoleColor.Cyan;
@@ -194,7 +191,7 @@ namespace EMU
                        writeLogs.LogAndConsoleWirite($"\nRundendauer: {stopwatch.Elapsed.TotalMinutes} Minuten, Runde {roundCount}");
                        stopwatch.Restart();
                        writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
-                       */
+                       
                 }
                 catch( Exception ex )
                 {
