@@ -32,6 +32,7 @@ namespace EMU
 
             logging.LogAndConsoleWirite("-------------------------------------------------------------------------------------------");
             Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Cyan;
         }
 
 

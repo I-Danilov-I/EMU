@@ -76,7 +76,7 @@ namespace EMU
             Thread.Sleep(4000);
             deviceControl.ClickAtTouchPositionWithHexa("000001bc", "00000311"); // Agreifen / Erkunden
             Thread.Sleep(1000);
-            logging.PrintFormatet("Start Misson", "Completed");
+            logging.PrintFormatet("Start Mission", "Completed");
         }
 
         internal bool CheckErkundungOrFight()

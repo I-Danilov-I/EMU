@@ -124,7 +124,13 @@
             Console.ForegroundColor = ConsoleColor.Cyan;
             LogAndConsoleWirite("\n\n_________________________[SUMMARY OVERVIEW]_________________________________");
             Console.ResetColor();
-            PrintCounter("VIP Status", Program.allianceAutobeitrit, labelWidth);
+            PrintCounter("Truppen Ausgleich", Program.truppenAusgleich, labelWidth);
+            PrintCounter("Alliance Join Rally", Program.allianceAutobeitrit, labelWidth);
+            PrintCounter("Reconnect Sleep Time", Program.reconnectSleepTime, labelWidth);
+            PrintCounter("Command Delay", Program.commandDelay, labelWidth);
+            PrintCounter("Round Count", Program.roundCount, labelWidth);
+            LogAndConsoleWirite("---------------------------------------------------------------------------");
+
             PrintCounter("Offline Earnings", Program.offlineEarningsCounter, labelWidth);
 
             PrintCounter("Storage Gifts", Program.storageBonusGiftCounter, labelWidth);
@@ -140,6 +146,9 @@
             PrintCounter("Alliance Chests", Program.allianceChestsCounter, labelWidth);
             PrintCounter("Alliance Help", Program.allianceHelpCounter, labelWidth);
             PrintCounter("Alliance Technology", Program.allianceTechnologyCounter, labelWidth);
+
+
+            PrintCounter("Heilings", Program.healingCounter, labelWidth);
 
             PrintCounter("Advanced Hero Recruitment", Program.advancedHeroRecruitmentCounter, labelWidth);
             PrintCounter("Epic Hero Recruitment", Program.epicHeroRecruitmentCounter, labelWidth);

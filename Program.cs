@@ -24,12 +24,14 @@ namespace EMU
         internal static string packageName = "com.gof.global";
 
         internal static int offlineEarningsCounter = 0;
+
         internal static int storageBonusGiftCounter = 0;
         internal static int storageBonusStaminaCounter = 0;
 
         internal static int infantryUnitsTrainedCounter = 0;
         internal static int latencyCarrierUnitsTrainedCounter = 0;
         internal static int sniperUnitsTrainedCounter = 0;
+
         internal static int explorationBonusCounter = 0;
         internal static int explorationBattleCounter = 0;
 
@@ -38,6 +40,7 @@ namespace EMU
         internal static int allianceTechnologyCounter = 0;
 
         internal static int healingCounter = 0;
+
         internal static int advancedHeroRecruitmentCounter = 0;
         internal static int epicHeroRecruitmentCounter = 0;
 
@@ -84,11 +87,6 @@ namespace EMU
             {
                 try
                 {
-                    // Geheimmission
-                    geheimdienst.StartProcess();
-                    stableControl.Control();
-
-
                     stopwatch.Restart();
                     logging.PrintSummary();
                     if(roundCount < 1)
@@ -107,80 +105,67 @@ namespace EMU
                     truppenHeilen.Heilen();
                     stableControl.Control();
 
+                    // Geheimmission
+                    geheimdienst.StartProcess();
+                    stableControl.Control();
+
+
                     // Allianz
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     allianz.Hilfe();
                     stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     allianz.Technologie(3);
                     stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     allianz.KistenAbholen();
                     stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     allianz.AutobeitritAktivieren();
                     stableControl.Control();
 
+
                     // Jagt
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     Jagt.BestienJagtStarten(26);
                     stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     Jagt.PolarTerrorStarten(5);
                     stableControl.Control();
 
 
                     // Lager
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     helden.HeldenRekrutieren();
                     stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     lagerOnlineBelohnung.GeschnekAbholen();
                     stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     lagerOnlineBelohnung.AusdauerAbholen();
                     stableControl.Control();
 
                     // Erkundung
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     erkundung.Erkundungskampf();
                     stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     erkundung.ErkundungAbholen();
                     stableControl.Control();
 
                     // Truppen Training
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     truppenTraining.TrainiereInfaterie(10);
                     stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     truppenTraining.TrainiereLatenzTreger(10);
                     stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     truppenTraining.TrainiereSniper(10);
                     stableControl.Control();
 
                     // Arena Kampf (Optimeirungbedarf)
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     arena.GoToArena();
                     stableControl.Control();
 
                     // Guvenour Befehle
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     guvenourBefehl.EilauftragAbholen();
                     guvenourBefehl.FestlichkeitenAbholen();
                     stableControl.Control();
 
                     // Lebens Baum
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     lebensBaum.BaumBelohnungAbholen();
                     stableControl.Control();
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     lebensBaum.EssensVonFreundenAbholen();
                     stableControl.Control();
 
                     // VIP
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     vip.KistenAbholen();
                     stableControl.Control();
 
