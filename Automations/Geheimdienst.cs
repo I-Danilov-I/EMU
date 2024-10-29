@@ -27,6 +27,7 @@ namespace EMU
                             deviceControl.BackUneversal();
                             deviceControl.GoStadt();                     
                             logging.PrintFormatet("Jagt", "Completed");
+                            Program.geheimdienstCounter++;
                             return;
                         }
                     }
@@ -131,6 +132,7 @@ namespace EMU
             deviceControl.ClickAtTouchPositionWithHexa("0000033c", "0000042a"); // Aktiviere  Speed 2x
             deviceControl.ClickAtTouchPositionWithHexa("00000335", "000004ab"); // Aktiviere Auto Attack
             Thread.Sleep(45 * 1000);
+            Program.geheimdienstCounter++;
             logging.PrintFormatet("Kampf", "Completed");
         }
 

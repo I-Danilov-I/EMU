@@ -133,7 +133,9 @@
             PrintCounter("Polarterror  Jagt Level", Program.polarTerrorLevel, labelWidth);
             PrintCounter("Bestien Jagt Level", Program.bestienJagtLevel, labelWidth);
             LogAndConsoleWirite("---------------------------------------------------------------------------");
-
+            
+            
+            PrintCounter("Geheimdienst", Program.geheimdienstCounter, labelWidth);
             PrintCounter("Offline Earnings", Program.offlineEarningsCounter, labelWidth);
 
             PrintCounter("Storage Gifts", Program.storageBonusGiftCounter, labelWidth);

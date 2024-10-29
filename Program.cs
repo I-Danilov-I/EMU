@@ -26,6 +26,8 @@ namespace EMU
         internal static string inputDevice = "/dev/input/event4";
         internal static string packageName = "com.gof.global";
 
+        internal static int geheimdienstCounter = 0;
+
         internal static int offlineEarningsCounter = 0;
 
         internal static int storageBonusGiftCounter = 0;
@@ -77,8 +79,7 @@ namespace EMU
             //Begleiter begleiter = new Begleiter(writeLogs, deviceControl);
             //-----------------------------------------------------------------------------------------------------------
             //deviceControl.TrackTouchEvents();       
-            Jagt.PolarTerrorStarten(polarTerrorLevel);
-            Jagt.BestienJagtStarten(bestienJagtLevel);
+
             logging.ShowSetting();
             stableControl.Control();
             stopwatch.Stop();
@@ -102,16 +103,13 @@ namespace EMU
                         stableControl.Control();
                     }
 
-
                     // Truppen Heilung
-                    Console.ForegroundColor = ConsoleColor.Cyan;
                     truppenHeilen.Heilen();
                     stableControl.Control();
 
                     // Geheimmission
                     geheimdienst.StartProcess();
                     stableControl.Control();
-
 
                     // Allianz
                     allianz.Hilfe();
@@ -123,13 +121,11 @@ namespace EMU
                     allianz.AutobeitritAktivieren();
                     stableControl.Control();
 
-
                     // Jagt
-                    Jagt.BestienJagtStarten(26);
+                    Jagt.PolarTerrorStarten(polarTerrorLevel);
                     stableControl.Control();
-                    Jagt.PolarTerrorStarten(5);
+                    Jagt.BestienJagtStarten(bestienJagtLevel);
                     stableControl.Control();
-
 
                     // Lager
                     helden.HeldenRekrutieren();
