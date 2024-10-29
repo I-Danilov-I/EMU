@@ -124,11 +124,14 @@
             Console.ForegroundColor = ConsoleColor.Cyan;
             LogAndConsoleWirite("\n\n_________________________[SUMMARY OVERVIEW]_________________________________");
             Console.ResetColor();
-            PrintCounter("Truppen Ausgleich", Program.truppenAusgleich, labelWidth);
-            PrintCounter("Alliance Join Rally", Program.allianceAutobeitrit, labelWidth);
             PrintCounter("Reconnect Sleep Time", Program.reconnectSleepTime, labelWidth);
             PrintCounter("Command Delay", Program.commandDelay, labelWidth);
             PrintCounter("Round Count", Program.roundCount, labelWidth);
+            LogAndConsoleWirite("---------------------------------------------------------------------------");
+            PrintCounter("Truppen Ausgleich", Program.truppenAusgleich, labelWidth);
+            PrintCounter("Alliance Join Rally", Program.allianceAutobeitrit, labelWidth);
+            PrintCounter("Polarterror  Jagt Level", Program.polarTerrorLevel, labelWidth);
+            PrintCounter("Bestien Jagt Level", Program.bestienJagtLevel, labelWidth);
             LogAndConsoleWirite("---------------------------------------------------------------------------");
 
             PrintCounter("Offline Earnings", Program.offlineEarningsCounter, labelWidth);

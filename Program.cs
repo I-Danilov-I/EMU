@@ -11,7 +11,10 @@ namespace EMU
         internal static int reconnectSleepTime = 20; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
         internal static bool truppenAusgleich = false; // Truppen ausgleichen
+        
         internal static string allianceAutobeitrit = "ON";
+        internal static int polarTerrorLevel = 6;
+        internal static int bestienJagtLevel = 26;
 
         internal static string trainedDataDirectory = Path.Combine(baseDirectory);
         internal static string screenshotDirectory = Path.Combine(baseDirectory, "Screens");
@@ -49,7 +52,6 @@ namespace EMU
         internal static int vipStatusCounter = 0;
         internal static int arenaFightsCounter = 0;
 
-
         private static void Main()
         {
             Stopwatch stopwatch = new Stopwatch();
@@ -75,8 +77,8 @@ namespace EMU
             //Begleiter begleiter = new Begleiter(writeLogs, deviceControl);
             //-----------------------------------------------------------------------------------------------------------
             //deviceControl.TrackTouchEvents();       
-            Jagt.PolarTerrorStarten(6);
-            Jagt.BestienJagtStarten(26);
+            Jagt.PolarTerrorStarten(polarTerrorLevel);
+            Jagt.BestienJagtStarten(bestienJagtLevel);
             logging.ShowSetting();
             stableControl.Control();
             stopwatch.Stop();
