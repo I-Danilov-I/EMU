@@ -1,6 +1,6 @@
 ﻿namespace EMU
 {
-    internal class TruppenHeilen(WriteLogs writeLogs, DeviceControl deviceControl)
+    internal class TruppenHeilen(Logging writeLogs, DeviceControl deviceControl)
     {
         public void Heilen()
         {

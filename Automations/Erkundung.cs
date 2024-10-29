@@ -1,6 +1,6 @@
 ﻿namespace EMU
 {
-    internal class Erkundung(WriteLogs writeLogs ,DeviceControl deviceControl)
+    internal class Erkundung(Logging writeLogs ,DeviceControl deviceControl)
     {
 
         public void ErkundungAbholen()

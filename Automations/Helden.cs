@@ -1,6 +1,6 @@
 ﻿namespace EMU
 {
-    internal class Helden(WriteLogs writeLogs, DeviceControl deviceControl)
+    internal class Helden(Logging writeLogs, DeviceControl deviceControl)
     {
 
         public void HeldenRekrutieren()
