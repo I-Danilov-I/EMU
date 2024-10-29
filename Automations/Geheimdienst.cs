@@ -8,7 +8,7 @@ namespace EMU
         internal void StartProcess()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
-            logging.PrintFormatet("| GEHEIMDIENST", "   |");
+            logging.PrintFormatet("[ GEHEIMDIENST ]", "");
             logging.LogAndConsoleWirite("---------------------------------------------------------------------------");
 
             GoToMisson();
@@ -26,7 +26,7 @@ namespace EMU
                         {
                             deviceControl.BackUneversal();
                             deviceControl.GoStadt();
-                            logging.PrintFormatetInSameLine("Jagt", "Completed");
+                            logging.PrintFormatet("Jagt", "Completed");
                             return;
                         }
                     }
@@ -59,7 +59,7 @@ namespace EMU
         private bool FindMission()
         {
             logging.PrintFormatetInSameLine("Find Mission", "...");
-            if (deviceControl.ClickAcrossScreenRandomly(400, 400, 150, 150, "Belohnungen", "Mission", 50)) 
+            if (deviceControl.ClickAcrossScreenRandomly(400, 400, 100, 100, "Belohnungen", "Mission", 100)) 
             {
                 logging.PrintFormatetInSameLine("Find Misson", "Completed");
                 return true; 
@@ -131,7 +131,7 @@ namespace EMU
             deviceControl.ClickAtTouchPositionWithHexa("0000033c", "0000042a"); // Aktiviere  Speed 2x
             deviceControl.ClickAtTouchPositionWithHexa("00000335", "000004ab"); // Aktiviere Auto Attack
             Thread.Sleep(45 * 1000);
-            logging.PrintFormatetInSameLine("Kampf", "Completed");
+            logging.PrintFormatet("Kampf", "Completed");
         }
 
 

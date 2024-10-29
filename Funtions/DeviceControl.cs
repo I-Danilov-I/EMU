@@ -103,10 +103,10 @@ namespace EMU
             {
                 // Bildverarbeitung
                 Mat img = Cv2.ImRead(imagePath);
-                Cv2.Resize(img, img, new Size(img.Width * 2, img.Height * 2));
+                //Cv2.Resize(img, img, new Size(img.Width * 2, img.Height * 2));
                 Cv2.CvtColor(img, img, ColorConversionCodes.BGR2GRAY);
-                Cv2.AdaptiveThreshold(img, img, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.Binary, 15, 10);
-                Cv2.MorphologyEx(img, img, MorphTypes.Open, Cv2.GetStructuringElement(MorphShapes.Rect, new Size(1, 1)));
+                //Cv2.AdaptiveThreshold(img, img, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.Binary, 15, 10);
+                //Cv2.MorphologyEx(img, img, MorphTypes.Open, Cv2.GetStructuringElement(MorphShapes.Rect, new Size(1, 1)));
 
                 string tempPath = Path.Combine(Program.screenshotDirectory, "processed_image.png");
                 Cv2.ImWrite(tempPath, img);
