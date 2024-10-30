@@ -7,7 +7,7 @@ namespace EMU
         // Wenn das Programm in einem veröffentlichten Zustand ausgeführt wird, verwende das Verzeichnis des Executables.
         internal static string baseDirectory = AppContext.BaseDirectory;
 
-        internal static int commandDelay = 1000; // Pause in milliseconds between each command.
+        internal static int commandDelay = 500; // Pause in milliseconds between each command.
         internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
         internal static bool truppenAusgleich = false; // Truppen ausgleichen
@@ -80,12 +80,25 @@ namespace EMU
             //-----------------------------------------------------------------------------------------------------------
             //deviceControl.TrackTouchEvents();       
 
+            if (geheimdienst.CheckTruppenKraft() == true)
+            {
+                deviceControl.ClickAtTouchPositionWithHexa("000002b6", "000005eb"); // Einsetzen
+                if (geheimdienst.CheckAusdauer() == true)
+                {
+                    Program.geheimdienstCounter++;
+                    logging.PrintFormatet("Jagt", "Completed");
+                }
+            }
+
             logging.ShowSetting();
             stableControl.Control();
             stopwatch.Stop();
             writeLogs.LogAndConsoleWirite($"Startdauer: {stopwatch.Elapsed.TotalSeconds} sec");
             writeLogs.LogAndConsoleWirite($"---------------------------------------------------------------------------");
             Console.ResetColor();
+
+
+
             
             while (true)
             {
@@ -119,8 +132,8 @@ namespace EMU
                     stableControl.Control();
 
                     // Jagt
-                    Jagt.PolarTerrorStarten(polarTerrorLevel);
-                    stableControl.Control();
+                    //Jagt.PolarTerrorStarten(polarTerrorLevel);
+                    //stableControl.Control();
                     Jagt.BestienJagtStarten(bestienJagtLevel);
                     stableControl.Control();
 
@@ -164,11 +177,6 @@ namespace EMU
                     // VIP
                     vip.KistenAbholen();
                     stableControl.Control();
-
-                    // Geheimmission
-                    geheimdienst.StartProcess();
-                    stableControl.Control();
-
                     // Stoppen der Zeitmessung und Ausgabe der Dauer
                     roundCount++;
                     stopwatch.Stop();

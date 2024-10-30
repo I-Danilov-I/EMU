@@ -87,9 +87,11 @@ namespace EMU
             try
             {
                 Directory.CreateDirectory(Program.screenshotDirectory);
-
+                Thread.Sleep(1000);
                 ExecuteAdbCommand("shell screencap -p /sdcard/screenshot.png");  // Screenshot auf Emulator
+                Thread.Sleep(1000);
                 ExecuteAdbCommand($"pull /sdcard/screenshot.png {Program.screenshotDirectory}"); // Screenshot auf PC
+                Thread.Sleep(1000);
             }
             catch (Exception ex)
             {
@@ -103,14 +105,14 @@ namespace EMU
             {
                 // Bildverarbeitung
                 Mat img = Cv2.ImRead(imagePath);
-                //Cv2.Resize(img, img, new Size(img.Width * 2, img.Height * 2));
+                Cv2.Resize(img, img, new Size(img.Width * 5, img.Height * 5));
                 Cv2.CvtColor(img, img, ColorConversionCodes.BGR2GRAY);
                 //Cv2.AdaptiveThreshold(img, img, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.Binary, 15, 10);
                 //Cv2.MorphologyEx(img, img, MorphTypes.Open, Cv2.GetStructuringElement(MorphShapes.Rect, new Size(1, 1)));
 
                 string tempPath = Path.Combine(Program.screenshotDirectory, "processed_image.png");
                 Cv2.ImWrite(tempPath, img);
-
+                Thread.Sleep(1000);
                 // OCR mit Tesseract
                 using var engine = new TesseractEngine(trainedDataDirectory, language, EngineMode.Default);
                 engine.SetVariable("debug_file", "NUL");        // Unterdrückt die Debug-Ausgabe von Tesseract

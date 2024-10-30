@@ -114,14 +114,14 @@ namespace EMU
             if (deviceControl.CheckTextInScreenshot("nicht", "du") == true)
             {
                 logging.PrintFormatet("Truppen Kraft", "Nicht ausreichen");
-                deviceControl.PressButtonBack();
+                deviceControl.PressButtonBack();                
                 return false;
             }
             logging.PrintFormatet("Truppen Kraft", "OK");
             return true;
         }
 
-        private bool CheckAusdauer()
+        internal bool CheckAusdauer()
         {
             logging.PrintFormatet("Ausdauer", "...");
             deviceControl.TakeScreenshot();
