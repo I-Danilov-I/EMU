@@ -8,7 +8,7 @@
             deviceControl.ClickAtTouchPositionWithHexa("0000029d", "0000052e"); // Button Truppenanzahl klicken
 
             // Bestehenden Text/Zahlen löschen          
-            int numberOfCharactersToDelete = 5; // Anzahl der Zeichen, die gelöscht werden sollen
+            int numberOfCharactersToDelete = 500; // Anzahl der Zeichen, die gelöscht werden sollen
             for (int i = 0; i < numberOfCharactersToDelete; i++)
             {
                 string deleteCommand = "shell input keyevent KEYCODE_DEL"; // Löschen taster drücken

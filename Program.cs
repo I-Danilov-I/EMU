@@ -7,7 +7,7 @@ namespace EMU
         // Wenn das Programm in einem veröffentlichten Zustand ausgeführt wird, verwende das Verzeichnis des Executables.
         internal static string baseDirectory = AppContext.BaseDirectory;
 
-        internal static int commandDelay = 500; // Pause in milliseconds between each command.
+        internal static int commandDelay = 1000; // Pause in milliseconds between each command.
         internal static int reconnectSleepTime = 10; // Sleep time in milliseconds after reconnecting.
         internal static int roundCount = 0;
         internal static bool truppenAusgleich = false; // Truppen ausgleichen
@@ -119,8 +119,8 @@ namespace EMU
                     stableControl.Control();
 
                     // Jagt
-                    //Jagt.PolarTerrorStarten(polarTerrorLevel);
-                    //stableControl.Control();
+                    Jagt.PolarTerrorStarten(polarTerrorLevel);
+                    stableControl.Control();
                     Jagt.BestienJagtStarten(bestienJagtLevel);
                     stableControl.Control();
 
